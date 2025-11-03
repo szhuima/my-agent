@@ -359,4 +359,4 @@ sh pipeline.sh
 
 ## 📧 联系我们
 
-如有任何问题，请随时联系项目维护者。作者邮箱: szhuima@google.com
+如有任何问题，请随时联系项目维护者。作者邮箱: szhuima@gmail.com

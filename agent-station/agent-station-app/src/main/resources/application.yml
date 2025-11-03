@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: agent-station-app
+  profiles:
+    active: dev
+  config:
+    import: classpath:jwt.properties
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

@@ -1,0 +1,20 @@
+{
+  "taskPlan": [
+    {
+      "taskSeq": 1,
+      "taskDesc": "查询用户简历内容"
+    },
+    {
+      "taskSeq": 2,
+      "taskDesc": "查询岗位信息"
+    },
+    {
+      "taskSeq": 3,
+      "taskDesc": "计算简历和岗位匹配度"
+    },
+    {
+      "taskSeq": 4,
+      "taskDesc": "根据匹配度判断是否要给岗位的boss发送一个自我介绍"
+    }
+  ]
+}

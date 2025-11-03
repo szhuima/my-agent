@@ -1,0 +1,61 @@
+name: resume-match-v3
+title: 简历匹配-发消息工作流
+triggers:
+  - type: HTTP
+    config:
+      method: POST
+      body:
+        - key: securityId
+          type: text
+          required: true
+        - key: postDescription
+          type: text
+          required: true
+        - key: user_prompt
+          type: text
+          required: false
+        - key: resumeId
+          type: number
+          required: true
+nodes:
+  - name: http_get_resume
+    type: HTTP_CALL
+    title: 调用简历接口
+    startNode: true
+    config:
+      url: http://localhost:10034/resume/getById
+      method: GET
+      headers:
+        Content-Type: application/json
+      params:
+        resumeId: "{{resumeId}}"
+  - name: loop_job_list
+    type: BATCH
+    title: 遍历岗位列表
+    config:
+      items: "http_job_list.response"
+      item_key: item
+      body_nodes:
+        - match_resume
+        - send_message
+  - name: match_resume
+    type: AGENT
+    title: 简历匹配智能体
+    config:
+      agent_id: 8
+      user_prompt: "{{user_prompt}}"
+  - name: send_message
+    type: HTTP_CALL
+    title: 给Boss发送消息
+    condition: "{{match_resume.response.matchScore>=70}}"
+    config:
+      url: http://localhost:10034/job/sendMessage
+      method: POST
+      body:
+        encryptId: "{{item.encryptId}}"
+        message: "{{match_resume.response.matchReason}}"
+edges:
+  - from: http_get_resume
+    to: http_job_list
+  - from: http_job_list
+    to: loop_job_list

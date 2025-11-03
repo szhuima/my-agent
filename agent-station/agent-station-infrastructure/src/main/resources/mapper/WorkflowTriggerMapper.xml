@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.agent.infrastructure.mapper.WorkflowTriggerMapper">
+
+    <resultMap id="BaseResultMap" type="dev.szhuima.agent.infrastructure.po.WorkflowTrigger">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="workflowId" column="workflow_id" jdbcType="BIGINT"/>
+            <result property="workflowName" column="workflow_name" jdbcType="VARCHAR"/>
+            <result property="triggerType" column="trigger_type" jdbcType="VARCHAR"/>
+            <result property="config" column="config" jdbcType="OTHER"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,workflow_id,workflow_name,trigger_type,
+        config,status,created_at
+    </sql>
+</mapper>

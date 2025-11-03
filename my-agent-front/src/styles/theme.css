@@ -1,0 +1,747 @@
+:root {
+  /* Light theme variables */
+  --bg-primary-light: #ffffff;
+  --bg-secondary-light: #fafafa;
+  --bg-tertiary-light: #f5f5f5;
+  --text-primary-light: #262626;
+  --text-secondary-light: #595959;
+  --text-tertiary-light: #8c8c8c;
+  --border-primary-light: #d9d9d9;
+  --border-secondary-light: #f0f0f0;
+  --shadow-light: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  /* Dark theme variables */
+  --bg-primary-dark: #1a1a1a;
+  --bg-secondary-dark: #2d2d2d;
+  --bg-tertiary-dark: #3a3a3a;
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #e0e0e0;
+  --text-tertiary-dark: #b0b0b0;
+  --border-primary-dark: #4a4a4a;
+  --border-secondary-dark: #3a3a3a;
+  --shadow-dark: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme */
+body.light {
+  --bg-primary: var(--bg-primary-light);
+  --bg-secondary: var(--bg-secondary-light);
+  --bg-tertiary: var(--bg-tertiary-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --text-tertiary: var(--text-tertiary-light);
+  --border-primary: var(--border-primary-light);
+  --border-secondary: var(--border-secondary-light);
+  --shadow: var(--shadow-light);
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark theme */
+body.dark {
+  --bg-primary: var(--bg-primary-dark);
+  --bg-secondary: var(--bg-secondary-dark);
+  --bg-tertiary: var(--bg-tertiary-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --text-tertiary: var(--text-tertiary-dark);
+  --border-primary: var(--border-primary-dark);
+  --border-secondary: var(--border-secondary-dark);
+  --shadow: var(--shadow-dark);
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Global styles for theme switching */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Semi UI theme overrides */
+.semi-layout-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom-color: var(--border-secondary) !important;
+}
+
+.semi-layout-sider {
+  background-color: var(--bg-secondary) !important;
+  border-right-color: var(--border-secondary) !important;
+}
+
+.semi-layout-content {
+  background-color: var(--bg-primary) !important;
+}
+
+.semi-card {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.semi-input {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-input input {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.semi-input:hover {
+  border-color: var(--border-primary) !important;
+}
+
+.semi-input:focus-within {
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1) !important;
+}
+
+.semi-input .semi-input-prefix,
+.semi-input .semi-input-suffix {
+  color: var(--text-secondary) !important;
+}
+
+.semi-button {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-button:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+.semi-dropdown {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.semi-menu {
+  background-color: var(--bg-primary) !important;
+}
+
+.semi-menu-item {
+  color: var(--text-primary) !important;
+}
+
+.semi-menu-item:hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* 文字颜色覆盖 */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+}
+
+p, span, div {
+  color: var(--text-primary) !important;
+}
+
+/* 卡片内容 */
+.semi-card .semi-card-body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-card .semi-card-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom-color: var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 统计卡片 */
+.semi-statistic {
+  color: var(--text-primary) !important;
+}
+
+.semi-statistic .semi-statistic-title {
+  color: var(--text-secondary) !important;
+}
+
+.semi-statistic .semi-statistic-content {
+  color: var(--text-primary) !important;
+}
+
+/* 布局组件 */
+.semi-layout {
+  background-color: var(--bg-primary) !important;
+}
+
+.semi-layout-header {
+  background-color: var(--bg-primary) !important;
+  border-bottom-color: var(--border-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-layout-sider {
+  background-color: var(--bg-secondary) !important;
+  border-right-color: var(--border-secondary) !important;
+}
+
+.semi-layout-content {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 菜单组件 */
+.semi-menu {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-menu-item {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+.semi-menu-item:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+.semi-menu-item.semi-menu-item-selected {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 头像组件 */
+.semi-avatar {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 徽章组件 */
+.semi-badge {
+  color: var(--text-primary) !important;
+}
+
+/* 通用文字样式 */
+.semi-typography {
+  color: var(--text-primary) !important;
+}
+
+.semi-typography h1,
+.semi-typography h2,
+.semi-typography h3,
+.semi-typography h4,
+.semi-typography h5,
+.semi-typography h6 {
+  color: var(--text-primary) !important;
+}
+
+.semi-typography p {
+  color: var(--text-secondary) !important;
+}
+
+/* 确保所有文字都有正确的颜色 */
+* {
+  color: inherit;
+}
+
+body {
+  color: var(--text-primary) !important;
+}
+
+/* 黑夜模式下的特殊修复 */
+body.dark .semi-layout-sider {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout-sider * {
+  color: var(--text-primary) !important;
+}
+
+/* 搜索框placeholder颜色修复 */
+.semi-input input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+body.dark .semi-input input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* 文本域(TextArea) placeholder颜色修复 */
+.semi-input-textarea textarea::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1 !important;
+}
+
+body.dark .semi-input-textarea textarea::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1 !important;
+}
+
+/* 搜索框前缀图标颜色 */
+.semi-input .semi-input-prefix {
+  color: var(--text-tertiary) !important;
+}
+
+body.dark .semi-input .semi-input-prefix {
+  color: var(--text-tertiary) !important;
+}
+
+/* 侧边栏菜单项文字颜色强制覆盖 */
+body.dark .semi-menu-item .semi-menu-item-text {
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-menu-item .semi-menu-item-text span {
+  color: var(--text-primary) !important;
+}
+
+/* 侧边栏标题文字 */
+body.dark .semi-layout-sider h4,
+body.dark .semi-layout-sider .semi-typography {
+  color: var(--text-primary) !important;
+}
+
+/* 侧边栏用户信息 */
+body.dark .semi-layout-sider .semi-avatar + div {
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout-sider .semi-avatar + div * {
+  color: var(--text-primary) !important;
+}
+
+/* 更强制性的侧边栏文字颜色修复 */
+body.dark .semi-layout-sider {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout-sider * {
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖Semi UI的默认样式 */
+body.dark .semi-layout-sider,
+body.dark .semi-layout-sider .semi-layout-sider-children,
+body.dark .semi-layout-sider .semi-layout-sider-content {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖所有可能的文字元素 */
+body.dark .semi-layout-sider div,
+body.dark .semi-layout-sider span,
+body.dark .semi-layout-sider p,
+body.dark .semi-layout-sider h1,
+body.dark .semi-layout-sider h2,
+body.dark .semi-layout-sider h3,
+body.dark .semi-layout-sider h4,
+body.dark .semi-layout-sider h5,
+body.dark .semi-layout-sider h6 {
+  color: var(--text-primary) !important;
+}
+
+/* 搜索框placeholder和前缀图标的更强修复 */
+body.dark .semi-input input::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1 !important;
+}
+
+body.dark .semi-input .semi-input-prefix svg {
+  color: var(--text-tertiary) !important;
+  fill: var(--text-tertiary) !important;
+}
+
+/* 确保搜索框在黑夜模式下的所有状态都正确 */
+body.dark .semi-input {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-input input {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-input:hover {
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-input:focus-within {
+  border-color: var(--border-primary) !important;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1) !important;
+}
+
+/* 强制覆盖Semi UI Layout组件的样式 */
+body.dark .semi-layout {
+  background-color: var(--bg-primary) !important;
+}
+
+body.dark .semi-layout .semi-layout-sider {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout .semi-layout-sider * {
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖Semi UI的默认主题样式 */
+body.dark [class*="semi-layout-sider"] {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark [class*="semi-layout-sider"] * {
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖所有可能的Semi UI类名 */
+body.dark .semi-layout-sider,
+body.dark .semi-layout-sider-children,
+body.dark .semi-layout-sider-content,
+body.dark .semi-layout-sider-inner {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖菜单组件 */
+body.dark .semi-layout-sider .semi-menu {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout-sider .semi-menu-item {
+  color: var(--text-primary) !important;
+  background-color: transparent !important;
+}
+
+body.dark .semi-layout-sider .semi-menu-item:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖Typography组件 */
+body.dark .semi-layout-sider .semi-typography {
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout-sider .semi-typography h1,
+body.dark .semi-layout-sider .semi-typography h2,
+body.dark .semi-layout-sider .semi-typography h3,
+body.dark .semi-layout-sider .semi-typography h4,
+body.dark .semi-layout-sider .semi-typography h5,
+body.dark .semi-layout-sider .semi-typography h6 {
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖Avatar组件 */
+body.dark .semi-layout-sider .semi-avatar {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 针对Semi UI的CSS-in-JS类名进行覆盖 */
+body.dark .semi-layout {
+  background-color: var(--bg-primary) !important;
+}
+
+/* 覆盖侧边栏的CSS-in-JS类名 */
+body.dark .semi-layout > div:first-child {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout > div:first-child * {
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖导航组件 */
+body.dark .semi-navigation {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-navigation * {
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-navigation-item {
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-navigation-item:hover {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-navigation-item-selected {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖Typography组件 */
+body.dark .semi-layout h1,
+body.dark .semi-layout h2,
+body.dark .semi-layout h3,
+body.dark .semi-layout h4,
+body.dark .semi-layout h5,
+body.dark .semi-layout h6 {
+  color: var(--text-primary) !important;
+}
+
+/* 覆盖搜索框的CSS-in-JS类名 */
+body.dark .semi-input {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-input input {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-input input::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1 !important;
+}
+
+body.dark .semi-input .semi-input-prefix {
+  color: var(--text-tertiary) !important;
+}
+
+body.dark .semi-input .semi-input-prefix svg {
+  color: var(--text-tertiary) !important;
+  fill: var(--text-tertiary) !important;
+}
+
+/* 修复黑夜模式下卡片背景和文字颜色问题 */
+body.dark .sc-aXZVg {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .sc-aXZVg * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复统计卡片 */
+body.dark .sc-eBMEME {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .sc-eBMEME * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复快速操作卡片 */
+body.dark .sc-kdBSHD {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .sc-kdBSHD * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复所有可能的卡片类名 */
+body.dark [class*="sc-aXZVg"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark [class*="sc-aXZVg"] * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复Card组件 */
+body.dark .semi-card {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-card * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复Statistic组件 */
+body.dark .semi-statistic {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-statistic * {
+  color: var(--text-primary) !important;
+}
+
+/* 修复Typography组件在卡片中的颜色 */
+body.dark .sc-aXZVg h1,
+body.dark .sc-aXZVg h2,
+body.dark .sc-aXZVg h3,
+body.dark .sc-aXZVg h4,
+body.dark .sc-aXZVg h5,
+body.dark .sc-aXZVg h6,
+body.dark .sc-aXZVg p,
+body.dark .sc-aXZVg span,
+body.dark .sc-aXZVg div {
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖所有卡片样式 - 使用更高的特异性 */
+body.dark .semi-layout .sc-aXZVg {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout .sc-aXZVg * {
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖统计卡片 */
+body.dark .semi-layout .sc-eBMEME {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout .sc-eBMEME * {
+  color: var(--text-primary) !important;
+}
+
+/* 强制覆盖快速操作卡片 */
+body.dark .semi-layout .sc-kdBSHD {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-layout .sc-kdBSHD * {
+  color: var(--text-primary) !important;
+}
+
+/* 使用属性选择器强制覆盖 */
+body.dark [class*="sc-aXZVg"][class*="ePQTDo"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark [class*="sc-aXZVg"][class*="ePQTDo"] * {
+  color: var(--text-primary) !important;
+}
+
+/* 使用属性选择器强制覆盖统计卡片 */
+body.dark [class*="sc-eBMEME"][class*="ewjWJX"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark [class*="sc-eBMEME"][class*="ewjWJX"] * {
+  color: var(--text-primary) !important;
+}
+
+/* Light mode: enforce white background and black text for Semi tooltip/popover */
+body.light .semi-tooltip,
+body.light .semi-popover,
+body.light [class*="semi-tooltip"],
+body.light [class*="semi-popover"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Ensure inner content and children are black text */
+body.light .semi-tooltip *,
+body.light .semi-popover *,
+body.light [class*="semi-tooltip"] *,
+body.light [class*="semi-popover"] * {
+  color: #000000 !important;
+}
+
+/* Target common content containers explicitly */
+body.light .semi-tooltip .semi-tooltip-content,
+body.light .semi-popover .semi-popover-content {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Arrow styles to match white background */
+body.light .semi-tooltip .semi-tooltip-arrow,
+body.light .semi-popover .semi-popover-arrow {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+/* Preformatted JSON content inside tooltip/popover */
+body.light .semi-tooltip pre,
+body.light .semi-popover pre,
+body.light [class*="semi-tooltip"] pre,
+body.light [class*="semi-popover"] pre {
+  background-color: transparent !important;
+  color: #000000 !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+body.dark .semi-table,
+body.dark .semi-table table,
+body.dark .semi-table .semi-table-wrapper,
+body.dark .semi-table .semi-table-container {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-table tbody tr:hover,
+body.dark .semi-table .semi-table-tbody tr:hover,
+body.dark .semi-table .semi-table-tbody .semi-table-row.semi-table-row-hover {
+  background-color: var(--bg-tertiary) !important;
+}
+
+body.dark .semi-table tbody tr:hover td,
+body.dark .semi-table .semi-table-tbody tr:hover td,
+body.dark .semi-table .semi-table-tbody .semi-table-row.semi-table-row-hover td {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-table tbody tr:hover::before,
+body.dark .semi-table .semi-table-tbody tr:hover::before,
+body.dark .semi-table .semi-table-tbody .semi-table-row.semi-table-row-hover::before {
+  background-color: var(--bg-tertiary) !important;
+}
+
+body.dark .semi-table .semi-table-thead,
+body.dark .semi-table .semi-table-thead .semi-table-row,
+body.dark .semi-table .semi-table-thead th {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-table .semi-table-tbody,
+body.dark .semi-table .semi-table-tbody .semi-table-row {
+  background-color: var(--bg-secondary) !important;
+}
+
+body.dark .semi-table .semi-table-cell,
+body.dark .semi-table .semi-table-row td,
+body.dark .semi-table .semi-table-row th {
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* Pagination under tables (restored) */
+body.dark .semi-pagination {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark .semi-pagination .semi-page-item {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+body.dark .semi-pagination .semi-page-item-active {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+}

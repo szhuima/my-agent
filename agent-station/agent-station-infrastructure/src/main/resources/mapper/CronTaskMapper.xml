@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.mcp.server.boss.mapper.CronTaskMapper">
+
+    <resultMap id="BaseResultMap" type="dev.szhuima.agent.infrastructure.po.CronTask">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="taskType" column="task_type" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="taskParam" column="task_param" jdbcType="VARCHAR"/>
+            <result property="cronExpression" column="cron_expression" jdbcType="VARCHAR"/>
+            <result property="runStatus" column="run_status" jdbcType="TINYINT"/>
+            <result property="progress" column="progress" jdbcType="BIGINT"/>
+            <result property="taskStatus" column="task_status" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_type,description,
+        task_param,cron_expression,run_status,
+        progress,task_status,create_time,
+        update_time
+    </sql>
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.agent.infrastructure.mapper.AiClientToolMcpMapper">
+
+    <resultMap id="dataMap" type="dev.szhuima.agent.infrastructure.po.AiClientToolMcp">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="mcpName" column="mcp_name" jdbcType="VARCHAR"/>
+            <result property="transportType" column="transport_type" jdbcType="VARCHAR"/>
+            <result property="transportConfig" column="transport_config" jdbcType="VARCHAR"/>
+            <result property="requestTimeout" column="request_timeout" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mcp_name,transport_type,
+        transport_config,request_timeout,status,
+        create_time,update_time
+    </sql>
+
+    <!-- 查询所有MCP配置 -->
+    <select id="queryAllMcpConfig" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        ORDER BY id
+    </select>
+
+    <!-- 根据ID查询MCP配置 -->
+    <select id="queryMcpConfigById" parameterType="java.lang.Long" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据MCP名称查询配置 -->
+    <select id="queryMcpConfigByName" parameterType="java.lang.String" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE mcp_name = #{mcpName}
+    </select>
+
+    <!-- 根据条件查询MCP配置列表 -->
+    <select id="queryMcpList" parameterType="dev.szhuima.agent.infrastructure.po.AiClientToolMcp" resultMap="dataMap">
+        SELECT
+        id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM
+        ai_client_tool_mcp
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="mcpName != null and mcpName != ''">
+                AND mcp_name LIKE CONCAT('%', #{mcpName}, '%')
+            </if>
+            <if test="transportType != null and transportType != ''">
+                AND transport_type = #{transportType}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        <if test="pageSize != null and pageSize > 0">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
+    <!-- 更新MCP配置 -->
+    <update id="update" parameterType="dev.szhuima.agent.infrastructure.po.AiClientToolMcp">
+        UPDATE ai_client_tool_mcp
+        SET mcp_name = #{mcpName},
+            transport_type = #{transportType},
+            transport_config = #{transportConfig},
+            request_timeout = #{requestTimeout},
+            status = #{status},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据客户端ID列表查询MCP配置 -->
+    <select id="queryMcpConfigByClientIds" parameterType="java.util.List" resultMap="dataMap">
+        SELECT m.id, m.mcp_name, m.transport_type, m.transport_config,
+        m.request_timeout, m.status, m.create_time, m.update_time
+        FROM ai_client_tool_mcp m
+        WHERE m.id IN (
+        SELECT DISTINCT c.tool_id
+        FROM ai_client_tool_config c
+        WHERE c.client_id IN
+        <foreach collection="list" item="clientId" open="(" separator="," close=")">
+            #{clientId}
+        </foreach>
+        )
+    </select>
+
+
+    <insert id="insert" parameterType="dev.szhuima.agent.infrastructure.po.AiClientToolMcp" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ai_client_tool_mcp (
+            id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        ) VALUES (
+                     #{id}, #{mcpName}, #{transportType}, #{transportConfig}, #{requestTimeout}, #{status}, #{createTime}, #{updateTime}
+                 )
+    </insert>
+
+    <update id="updateById" parameterType="dev.szhuima.agent.infrastructure.po.AiClientToolMcp">
+        UPDATE ai_client_tool_mcp SET
+                                      id = #{id},
+                                      mcp_name = #{mcpName},
+                                      transport_type = #{transportType},
+                                      transport_config = #{transportConfig},
+                                      request_timeout = #{requestTimeout},
+                                      status = #{status},
+                                      update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateByMcpId" parameterType="dev.szhuima.agent.infrastructure.po.AiClientToolMcp">
+        UPDATE ai_client_tool_mcp SET
+                                      mcp_name = #{mcpName},
+                                      transport_type = #{transportType},
+                                      transport_config = #{transportConfig},
+                                      request_timeout = #{requestTimeout},
+                                      status = #{status},
+                                      update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM ai_client_tool_mcp WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByMcpId" parameterType="java.lang.String">
+        DELETE FROM ai_client_tool_mcp WHERE id = #{id}
+    </delete>
+
+    <select id="queryById" parameterType="java.lang.Long" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE id = #{id}
+    </select>
+
+    <select id="queryByMcpId" parameterType="java.lang.String" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE id = #{id}
+    </select>
+
+    <select id="queryAll" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="queryByStatus" parameterType="java.lang.Integer" resultMap="dataMap">
+        SELECT id, mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE status = #{status}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="queryByTransportType" parameterType="java.lang.String" resultMap="dataMap">
+        SELECT id,  mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE transport_type = #{transportType}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="queryEnabledMcps" resultMap="dataMap">
+        SELECT id,  mcp_name, transport_type, transport_config, request_timeout, status, create_time, update_time
+        FROM ai_client_tool_mcp
+        WHERE status = 1
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

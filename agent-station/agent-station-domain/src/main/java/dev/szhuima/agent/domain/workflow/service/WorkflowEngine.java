@@ -1,0 +1,72 @@
+package dev.szhuima.agent.domain.workflow.service;
+
+import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
+import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
+import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
+import dev.szhuima.agent.domain.workflow.service.executor.NodeExecutionResult;
+import dev.szhuima.agent.domain.workflow.service.executor.WorkflowExecutor;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
+
+/**
+ * * @Author: szhuima
+ * * @Date    2025/10/5 17:26
+ * * @Description
+ **/
+@Slf4j
+@Service
+public class WorkflowEngine {
+
+    @Resource
+    private IWorkflowRepository workflowRepository;
+
+    @Resource
+    private IWorkflowInstanceRepository instanceRepository;
+
+    @Resource
+    private WorkflowFactory workflowFactory;
+
+    @Resource
+    private WorkflowExecutor workflowExecutor;
+
+
+    @Resource
+    private ThreadPoolExecutor threadPoolExecutor;
+
+
+
+
+    /**
+     * 异步执行工作流
+     * @param workflowInstance 工作流实例
+     * @param inputParams 输入参数，作为工作流上下文
+     */
+    public void runWorkflowAsync(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
+        CompletableFuture.runAsync(() -> runWorkflow(workflowInstance, inputParams), threadPoolExecutor);
+    }
+
+
+
+
+    /**
+     * 同步执行工作流
+     *
+     * @param workflowInstance 工作流实例
+     * @param inputParams 输入参数，作为工作流上下文
+     * @return 持久化后的工作流实例 DO
+     */
+    public NodeExecutionResult runWorkflow(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
+        //  执行工作流
+        try {
+            return workflowExecutor.execute(workflowInstance,inputParams);
+        } catch (Exception ex) {
+            log.error("工作流执行异常, instanceId={}", workflowInstance.getInstanceId(), ex);
+            throw ex;
+        }
+    }
+}

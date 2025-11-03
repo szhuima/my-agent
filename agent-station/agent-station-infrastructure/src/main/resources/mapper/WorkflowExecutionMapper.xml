@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.agent.infrastructure.mapper.WorkflowExecutionMapper">
+
+    <resultMap id="BaseResultMap" type="dev.szhuima.agent.infrastructure.po.WorkflowExecution">
+            <id property="executionId" column="execution_id" jdbcType="BIGINT"/>
+            <result property="workflowInstanceId" column="workflow_instance_id" jdbcType="BIGINT"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="context" column="context" jdbcType="VARCHAR"/>
+            <result property="errorMessage" column="error_message" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        execution_id,workflow_instance_id,status,
+        start_time,end_time,context,
+        error_message,created_at,updated_at
+    </sql>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.agent.infrastructure.mapper.WorkflowNodeConfigFormMapper">
+
+    <resultMap id="BaseResultMap" type="dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigForm">
+            <id property="configFormId" column="config_form_id" jdbcType="BIGINT"/>
+            <result property="formSchema" column="form_schema" jdbcType="VARCHAR"/>
+            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        config_form_id,form_schema,created_at,
+        updated_at
+    </sql>
+</mapper>

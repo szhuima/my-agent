@@ -1,0 +1,321 @@
+package dev.szhuima.agent.infrastructure.repository;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import dev.szhuima.agent.domain.workflow.model.*;
+import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
+import dev.szhuima.agent.infrastructure.mapper.*;
+import dev.szhuima.agent.infrastructure.po.*;
+import jakarta.annotation.Resource;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
+
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * * @Author: szhuima
+ * * @Date    2025/9/25 10:25
+ * * @Description
+ **/
+@Repository
+public class WorkflowRepository implements IWorkflowRepository {
+
+    @Resource
+    private WorkflowMapper workflowMapper;
+
+    @Resource
+    private WorkflowDslMapper workflowDslMapper;
+
+    @Resource
+    private WorkflowTriggerMapper workflowTriggerMapper;
+
+    @Resource
+    private WorkflowNodeMapper workflowNodeMapper;
+
+    @Resource
+    private WorkflowEdgeMapper workflowEdgeMapper;
+
+    @Resource
+    private WorkflowNodeConfigFormMapper workflowNodeConfigFormMapper;
+
+    @Resource
+    private WorkflowNodeConfigHttpMapper workflowNodeConfigHttpMapper;
+
+    @Resource
+    private WorkflowNodeConfigBatchMapper workflowNodeConfigBatchMapper;
+
+    @Resource
+    private WorkflowNodeConfigLoopMapper workflowNodeConfigLoopMapper;
+
+
+    @Override
+    public Long saveWorkflowDsl(Long workflowId, String dsl) {
+        WorkflowDsl workflowDsl = new WorkflowDsl();
+        workflowDsl.setWorkflowId(workflowId);
+        workflowDsl.setContent(dsl);
+        workflowDsl.setVersion(1);
+        workflowDslMapper.insert(workflowDsl);
+        return workflowId;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long saveWorkflow(WorkflowDO workflowDO) {
+        LambdaQueryWrapper<Workflow> queryWrapper = new LambdaQueryWrapper<Workflow>()
+                .eq(Workflow::getName, workflowDO.getName())
+                .orderByDesc(Workflow::getVersion);
+
+        List<Workflow> oldWorkflowList = workflowMapper.selectList(queryWrapper);
+        Integer version = 1;
+        // 将之前的记录设置为非活动状态
+        if (!oldWorkflowList.isEmpty()) {
+            oldWorkflowList.stream()
+                    .filter(oldWorkflow -> oldWorkflow.getStatus().equals(WorkflowStatus.ACTIVE.getCode()))
+                    .forEach(oldWorkflow -> {
+                        oldWorkflow.setStatus(WorkflowStatus.INACTIVE.getCode());
+                        workflowMapper.updateById(oldWorkflow);
+                    });
+            version = oldWorkflowList.get(0).getVersion() + 1;
+        }
+        Workflow workflow = BeanUtil.copyProperties(workflowDO, Workflow.class, "nodes", "edges");
+        if (workflowDO.getMeta() != null) {
+            workflow.setMetaJson(JSON.toJSONString(workflowDO.getMeta()));
+        }
+        workflow.setVersion(version);
+        workflowMapper.insert(workflow);
+        return workflow.getWorkflowId();
+    }
+
+    @Override
+    public Long saveWorkflowTrigger(WorkflowTriggerDO workflowTriggerDO) {
+        WorkflowTrigger workflowTrigger1 = BeanUtil.copyProperties(workflowTriggerDO, WorkflowTrigger.class);
+        workflowTriggerMapper.insert(workflowTrigger1);
+        return workflowTrigger1.getId();
+    }
+
+    @Override
+    public Long saveWorkflowNode(WorkflowNodeDO workflowNode) {
+        WorkflowNode workflowNode1 = BeanUtil.copyProperties(workflowNode, WorkflowNode.class);
+        workflowNode1.setConditionExpr(workflowNode.getConditionExpr());
+        workflowNodeMapper.insert(workflowNode1);
+        return workflowNode1.getNodeId();
+    }
+
+    @Override
+    public Long saveWorkflowEdge(WorkflowEdgeDO workflowEdge) {
+        WorkflowEdge workflowEdge1 = BeanUtil.copyProperties(workflowEdge, WorkflowEdge.class);
+        workflowEdgeMapper.insert(workflowEdge1);
+        return workflowEdge1.getEdgeId();
+    }
+
+
+    @Override
+    public Long saveFormNodeConfig(WorkflowNodeConfigFormDO nodeConfigFormDO) {
+        WorkflowNodeConfigForm workflowNodeConfigForm = BeanUtil.copyProperties(nodeConfigFormDO, WorkflowNodeConfigForm.class);
+        workflowNodeConfigFormMapper.insert(workflowNodeConfigForm);
+        return workflowNodeConfigForm.getConfigFormId();
+    }
+
+    @Override
+    public WorkflowNodeDO getNodeById(Long nodeId) {
+        WorkflowNode workflowNode = workflowNodeMapper.selectById(nodeId);
+        if (workflowNode == null) {
+            return null;
+        }
+        WorkflowNodeDO workflowNodeDO = new WorkflowNodeDO();
+        BeanUtil.copyProperties(workflowNode, workflowNodeDO,
+                CopyOptions.create()
+                        .setConverter((targetType, value) -> {
+                            if (targetType == NodeType.class) {
+                                return NodeType.valueOf((String) value);
+                            }
+                            return value;
+                        })
+                        .setIgnoreNullValue(true));
+        return workflowNodeDO;
+    }
+
+    @Override
+    public WorkflowNodeConfigHttpDO getHttpConfigNode(Long configId) {
+        WorkflowNodeConfigHttp workflowNodeConfigHttp = workflowNodeConfigHttpMapper.selectById(configId);
+        if (workflowNodeConfigHttp == null) {
+            return null;
+        }
+        WorkflowNodeConfigHttpDO workflowNodeConfigHttpDO = new WorkflowNodeConfigHttpDO();
+        BeanUtil.copyProperties(workflowNodeConfigHttp, workflowNodeConfigHttpDO, CopyOptions.create().setConverter((targetType, value) -> {
+            if (value == null) {
+                return null;
+            }
+
+            Class<?> rawType = null;
+            if (targetType instanceof Class<?>) {
+                rawType = (Class<?>) targetType;
+            } else if (targetType instanceof ParameterizedType) {
+                rawType = (Class<?>) ((ParameterizedType) targetType).getRawType();
+            }
+
+            if (rawType != null) {
+                if (MultiValueMap.class.isAssignableFrom(rawType)) {
+                    return JSON.parseObject((String) value, new TypeReference<MultiValueMap<String, String>>() {
+                    });
+                }
+                if (Map.class.isAssignableFrom(rawType)) {
+                    return JSON.parseObject((String) value, new TypeReference<Map<String, Object>>() {
+                    });
+                }
+            }
+
+            return value;
+        }));
+
+        return workflowNodeConfigHttpDO;
+    }
+
+    @Override
+    public WorkflowNodeConfigBatchDO getBatchConfigNode(Long configId) {
+        WorkflowNodeConfigBatch workflowNodeConfigBatch = workflowNodeConfigBatchMapper.selectById(configId);
+        if (workflowNodeConfigBatch == null) {
+            return null;
+        }
+        WorkflowNodeConfigBatchDO workflowNodeConfigBatchDO = new WorkflowNodeConfigBatchDO();
+        BeanUtil.copyProperties(workflowNodeConfigBatch, workflowNodeConfigBatchDO);
+        return workflowNodeConfigBatchDO;
+    }
+
+    @Override
+    public WorkflowDO getById(Long workflowId) {
+        Workflow workflow = workflowMapper.selectById(workflowId);
+        if (workflow == null) {
+            return null;
+        }
+        List<WorkflowNode> workflowNodes = workflowNodeMapper.selectList(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
+        List<WorkflowEdge> workflowEdgeList = workflowEdgeMapper.selectList(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
+        List<WorkflowTriggerDO> triggerDOList = getTrigger(workflowId, null);
+        List<WorkflowNodeDO> workflowNodeDOList = BeanUtil.copyToList(workflowNodes, WorkflowNodeDO.class, CopyOptions.create().setConverter((targetType, value) -> {
+            if (targetType == NodeType.class) {
+                return NodeType.valueOf((String) value);
+            }
+            if (targetType == Boolean.class || targetType == boolean.class) {
+                // 规则：只有值是 1 才表示 true
+                if (value instanceof Number) {
+                    return ((Number) value).intValue() == 1;
+                }
+                return false;
+            }
+            return value;
+        }));
+
+        List<WorkflowEdgeDO> workflowEdgeDOList = BeanUtil.copyToList(workflowEdgeList, WorkflowEdgeDO.class);
+
+        return WorkflowDO.builder()
+                .workflowId(workflow.getWorkflowId())
+                .name(workflow.getName())
+                .meta(JSON.parseObject(workflow.getMetaJson(), new TypeReference<Map<String, Object>>() {
+                }))
+                .triggers(triggerDOList)
+                .nodes(workflowNodeDOList)
+                .edges(workflowEdgeDOList)
+                .createdAt(workflow.getCreatedAt())
+                .updatedAt(workflow.getUpdatedAt())
+                .build();
+
+    }
+
+    @Override
+    public WorkflowNodeConfigLoopDO getLoopConfigNode(Long workflowId) {
+        WorkflowNodeConfigLoop workflowNodeConfigLoop = workflowNodeConfigLoopMapper.selectById(workflowId);
+        if (workflowNodeConfigLoop == null) {
+            return null;
+        }
+        WorkflowNodeConfigLoopDO workflowNodeConfigLoopDO = new WorkflowNodeConfigLoopDO();
+        BeanUtil.copyProperties(workflowNodeConfigLoop, workflowNodeConfigLoopDO);
+        return workflowNodeConfigLoopDO;
+    }
+
+    @Override
+    public Long saveLoopConfigNode(WorkflowNodeConfigLoopDO loopConfigDO) {
+        WorkflowNodeConfigLoop workflowNodeConfigLoop = new WorkflowNodeConfigLoop();
+        BeanUtil.copyProperties(loopConfigDO, workflowNodeConfigLoop);
+        workflowNodeConfigLoopMapper.insert(workflowNodeConfigLoop);
+        return workflowNodeConfigLoop.getId();
+    }
+
+    @Override
+    public Long saveHttpNodeConfig(WorkflowNodeConfigHttpDO nodeConfigHttpDO) {
+        WorkflowNodeConfigHttp workflowNodeConfigHttp = new WorkflowNodeConfigHttp();
+        BeanUtil.copyProperties(nodeConfigHttpDO, workflowNodeConfigHttp, CopyOptions.create().setConverter((target, value) -> {
+            if (target == MultiValueMap.class) {
+                return JSON.toJSONString(value);
+            }
+            if (target == Map.class) {
+                return JSON.toJSONString(value);
+            }
+            return value;
+        }));
+        workflowNodeConfigHttpMapper.insert(workflowNodeConfigHttp);
+        return workflowNodeConfigHttp.getConfigHttpId();
+    }
+
+    @Override
+    public List<WorkflowTriggerDO> getTrigger(Long workflowId, TriggerType triggerType) {
+        List<WorkflowTrigger> workflowTriggers = workflowTriggerMapper.selectList(new LambdaQueryWrapper<WorkflowTrigger>()
+                .eq(WorkflowTrigger::getWorkflowId, workflowId)
+                .eq(triggerType != null, WorkflowTrigger::getTriggerType, triggerType == null ? null : triggerType.name())
+        );
+        if (workflowTriggers == null) {
+            return null;
+        }
+        List<WorkflowTriggerDO> workflowTriggerDOS = BeanUtil.copyToList(workflowTriggers, WorkflowTriggerDO.class);
+        return workflowTriggerDOS;
+    }
+
+    @Override
+    public WorkflowTriggerDO getTriggerById(Long triggerId) {
+        WorkflowTrigger workflowTrigger = workflowTriggerMapper.selectById(triggerId);
+        if (workflowTrigger == null) {
+            return null;
+        }
+        WorkflowTriggerDO workflowTriggerDO = new WorkflowTriggerDO();
+        BeanUtil.copyProperties(workflowTrigger, workflowTriggerDO);
+        return workflowTriggerDO;
+    }
+
+    @Override
+    public WorkflowDO getWorkflowByName(String workflowName) {
+        Workflow workflow = workflowMapper.selectOne(new LambdaQueryWrapper<Workflow>()
+                .eq(Workflow::getName, workflowName)
+                .eq(Workflow::getStatus, WorkflowStatus.ACTIVE.getCode())
+        );
+        if (workflow == null) {
+            return null;
+        }
+
+        WorkflowDO workflowDO = new WorkflowDO();
+        BeanUtil.copyProperties(workflow, workflowDO);
+        return workflowDO;
+    }
+
+    @Override
+    public void deleteWorkflowByName(String workflowName) {
+        List<Workflow> workflows = workflowMapper.selectList(new LambdaQueryWrapper<Workflow>()
+                .select(Workflow::getWorkflowId)
+                .eq(Workflow::getName, workflowName)
+        );
+        if (workflows.isEmpty()) {
+            return;
+        }
+        List<Long> workflowIdList = workflows.stream().map(Workflow::getWorkflowId).toList();
+        for (Long workflowId : workflowIdList) {
+            workflowNodeMapper.delete(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
+            workflowEdgeMapper.delete(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
+            workflowTriggerMapper.delete(new LambdaQueryWrapper<WorkflowTrigger>().eq(WorkflowTrigger::getWorkflowName, workflowName));
+        }
+        workflowMapper.deleteBatchIds(workflowIdList);
+    }
+}

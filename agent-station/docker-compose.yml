@@ -1,0 +1,24 @@
+services:
+  agent-station-app:
+    image: agent-station-app:1.0-SNAPSHOT
+    container_name: agent-station-app
+    restart: always
+    ports:
+      - "8093:8093"
+    volumes:
+      - /data:/data
+    environment:
+      - TZ=PRC
+      - SERVER_PORT=8093
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - ai-agent-network
+
+networks:
+  ai-agent-network:
+    driver: bridge
+    name: ai-agent-network

@@ -1,0 +1,16 @@
+export enum WorkflowNodeType {
+  Start = 'start',
+  End = 'end',
+  LLM = 'llm',
+  Task = 'task',
+  Agent = 'agent',
+  Model = 'model',
+  Http = 'http',
+  Condition = 'condition',
+  Loop = 'loop',
+  Comment = 'comment',
+  ToolMcp = 'tool_mcp',
+  Client = 'client',
+  Advisor = 'advisor',
+  Prompt = 'prompt',
+}

@@ -355,7 +355,7 @@ sh pipeline.sh
 
 ## 📄 许可证
 
-本项目采用Apache License 2.0许可证。详见 <mcfile name="LICENSE-APACHE.txt" path="/Users/jack/Development/Code/my-agent/LICENSE-APACHE.txt"></mcfile>
+本项目采用Apache License 2.0许可证。
 
 ## 📧 联系我们
 

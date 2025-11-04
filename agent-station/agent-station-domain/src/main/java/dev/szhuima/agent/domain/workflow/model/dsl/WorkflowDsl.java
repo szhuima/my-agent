@@ -9,7 +9,7 @@ import java.util.Map;
 
 // 顶层 DSL
 @Data
-public class WorkflowDslDO {
+public class WorkflowDsl {
 
     private String name;
     private String title;
@@ -33,7 +33,6 @@ public class WorkflowDslDO {
     // HTTP 触发节点
     @Data
     public static class HttpTrigger extends BaseTrigger<HttpTrigger.HttpConfig> {
-//        private HttpConfig config;
 
         @Data
         public static class HttpConfig {
@@ -56,7 +55,6 @@ public class WorkflowDslDO {
     // rabbitmq 触发节点
     @Data
     public static class RabbitmqTrigger extends BaseTrigger<RabbitmqTrigger.RabbitmqConfig> {
-//        private RabbitmqConfig config;
 
         @Data
         public static class RabbitmqConfig {
@@ -77,35 +75,44 @@ public class WorkflowDslDO {
         private String name;
         private String title;
         private String condition;
+        @JSONField(name = "position_x")
         private Integer positionX;
+        @JSONField(name = "position_y")
         private Integer positionY;
-        private Boolean startNode = false;
         private T config;
     }
 
-    // 表单节点
+    // 启动节点
     @Data
-    public static class FormNode extends BaseNode<FormNode.FormConfig> {
-//        private FormConfig config;
+    public static class StartNode extends BaseNode<StartNode.StartConfig> {
 
         @Data
-        public static class FormConfig {
-            private List<Field> fields;
+        public static class StartConfig {
+            // 启动类型：定时调度
+            @JSONField(name = "start_type")
+            private String startType;
 
-            @Data
-            public static class Field {
-                private String key;
-                private String type;
-                private String title;
-            }
+            // 定时表达式
+            @JSONField(name = "cron_expression")
+            private String cronExpression;
+        }
+    }
+
+    // 代码节点
+    @Data
+    public static class CodeNode extends BaseNode<CodeNode.CodeConfig> {
+
+        @Data
+        public static class CodeConfig {
+            private String language;
+            @JSONField(name = "code_content")
+            private String codeContent;
         }
     }
 
     // HTTP 节点
     @Data
     public static class HttpNode extends BaseNode<HttpNode.HttpConfig> {
-//        private HttpConfig config;
-
         @Data
         public static class HttpConfig {
             private String url;
@@ -120,7 +127,6 @@ public class WorkflowDslDO {
     // 批处理 / 遍历 节点
     @Data
     public static class BatchNode extends BaseNode<BatchNode.BatchConfig> {
-//        private BatchConfig config;
 
         @Data
         public static class BatchConfig {
@@ -137,8 +143,6 @@ public class WorkflowDslDO {
     // Agent 节点
     @Data
     public static class AgentNode extends BaseNode<AgentNode.AgentConfig> {
-//        private AgentConfig config;
-
         @Data
         public static class AgentConfig {
             @JSONField(name = "client_id")

@@ -22,7 +22,7 @@ public class Response<T> implements Serializable {
 
     public static Response success(Object data) {
         Response<Object> response = Response.builder()
-                .code(ResponseCode.SUCCESS.getCode())
+                .code(ErrorCode.SUCCESS.getCode())
                 .data(data)
                 .build();
         return response;
@@ -30,13 +30,13 @@ public class Response<T> implements Serializable {
 
     public static Response illegalParameter(String info) {
         return Response.builder()
-                .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                .code(ErrorCode.BIZ_ERROR.getCode())
                 .info(info)
                 .data("")
                 .build();
     }
 
-    public static Response fail(ResponseCode code) {
+    public static Response fail(ErrorCode code) {
         Response<Object> response = Response.builder()
                 .code(code.getCode())
                 .info(code.getInfo())
@@ -44,7 +44,7 @@ public class Response<T> implements Serializable {
         return response;
     }
 
-    public static Response fail(ResponseCode code, String info) {
+    public static Response fail(ErrorCode code, String info) {
         Response<Object> response = Response.builder()
                 .code(code.getCode())
                 .info(info)

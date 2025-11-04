@@ -2,7 +2,6 @@ package dev.szhuima.agent.domain.agent.service.config.handler;
 
 import dev.szhuima.agent.domain.agent.AgentClient;
 import dev.szhuima.agent.domain.agent.model.AgentAssemblyInput;
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientAdvisorVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientToolMcpVO;
 import dev.szhuima.agent.domain.agent.service.config.AbstractAgentAssembler;
@@ -31,37 +30,31 @@ public class AgentConfigLoadHandler extends AbstractAgentAssembler {
         List<Long> clientIdList = param.getClientIdList();
 
         if (clientIdList == null || clientIdList.isEmpty()) {
-            List<Long> allClientIds = repository.queryAiClientIds();
+            List<Long> allClientIds = repository.queryAgentClientIds();
             configClientIdList.addAll(allClientIds);
         } else {
             configClientIdList.addAll(clientIdList);
         }
         CompletableFuture<List<AiClientModelVO>> aiClientModelListFuture = CompletableFuture.supplyAsync(() -> {
-            return repository.queryAiClientModelVOListByClientIds(configClientIdList);
+            return repository.queryClientModelList(configClientIdList);
         }, threadPoolExecutor);
 
         CompletableFuture<List<AiClientToolMcpVO>> aiClientToolMcpListFuture = CompletableFuture.supplyAsync(() -> {
-            return repository.queryAiClientToolMcpVOListByClientIds(configClientIdList);
-        }, threadPoolExecutor);
-
-        CompletableFuture<List<AiClientAdvisorVO>> aiClientAdvisorListFuture = CompletableFuture.supplyAsync(() -> {
-            return repository.queryAdvisorConfigByClientIds(configClientIdList);
+            return repository.queryClientToolList(configClientIdList);
         }, threadPoolExecutor);
 
         CompletableFuture<List<AgentClient>> aiClientListFuture = CompletableFuture.supplyAsync(() -> {
-            return repository.queryAiClientByClientIds(configClientIdList);
+            return repository.queryAgentClient(configClientIdList);
         }, threadPoolExecutor);
 
         CompletableFuture.allOf(aiClientModelListFuture)
                 .thenRun(() -> {
                     List<AiClientModelVO> modelList = aiClientModelListFuture.join();
                     List<AiClientToolMcpVO> clientTools = aiClientToolMcpListFuture.join();
-                    List<AiClientAdvisorVO> advisorList = aiClientAdvisorListFuture.join();
                     List<AgentClient> clientList = aiClientListFuture.join();
 
                     ctx.put(AGENT_CLIENT_MODES_KEY, modelList);
                     ctx.put(AGENT_CLIENT_MCPS_KEY, clientTools);
-                    ctx.put(AGENT_CLIENT_ADVISORS_KEY, advisorList);
                     ctx.put(AGENT_CLIENTS_KEY, clientList);
                 }).join();
         return proceed(ctx, param, HandleResult.keepGoing());

@@ -25,7 +25,7 @@ public interface IWorkflowRepository {
 
     WorkflowNodeDO getNodeById(Long nodeId);
 
-    WorkflowNodeConfigHttpDO getHttpConfigNode(Long configId);
+    WorkflowNodeConfigHttp getHttpConfigNode(Long configId);
 
     WorkflowNodeConfigBatchDO getBatchConfigNode(Long configId);
 
@@ -35,7 +35,7 @@ public interface IWorkflowRepository {
 
     Long saveLoopConfigNode(WorkflowNodeConfigLoopDO loopConfigDO);
 
-    Long saveHttpNodeConfig(WorkflowNodeConfigHttpDO nodeConfigHttpDO);
+    Long saveHttpNodeConfig(WorkflowNodeConfigHttp nodeConfigHttpDO);
 
     List<WorkflowTriggerDO> getTrigger(Long workflowId, TriggerType triggerType);
 

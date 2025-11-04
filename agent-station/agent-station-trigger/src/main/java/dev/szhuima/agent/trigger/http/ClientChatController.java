@@ -6,7 +6,7 @@ import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.ChatMessageRequest;
 import dev.szhuima.agent.api.dto.ChatMessageResponse;
 import dev.szhuima.agent.domain.agent.model.entity.ChatRequest;
-import dev.szhuima.agent.domain.agent.service.chat.ClientChatService;
+import dev.szhuima.agent.domain.agent.service.AgentClientChatService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,13 +26,13 @@ import reactor.core.publisher.Flux;
 public class ClientChatController implements IChatService {
 
     @Resource
-    private ClientChatService clientChatService;
+    private AgentClientChatService agentClientChatService;
 
     @PostMapping("/clear-memory/{clientId}/{sessionId}")
     public Response<Boolean> clearMemory(@PathVariable("clientId") Long clientId,
                                          @PathVariable("sessionId") String sessionId) {
         log.info("clear memory for clientId: {}, sessionId: {}", clientId, sessionId);
-        clientChatService.clearMemory(clientId, sessionId);
+        agentClientChatService.clearMemory(clientId, sessionId);
         return Response.success(true);
     }
 
@@ -49,7 +49,7 @@ public class ClientChatController implements IChatService {
             throw new IllegalArgumentException("非法参数");
         }
         ChatRequest chatRequest = BeanUtil.copyProperties(request, ChatRequest.class);
-        String res = clientChatService.noneStreamChat(chatRequest);
+        String res = agentClientChatService.noneStreamChat(chatRequest);
         ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                 .sessionId(request.getSessionId())
                 .content(res)
@@ -69,7 +69,7 @@ public class ClientChatController implements IChatService {
             throw new IllegalArgumentException("非法参数");
         }
         ChatRequest chatRequest = BeanUtil.copyProperties(request, ChatRequest.class);
-        Flux<String> stringFlux = clientChatService.streamChat(chatRequest);
+        Flux<String> stringFlux = agentClientChatService.streamChat(chatRequest);
         return stringFlux;
     }
 
@@ -88,7 +88,7 @@ public class ClientChatController implements IChatService {
                 || StringUtils.isEmpty(request.getUserMessage())) {
             throw new IllegalArgumentException("非法参数");
         }
-        String res = clientChatService.simpleChat(request.getClientId(), request.getUserMessage());
+        String res = agentClientChatService.simpleChat(request.getClientId(), request.getUserMessage());
 
         ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                 .sessionId(request.getSessionId())
@@ -111,7 +111,7 @@ public class ClientChatController implements IChatService {
                 || StringUtils.isEmpty(request.getSessionId())) {
             throw new IllegalArgumentException("非法参数");
         }
-        String res = clientChatService.memoryChat(request.getClientId(), request.getUserMessage(), request.getSessionId());
+        String res = agentClientChatService.memoryChat(request.getClientId(), request.getUserMessage(), request.getSessionId());
 
         ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                 .sessionId(request.getSessionId())
@@ -128,7 +128,7 @@ public class ClientChatController implements IChatService {
                 || request.getRagId() == null) {
             throw new IllegalArgumentException("非法参数");
         }
-        String res = clientChatService.ragChat(request.getClientId(), request.getUserMessage(), request.getRagId());
+        String res = agentClientChatService.ragChat(request.getClientId(), request.getUserMessage(), request.getRagId());
 
         ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                 .sessionId(request.getSessionId())

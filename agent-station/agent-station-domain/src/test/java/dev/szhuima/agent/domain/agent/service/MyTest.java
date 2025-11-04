@@ -1,7 +1,7 @@
 package dev.szhuima.agent.domain.agent.service;
 
 import com.googlecode.aviator.AviatorEvaluator;
-import dev.szhuima.agent.domain.workflow.service.executor.HttpCallNodeExecutor;
+import dev.szhuima.agent.domain.workflow.service.executor.HttpNodeExecutor;
 import org.junit.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -45,7 +45,7 @@ public class MyTest {
                 """;
         Map<String, Object> root = Map.of("keywords", "Jobs", "city", "北京");
         Map<String, Map<String, Object>> context = Map.of("root", root);
-        String rendered = new HttpCallNodeExecutor(WebClient.builder()).render(template, context);
+        String rendered = new HttpNodeExecutor(WebClient.builder()).render(template, context);
         System.out.println(rendered);
     }
 }

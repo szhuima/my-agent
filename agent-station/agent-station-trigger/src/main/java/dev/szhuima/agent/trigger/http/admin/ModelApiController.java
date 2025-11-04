@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientModelAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AiClientModelQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientModelRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientModelResponseDTO;
@@ -65,8 +65,8 @@ public class ModelApiController extends BaseController implements IAiClientModel
         int result = aiClientModelDao.insert(aiClientModel);
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -78,7 +78,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
 
         if (request.getId() == null) {
             return Response.<Boolean>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("ID不能为空")
                     .data(false)
                     .build();
@@ -106,8 +106,8 @@ public class ModelApiController extends BaseController implements IAiClientModel
         }
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -122,15 +122,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
             int result = aiClientModelDao.deleteById(id);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID删除AI客户端模型配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -145,15 +145,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
             int result = aiClientModelDao.deleteById(modelId);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据模型ID删除AI客户端模型配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -169,7 +169,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
 
             if (aiClientModel == null) {
                 return Response.<AiClientModelResponseDTO>builder()
-                        .code(ResponseCode.UN_ERROR.getCode())
+                        .code(ErrorCode.UN_ERROR.getCode())
                         .info("未找到对应的AI客户端模型配置")
                         .data(null)
                         .build();
@@ -179,15 +179,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
             AiClientModelResponseDTO responseDTO = convertToAiClientModelResponseDTO(aiClientModel);
 
             return Response.<AiClientModelResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询AI客户端模型配置失败", e);
             return Response.<AiClientModelResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -203,7 +203,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
 
             if (aiClientModel == null) {
                 return Response.<AiClientModelResponseDTO>builder()
-                        .code(ResponseCode.UN_ERROR.getCode())
+                        .code(ErrorCode.UN_ERROR.getCode())
                         .info("未找到对应的AI客户端模型配置")
                         .data(null)
                         .build();
@@ -213,15 +213,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
             AiClientModelResponseDTO responseDTO = convertToAiClientModelResponseDTO(aiClientModel);
 
             return Response.<AiClientModelResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据模型ID查询AI客户端模型配置失败", e);
             return Response.<AiClientModelResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -275,15 +275,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据模型类型查询AI客户端模型配置列表失败", e);
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -306,15 +306,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有启用的AI客户端模型配置失败", e);
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -355,15 +355,15 @@ public class ModelApiController extends BaseController implements IAiClientModel
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有AI客户端模型配置失败", e);
             return Response.<List<AiClientModelResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }

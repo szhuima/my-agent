@@ -12,8 +12,8 @@ import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 public interface WorkflowExecutorRouter {
 
     default WorkflowNodeExecutor getExecutor(WorkflowNodeDO node) {
-        if (node.getType() == NodeType.HTTP_CALL) {
-            return SpringBeanUtils.getBean(HttpCallNodeExecutor.class);
+        if (node.getType() == NodeType.HTTP) {
+            return SpringBeanUtils.getBean(HttpNodeExecutor.class);
         } else if (node.getType() == NodeType.AGENT) {
             return SpringBeanUtils.getBean(AgentNodeExecutor.class);
         } else if (node.getType() == NodeType.BATCH) {

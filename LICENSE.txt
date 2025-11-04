@@ -1,0 +1,46 @@
+Copyright (c) 2025 szhuima
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to use,
+copy, modify, and distribute the Software for **personal, educational, or research purposes only**,
+subject to the following conditions:
+
+1. The Software **may not be used for commercial purposes** without prior written permission
+   from the copyright holder. “Commercial purposes” include but are not limited to:
+   - Selling or licensing the Software or derivative works.
+   - Using the Software in any product or service for which payment is received.
+   - Using the Software within a company or organization for profit-making activities.
+
+2. The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+
+3. THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+   AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------
+
+版权所有 (c) 2025 szhuima
+
+特此免费授权任何获得本软件及相关文档文件（“软件”）副本的个人，
+在满足以下条件的前提下，使用、复制、修改和分发本软件，用于
+**个人学习、教育或研究目的**：
+
+1. **未经作者书面许可，禁止将本软件用于商业用途**，
+   “商业用途”包括但不限于：
+   - 销售、转售或授权本软件或其衍生作品；
+   - 将本软件用于任何收费产品或服务；
+   - 在盈利性机构、公司项目或商业活动中使用。
+
+2. 在所有软件副本或重要部分中，必须包含上述版权声明和本许可声明。
+
+3. 本软件按“原样”提供，不提供任何明示或暗示的保证，包括但不限于
+   适销性、特定用途适用性和非侵权的保证。无论在合同、侵权行为或其他情况下，
+   作者或版权持有人均不对因软件或软件使用引起的任何索赔、损害或其他责任负责。
+
+------------------------------------------------------
+
+For commercial licensing, please contact:
+📧 szhuima@gmail.com

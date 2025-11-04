@@ -1,44 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Layout,
-  Table,
-  Button,
-  Input,
-  Space,
-  Typography,
-  Toast,
-  Tag,
-  Popconfirm,
-  Card,
-  Modal,
-  TextArea,
-} from "@douyinfe/semi-ui";
-import {
-  IconSearch,
-  IconPlus,
-  IconEyeOpened,
-  IconEdit,
-  IconDelete,
-  IconExport,
-  IconImport,
-} from "@douyinfe/semi-icons";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {Button, Card, Input, Layout, Popconfirm, Space, Table, Tag, Toast, Typography,} from "@douyinfe/semi-ui";
+import {IconDelete, IconEdit, IconExport, IconImport, IconPlus, IconSearch,} from "@douyinfe/semi-icons";
 import styled from "styled-components";
-import { theme } from "../styles/theme";
-import { Sidebar, Header } from "../components/layout";
-import {
-  WorkflowService,
-  WorkflowResponseDTO,
-  WorkflowQueryRequestDTO,
-  PageDTO,
-} from "../services/workflow-service";
+import {theme} from "../styles/theme";
+import {Header, Sidebar} from "../components/layout";
+import {PageDTO, WorkflowQueryRequestDTO, WorkflowResponseDTO, WorkflowService,} from "../services/workflow-service";
 import useHandleNavigation from "../utils/useHandleNavigation";
-
-import { AiAgentService } from "../services/ai-agent-service";
-
-import MonacoEditor from "react-monaco-editor";
 import yaml from "js-yaml";
 import WorkflowDslModal from "../components/WorkflowDslModal";
+
 const { Content } = Layout;
 const { Title } = Typography;
 
@@ -357,10 +328,6 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
       await loadData();
       Toast.success("导入工作流成功");
     } catch (error) {
-      console.error("导入失败", error);
-      Toast.error(
-        `导入工作流失败: ${error instanceof Error ? error.message : "未知错误"}`
-      );
     } finally {
       // 清空 input 值，以便下一次选择同一个文件也能触发 onChange
       e.target.value = "";

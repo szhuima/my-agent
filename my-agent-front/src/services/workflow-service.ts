@@ -1,9 +1,9 @@
 /**
  * 工作流服务
  */
-import { API_ENDPOINTS, DEFAULT_HEADERS, TEXT_REQ_HEADERS } from '../config/api';
-import { apiRequestData } from '../utils/request';
-import { PageDTO } from '../typings/page';
+import {API_ENDPOINTS, DEFAULT_HEADERS, TEXT_REQ_HEADERS} from '../config/api';
+import {apiRequestData} from '../utils/request';
+import {PageDTO} from '../typings/page';
 
 export type { PageDTO } from '../typings/page';
 
@@ -107,21 +107,16 @@ export class WorkflowService {
     }
   }
 
-  static async importWorkflow(dslContent: string): Promise<number> {  
-    try {
-      const data = await apiRequestData<number>(
+  static async importWorkflow(dslContent: string): Promise<number> {
+    const data = await apiRequestData<number>(
         `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.IMPORT}`,
         {
           method: 'POST',
           headers: TEXT_REQ_HEADERS,
           body: dslContent,
         }
-      );
-      return data;
-    } catch (error) {
-      console.error('导入工作流失败:', error);
-      throw error;
-    }
+    );
+    return data;
   }
 
 

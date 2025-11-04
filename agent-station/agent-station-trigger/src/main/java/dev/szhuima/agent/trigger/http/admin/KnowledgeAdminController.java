@@ -2,13 +2,13 @@ package dev.szhuima.agent.trigger.http.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientRagOrderAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AiClientRagOrderQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRagOrderRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRagOrderResponseDTO;
-import dev.szhuima.agent.domain.agent.service.IRagService;
+import dev.szhuima.agent.domain.knowledge.IKnowledgeService;
 import dev.szhuima.agent.infrastructure.mapper.AiKnowledgeMapper;
 import dev.szhuima.agent.infrastructure.po.AiKnowledge;
 import jakarta.annotation.Resource;
@@ -38,7 +38,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
     private AiKnowledgeMapper aiClientRagOrderDao;
 
     @Resource
-    private IRagService ragService;
+    private IKnowledgeService ragService;
 
     @Override
     @PostMapping("/create")
@@ -54,15 +54,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             int result = aiClientRagOrderDao.insert(aiClientRagOrder);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("创建知识库配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -76,7 +76,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
 
             if (request.getId() == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("ID不能为空")
                         .data(false)
                         .build();
@@ -89,15 +89,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             int result = aiClientRagOrderDao.updateById(aiClientRagOrder);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID更新知识库配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -115,8 +115,8 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
         ragService.deleteKnowledge(id);
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(true)
                 .build();
     }
@@ -130,15 +130,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             int result = aiClientRagOrderDao.deleteById(ragId);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据知识库ID删除知识库配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -153,8 +153,8 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             AiKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(id);
             if (aiClientRagOrder == null) {
                 return Response.<AiClientRagOrderResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -162,15 +162,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             AiClientRagOrderResponseDTO responseDTO = convertToAiClientRagOrderResponseDTO(aiClientRagOrder);
 
             return Response.<AiClientRagOrderResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询知识库配置失败", e);
             return Response.<AiClientRagOrderResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -185,8 +185,8 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             AiKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(ragId);
             if (aiClientRagOrder == null) {
                 return Response.<AiClientRagOrderResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -194,15 +194,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             AiClientRagOrderResponseDTO responseDTO = convertToAiClientRagOrderResponseDTO(aiClientRagOrder);
 
             return Response.<AiClientRagOrderResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据知识库ID查询知识库配置失败", e);
             return Response.<AiClientRagOrderResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -223,15 +223,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询启用的知识库配置失败", e);
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -250,15 +250,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据知识标签查询知识库配置失败", e);
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -278,15 +278,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据状态查询知识库配置失败", e);
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -337,15 +337,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("分页查询知识库配置列表失败", e);
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -363,15 +363,15 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有知识库配置失败", e);
             return Response.<List<AiClientRagOrderResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }

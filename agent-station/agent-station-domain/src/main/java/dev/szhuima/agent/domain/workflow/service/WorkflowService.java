@@ -1,9 +1,11 @@
 package dev.szhuima.agent.domain.workflow.service;
 
-import dev.szhuima.agent.domain.workflow.model.TriggerType;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowTriggerDO;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import dev.szhuima.agent.domain.support.exception.BizException;
+import dev.szhuima.agent.domain.support.service.DynamicTaskService;
+import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import dev.szhuima.agent.domain.workflow.service.executor.WorkflowExecutor;
@@ -11,6 +13,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -38,6 +41,10 @@ public class WorkflowService {
     @Resource
     private ThreadPoolExecutor threadPoolExecutor;
 
+    @Resource
+    private DynamicTaskService dynamicTaskService;
+
+
 
     /**
      * 部署工作流, 创建工作流实例
@@ -57,25 +64,20 @@ public class WorkflowService {
         // 持久化工作流实例
         instanceRepository.saveInstance(workflowInstance);
 
-//        List<WorkflowTriggerDO> triggers = workflowDO.getTriggers();
-//        if (!Collections.isEmpty(triggers)) {
-//            Optional<WorkflowTriggerDO> triggerOptional = triggers.stream().filter(trigger -> trigger.getTriggerType() == TriggerType.RABBITMQ).findFirst();
-//            if (triggerOptional.isPresent()) {
-//                //
-//                WorkflowTriggerDO workflowTriggerDO = triggerOptional.get();
-//                rabbitMQTriggerService.deployTrigger(workflowInstance.getInstanceId(), workflowTriggerDO, workflowInstance);
-//
-//                WorkflowInstanceTriggerDO triggerDO = WorkflowInstanceTriggerDO.builder()
-//                        .workflowInstanceId(workflowInstance.getInstanceId())
-//                        .workflowTriggerId(workflowTriggerDO.getId())
-//                        .status(WorkflowInstanceTriggerDO.Status.RUNNING.name())
-//                        .triggerType(workflowTriggerDO.getTriggerType().name())
-//                        .lastStartedTime(LocalDateTime.now())
-//                        .enabled(1)
-//                        .build();
-//                instanceRepository.saveInstanceTrigger(triggerDO);
-//            }
-//        }
+        WorkflowNodeDO startNode = workflowInstance.findStartNode();
+        String configJson = startNode.getConfigJson();
+        if (StrUtil.isNotEmpty(configJson)) {
+            WorkflowStartNodeConfig startNodeConfig = JSON.parseObject(configJson, WorkflowStartNodeConfig.class, JSONReader.Feature.SupportSmartMatch);
+            WorkflowStartType startType = startNodeConfig.getStartType();
+            String cronExpression = startNodeConfig.getCronExpression();
+            if (WorkflowStartType.CRON.equals(startType)) {
+                if (StrUtil.isNotEmpty(cronExpression)) {
+                    String taskId = String.valueOf(workflowInstance.getInstanceId());
+                    dynamicTaskService.startTask(taskId, cronExpression, () -> workflowExecutor.execute(workflowInstance, new HashMap<>()));
+                }
+            }
+        }
+
         log.info("【{}】 工作流已部署, instanceId={}", workflowDO.getName(), workflowInstance.getInstanceId());
         return workflowInstance.getInstanceId();
     }
@@ -87,18 +89,12 @@ public class WorkflowService {
             workflowDO = workflowFactory.parseDSL(workflowDSL);
         } catch (Exception e) {
             log.error("工作流配置解析错误, workflowDSL={}", workflowDSL, e);
-            throw new IllegalArgumentException("工作流配置解析错误");
+            throw BizException.of("工作流配置解析错误");
         }
         Long workflowId = workflowRepository.saveWorkflow(workflowDO);
         workflowRepository.saveWorkflowDsl(workflowId, workflowDSL);
         workflowDO.getNodes().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowNode);
         workflowDO.getEdges().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowEdge);
-        WorkflowDO finalWorkflowDO = workflowDO;
-        workflowDO.getTriggers().stream().peek((w) -> {
-                    w.setWorkflowName(finalWorkflowDO.getName());
-                    w.setWorkflowId(workflowId);
-                })
-                .forEach(workflowRepository::saveWorkflowTrigger);
         log.info("Workflow saved, workflowName={}, workflowId={}", workflowDO.getName(), workflowId);
         return workflowId;
     }

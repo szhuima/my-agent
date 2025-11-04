@@ -41,7 +41,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
         // 保存工作流执行
         persistWorkflowExecution(workflowExecutionDO);
 
-        WorkflowNodeDO current = workflow.findStartNode();
+        WorkflowNodeDO current = instance.findBeginNode();
         NodeExecutionResult nodeExecResult = null;
         while (current != null) {
             try {

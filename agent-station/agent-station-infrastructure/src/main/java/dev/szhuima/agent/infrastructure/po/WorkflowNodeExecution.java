@@ -48,7 +48,7 @@ public class WorkflowNodeExecution {
     /**
      * 
      */
-    @TableField(value = "output")
+    @TableField(value = "`output`")
     private String output;
 
     /**

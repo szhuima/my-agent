@@ -8,7 +8,7 @@ import lombok.Data;
  * * @Description
  **/
 @Data
-public class WorkflowNodeConfigAgentDO {
+public class WorkflowNodeAgentConfig {
 
     private Long clientId;
 

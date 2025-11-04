@@ -1,39 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  Toast,
-  Space,
-  TextArea,
-  InputNumber
-} from '@douyinfe/semi-ui';
-import { 
-  aiClientAdminService, 
-  AiClientRequestDTO,
-  AiClientResponseDTO 
-} from '../services/ai-client-admin-service';
-import {
-  aiClientApiAdminService,
-  AiClientApiResponseDTO,
-} from '../services/model-api-service';
-import {
-  aiClientAdvisorAdminService,
-  AiClientAdvisorResponseDTO,
-} from '../services/ai-client-advisor-admin-service';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, InputNumber, Modal, Select, Space, TextArea, Toast} from '@douyinfe/semi-ui';
+import {aiClientAdminService, AiClientRequestDTO, AiClientResponseDTO} from '../services/ai-client-admin-service';
+import {aiClientApiAdminService, AiClientApiResponseDTO,} from '../services/model-api-service';
 
-import {
-  aiClientToolMcpAdminService,
-  AiClientToolMcpQueryRequestDTO,
-  AiClientToolMcpResponseDTO,
-  AiClientToolMcpRequestDTO,
-} from "../services/ai-client-tool-mcp-admin-service";
 
-import {
-  aiClientRagOrderAdminService,
-  AiClientRagOrderResponseDTO,
-} from "../services/knowledge-admin-service";
+import {aiClientToolMcpAdminService, AiClientToolMcpResponseDTO,} from "../services/ai-client-tool-mcp-admin-service";
+
+import {aiClientRagOrderAdminService, AiClientRagOrderResponseDTO,} from "../services/knowledge-admin-service";
 
 interface ClientEditModalProps {
   visible: boolean;
@@ -85,7 +58,6 @@ export const ClientEditModal: React.FC<ClientEditModalProps> = ({
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [models, setModels] = useState<AiClientApiResponseDTO[]>([]);
-  const [advisors, setAdvisors] = useState<AiClientAdvisorResponseDTO[]>([]);
   const [mcpTools, setMcpTools] = useState<AiClientToolMcpResponseDTO[]>([]);
   const [knowledges, setKnowledges] = useState<AiClientRagOrderResponseDTO[]>([]);
 
@@ -116,12 +88,6 @@ export const ClientEditModal: React.FC<ClientEditModalProps> = ({
     }
   };
 
-  const fetchAdvisors = async () => {
-    const advisorResponse = await aiClientAdvisorAdminService.queryEnabledAdvisors();
-    if (advisorResponse.code === "0000" && advisorResponse.data) {
-      setAdvisors(advisorResponse.data);
-    }
-  };
 
   const fetchMcpTools = async () => {
     const toolResponse = await aiClientToolMcpAdminService.queryEnabledAiClientToolMcps();
@@ -139,7 +105,6 @@ export const ClientEditModal: React.FC<ClientEditModalProps> = ({
 
   useEffect(() => {
     fetchModelApis();
-    fetchAdvisors();
     fetchMcpTools();
     fetchKnowledges();
   }, []);

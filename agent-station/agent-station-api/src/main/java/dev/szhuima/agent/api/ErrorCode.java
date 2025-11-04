@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public enum ResponseCode {
+public enum ErrorCode {
 
     SUCCESS("0000", "成功"),
     UN_ERROR("0001", "未知失败"),
-    ILLEGAL_PARAMETER("0002", "非法参数"),
+    BIZ_ERROR("0002", "业务失败"),
     LOGIN_FAILED("0003", "登录失败"),
-
     ;
 
     private String code;

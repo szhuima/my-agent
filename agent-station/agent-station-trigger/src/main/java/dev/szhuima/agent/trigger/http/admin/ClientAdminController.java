@@ -5,9 +5,9 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AiClientQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientResponseDTO;
@@ -142,8 +142,8 @@ public class ClientAdminController implements IAiClientAdminService {
         });
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -156,7 +156,7 @@ public class ClientAdminController implements IAiClientAdminService {
 
         if (request.getId() == null) {
             return Response.<Boolean>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("ID不能为空")
                     .data(false)
                     .build();
@@ -230,8 +230,8 @@ public class ClientAdminController implements IAiClientAdminService {
         });
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -244,7 +244,7 @@ public class ClientAdminController implements IAiClientAdminService {
 
             if (request.getId() == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("客户端ID不能为空")
                         .data(false)
                         .build();
@@ -257,15 +257,15 @@ public class ClientAdminController implements IAiClientAdminService {
             int result = aiClientMapper.updateById(aiClient);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据客户端ID更新AI客户端配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -280,15 +280,15 @@ public class ClientAdminController implements IAiClientAdminService {
             int result = aiClientMapper.deleteById(id);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID删除AI客户端配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -303,15 +303,15 @@ public class ClientAdminController implements IAiClientAdminService {
             int result = aiClientMapper.deleteByClientId(clientId);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据客户端ID删除AI客户端配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -327,7 +327,7 @@ public class ClientAdminController implements IAiClientAdminService {
 
             if (aiClient == null) {
                 return Response.<AiClientResponseDTO>builder()
-                        .code(ResponseCode.UN_ERROR.getCode())
+                        .code(ErrorCode.UN_ERROR.getCode())
                         .info("未找到对应的AI客户端配置")
                         .data(null)
                         .build();
@@ -337,15 +337,15 @@ public class ClientAdminController implements IAiClientAdminService {
             AiClientResponseDTO responseDTO = convertToAiClientResponseDTO(aiClient);
 
             return Response.<AiClientResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询AI客户端配置失败", e);
             return Response.<AiClientResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -361,7 +361,7 @@ public class ClientAdminController implements IAiClientAdminService {
 
             if (aiClient == null) {
                 return Response.<AiClientResponseDTO>builder()
-                        .code(ResponseCode.UN_ERROR.getCode())
+                        .code(ErrorCode.UN_ERROR.getCode())
                         .info("未找到对应的AI客户端配置")
                         .data(null)
                         .build();
@@ -371,15 +371,15 @@ public class ClientAdminController implements IAiClientAdminService {
             AiClientResponseDTO responseDTO = convertToAiClientResponseDTO(aiClient);
 
             return Response.<AiClientResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据客户端ID查询AI客户端配置失败", e);
             return Response.<AiClientResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -398,15 +398,15 @@ public class ClientAdminController implements IAiClientAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有启用的AI客户端配置失败", e);
             return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -475,8 +475,8 @@ public class ClientAdminController implements IAiClientAdminService {
                 .collect(Collectors.toList());
 
         return Response.<List<AiClientResponseDTO>>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(responseDTOs)
                 .build();
     }
@@ -494,15 +494,15 @@ public class ClientAdminController implements IAiClientAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有AI客户端配置失败", e);
             return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }

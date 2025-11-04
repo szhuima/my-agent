@@ -1,5 +1,6 @@
 package dev.szhuima.agent.domain.workflow.model;
 
+import dev.szhuima.agent.domain.support.exception.BizException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,7 +44,7 @@ public class WorkflowDO {
 
     public WorkflowDO(Long id, String name, List<WorkflowNodeDO> nodeList, List<WorkflowEdgeDO> edges) {
         if (nodeList == null || edges == null) {
-            throw new IllegalArgumentException("nodeList and edges must not be null");
+            throw BizException.of("节点和边不能为空");
         }
         this.workflowId = id;
         this.name = name;
@@ -54,9 +55,9 @@ public class WorkflowDO {
     // 获取起始节点
     public WorkflowNodeDO findStartNode() {
         return nodes.stream()
-                .filter(WorkflowNodeDO::isStartNode)
+                .filter((node) -> node.getType() == NodeType.START)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No start node"));
+                .orElseThrow(() -> BizException.of("没有启动节点"));
     }
 
     public WorkflowNodeDO findNodeByName(String name) {

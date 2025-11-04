@@ -2,7 +2,7 @@ package dev.szhuima.agent.domain.workflow.service;
 
 import com.alibaba.fastjson.JSON;
 import dev.szhuima.agent.domain.workflow.model.*;
-import dev.szhuima.agent.domain.workflow.model.dsl.WorkflowDslDO;
+import dev.szhuima.agent.domain.workflow.model.dsl.WorkflowDsl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,41 +38,29 @@ public class WorkflowFactory {
     }
 
 
-    public WorkflowDO parseDSL(String workflowDSL) {
-        WorkflowDslDO workflowDslDO = WorkflowDslParser.parseFromYaml(workflowDSL);
-
-        List<WorkflowDslDO.BaseTrigger<?>> triggers = workflowDslDO.getTriggers();
-        List<WorkflowTriggerDO> workflowTriggerDOList = new ArrayList<>();
-        for (WorkflowDslDO.BaseTrigger<?> trigger : triggers) {
-            WorkflowTriggerDO workflowTriggerDO = new WorkflowTriggerDO();
-            workflowTriggerDO.setTriggerType(trigger.getTriggerType());
-            workflowTriggerDO.setConfig(JSON.toJSONString(trigger.getConfig()));
-            workflowTriggerDOList.add(workflowTriggerDO);
-        }
-
+    public WorkflowDO parseDSL(String workflowDSL) throws Exception {
+        WorkflowDsl workflowDsl = WorkflowDslParser.parseFromYaml(workflowDSL);
         WorkflowDO workflowDO = new WorkflowDO();
-        workflowDO.setTriggers(workflowTriggerDOList);
-        workflowDO.setName(workflowDslDO.getName());
-        workflowDO.setMeta(workflowDslDO.getMeta());
-        List<WorkflowDslDO.BaseNode<?>> nodes = workflowDslDO.getNodes();
+        workflowDO.setName(workflowDsl.getName());
+        workflowDO.setMeta(workflowDsl.getMeta());
+        List<WorkflowDsl.BaseNode<?>> nodes = workflowDsl.getNodes();
         List<WorkflowNodeDO> workflowNodeDOList = new ArrayList<>();
         for (int i = 0; i < nodes.size(); i++) {
-            WorkflowDslDO.BaseNode<?> node = nodes.get(i);
+            WorkflowDsl.BaseNode<?> node = nodes.get(i);
             WorkflowNodeDO workflowNodeDO = new WorkflowNodeDO();
             workflowNodeDO.setName(node.getName());
-            workflowNodeDO.setType(NodeType.valueOf(node.getType()));
+            workflowNodeDO.setType(NodeType.fromType(node.getType()));
             workflowNodeDO.setConfigJson(JSON.toJSONString(node.getConfig()));
             workflowNodeDO.setConditionExpr(node.getCondition());
             workflowNodeDO.setPositionX(node.getPositionX());
             workflowNodeDO.setPositionY(node.getPositionY());
-            workflowNodeDO.setStartNode(i == 0); // 第一个节点为起始节点
             workflowNodeDOList.add(workflowNodeDO);
         }
         workflowDO.setNodes(workflowNodeDOList);
 
-        List<WorkflowDslDO.Edge> edges = workflowDslDO.getEdges();
+        List<WorkflowDsl.Edge> edges = workflowDsl.getEdges();
         List<WorkflowEdgeDO> workflowEdgeDOList = new ArrayList<>();
-        for (WorkflowDslDO.Edge edge : edges) {
+        for (WorkflowDsl.Edge edge : edges) {
             WorkflowEdgeDO workflowEdgeDO = new WorkflowEdgeDO();
             workflowEdgeDO.setFromNodeName(edge.getFrom());
             workflowEdgeDO.setToNodeName(edge.getTo());

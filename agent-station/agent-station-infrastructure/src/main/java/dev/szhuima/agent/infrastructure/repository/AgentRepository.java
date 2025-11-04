@@ -7,17 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.szhuima.agent.domain.agent.AgentClient;
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientAdvisorVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientToolMcpVO;
 import dev.szhuima.agent.domain.agent.model.valobj.Knowledge;
-import dev.szhuima.agent.domain.agent.model.valobj.enums.AdvisorType;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
 import dev.szhuima.agent.infrastructure.mapper.*;
 import dev.szhuima.agent.infrastructure.po.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
@@ -50,9 +47,6 @@ public class AgentRepository implements IAgentRepository {
     private AiClientToolConfigMapper aiClientToolConfigDao;
 
     @Resource
-    private AiClientAdvisorMapper aiClientAdvisorDao;
-
-    @Resource
     private AiClientAdvisorConfigMapper aiClientAdvisorConfigDao;
 
     @Resource
@@ -62,7 +56,7 @@ public class AgentRepository implements IAgentRepository {
     private AiClientKnowledgeConfigMapper aiClientKnowledgeConfigMapper;
 
     @Override
-    public List<AiClientModelVO> queryAiClientModelVOListByClientIds(List<Long> clientIdList) {
+    public List<AiClientModelVO> queryClientModelList(List<Long> clientIdList) {
         // 根据客户端ID列表查询模型配置
         LambdaQueryWrapper<AiClient> clientWrapper = Wrappers.lambdaQuery(AiClient.class)
                 .in(CollectionUtil.isNotEmpty(clientIdList), AiClient::getId, clientIdList)
@@ -97,7 +91,7 @@ public class AgentRepository implements IAgentRepository {
     }
 
     @Override
-    public List<AiClientToolMcpVO> queryAiClientToolMcpVOListByClientIds(List<Long> clientIdList) {
+    public List<AiClientToolMcpVO> queryClientToolList(List<Long> clientIdList) {
         List<AiClientToolMcp> aiClientToolMcps = aiClientToolMcpDao.queryMcpConfigByClientIds(clientIdList);
 
         // 将PO对象转换为VO对象
@@ -140,41 +134,7 @@ public class AgentRepository implements IAgentRepository {
     }
 
     @Override
-    public List<AiClientAdvisorVO> queryAdvisorConfigByClientIds(List<Long> clientIdList) {
-        List<AiClientAdvisor> aiClientAdvisors = aiClientAdvisorDao.queryAdvisorConfigByClientIds(clientIdList);
-
-        if (null == aiClientAdvisors || aiClientAdvisors.isEmpty()) return Collections.emptyList();
-
-        return aiClientAdvisors.stream().map(advisor -> {
-            AiClientAdvisorVO vo = AiClientAdvisorVO.builder()
-                    .id(advisor.getId())
-                    .advisorName(advisor.getAdvisorName())
-                    .advisorType(advisor.getAdvisorType())
-                    .orderNum(advisor.getOrderNum())
-                    .build();
-
-            // 根据 advisorType 类型转换 extParam
-            if (StringUtils.isNotEmpty(advisor.getExtParam())) {
-                try {
-                    if (AdvisorType.CHAT_MEMORY.name().equals(advisor.getAdvisorType())) {
-                        AiClientAdvisorVO.ChatMemory chatMemory = JSON.parseObject(advisor.getExtParam(), AiClientAdvisorVO.ChatMemory.class);
-                        vo.setChatMemory(chatMemory);
-                    } else if (AdvisorType.RAG_ANSWER.name().equals(advisor.getAdvisorType())) {
-                        AiClientAdvisorVO.RagAnswer ragAnswer = JSON.parseObject(advisor.getExtParam(), AiClientAdvisorVO.RagAnswer.class);
-                        vo.setRagAnswer(ragAnswer);
-                    }
-                } catch (Exception e) {
-                    log.error("解析 extParam 失败，advisorId={}，extParam={}", advisor.getId(), advisor.getExtParam(), e);
-                }
-            }
-
-            return vo;
-        }).collect(Collectors.toList());
-    }
-
-
-    @Override
-    public List<AgentClient> queryAiClientByClientIds(List<Long> clientIdList) {
+    public List<AgentClient> queryAgentClient(List<Long> clientIdList) {
         if (null == clientIdList || clientIdList.isEmpty()) {
             return Collections.emptyList();
         }
@@ -196,8 +156,6 @@ public class AgentRepository implements IAgentRepository {
                 .in(AiClientKnowledgeConfig::getClientId, clientIdList));
         Map<Long, List<AiClientKnowledgeConfig>> knowledgeConfigMap = knowledgeConfigs.stream()
                 .collect(Collectors.groupingBy(AiClientKnowledgeConfig::getClientId));
-
-//        aiClientKnowledgeConfigMapper
 
         // 构建AiClientVO列表
         List<AgentClient> result = new ArrayList<>();
@@ -247,7 +205,7 @@ public class AgentRepository implements IAgentRepository {
     }
 
     @Override
-    public List<Long> queryAiClientIds() {
+    public List<Long> queryAgentClientIds() {
 
         LambdaQueryWrapper<AiClient> wrapper = Wrappers.lambdaQuery(AiClient.class)
                 .select(AiClient::getId)
@@ -270,8 +228,8 @@ public class AgentRepository implements IAgentRepository {
     }
 
     @Override
-    public Knowledge queryRagOrderById(Long ragId) {
-        AiKnowledge aiKnowledge = knowledgeMapper.selectById(ragId);
+    public Knowledge queryKnowledge(Long knowledgeId) {
+        AiKnowledge aiKnowledge = knowledgeMapper.selectById(knowledgeId);
         return BeanUtil.copyProperties(aiKnowledge, Knowledge.class);
     }
 

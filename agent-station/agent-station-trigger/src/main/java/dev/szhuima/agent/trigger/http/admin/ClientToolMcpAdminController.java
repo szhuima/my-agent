@@ -2,9 +2,9 @@ package dev.szhuima.agent.trigger.http.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientToolMcpAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AiClientToolMcpQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientToolMcpRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientToolMcpResponseDTO;
@@ -62,8 +62,8 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
         int result = aiClientToolMcpDao.insert(aiClientToolMcp);
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -75,7 +75,7 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
 
         if (request.getId() == null) {
             return Response.<Boolean>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("ID不能为空")
                     .data(false)
                     .build();
@@ -103,8 +103,8 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
         }
 
         return Response.<Boolean>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(result > 0)
                 .build();
     }
@@ -119,15 +119,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
             int result = aiClientToolMcpDao.deleteById(id);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID删除MCP客户端配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -142,15 +142,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
             int result = aiClientToolMcpDao.deleteByMcpId(mcpId);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据MCP ID删除MCP客户端配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -166,8 +166,8 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
 
             if (aiClientToolMcp == null) {
                 return Response.<AiClientToolMcpResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -175,15 +175,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
             AiClientToolMcpResponseDTO responseDTO = convertToAiClientToolMcpResponseDTO(aiClientToolMcp);
 
             return Response.<AiClientToolMcpResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询MCP客户端配置失败", e);
             return Response.<AiClientToolMcpResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -199,8 +199,8 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
 
             if (aiClientToolMcp == null) {
                 return Response.<AiClientToolMcpResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -208,15 +208,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
             AiClientToolMcpResponseDTO responseDTO = convertToAiClientToolMcpResponseDTO(aiClientToolMcp);
 
             return Response.<AiClientToolMcpResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据MCP ID查询MCP客户端配置失败", e);
             return Response.<AiClientToolMcpResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -235,15 +235,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有MCP客户端配置失败", e);
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -262,15 +262,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据状态查询MCP客户端配置失败", e);
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -289,15 +289,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据传输类型查询MCP客户端配置失败", e);
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -315,8 +315,8 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
                 .collect(Collectors.toList());
 
         return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(responseDTOs)
                 .build();
     }
@@ -358,15 +358,15 @@ public class ClientToolMcpAdminController implements IAiClientToolMcpAdminServic
                     .collect(Collectors.toList());
 
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据查询条件查询MCP客户端配置列表失败", e);
             return Response.<List<AiClientToolMcpResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }

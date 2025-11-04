@@ -2,9 +2,9 @@ package dev.szhuima.agent.trigger.http.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAdminUserAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AdminUserLoginRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserRequestDTO;
@@ -51,15 +51,15 @@ public class UserAdminController implements IAdminUserAdminService {
             int result = adminUserDao.insert(adminUser);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("创建管理员用户失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -73,7 +73,7 @@ public class UserAdminController implements IAdminUserAdminService {
 
             if (request.getId() == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("ID不能为空")
                         .data(false)
                         .build();
@@ -86,15 +86,15 @@ public class UserAdminController implements IAdminUserAdminService {
             int result = adminUserDao.updateById(adminUser);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID更新管理员用户失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -108,7 +108,7 @@ public class UserAdminController implements IAdminUserAdminService {
 
             if (!StringUtils.hasText(request.getUserId())) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("用户ID不能为空")
                         .data(false)
                         .build();
@@ -121,15 +121,15 @@ public class UserAdminController implements IAdminUserAdminService {
             int result = adminUserDao.updateById(adminUser);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据用户ID更新管理员用户失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -144,15 +144,15 @@ public class UserAdminController implements IAdminUserAdminService {
             int result = adminUserDao.deleteById(id);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID删除管理员用户失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -167,15 +167,15 @@ public class UserAdminController implements IAdminUserAdminService {
             int result = adminUserDao.deleteById(userId);
 
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据用户ID删除管理员用户失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -190,8 +190,8 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUser adminUser = adminUserDao.selectById(id);
             if (adminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -199,15 +199,15 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
 
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询管理员用户失败", e);
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -222,8 +222,8 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUser adminUser = adminUserDao.selectById(userId);
             if (adminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -231,15 +231,15 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
 
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据用户ID查询管理员用户失败", e);
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -254,8 +254,8 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUser adminUser = adminUserDao.selectOne(Wrappers.lambdaQuery(AdminUser.class).eq(AdminUser::getUsername, username));
             if (adminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
-                        .info(ResponseCode.SUCCESS.getInfo())
+                        .code(ErrorCode.SUCCESS.getCode())
+                        .info(ErrorCode.SUCCESS.getInfo())
                         .data(null)
                         .build();
             }
@@ -263,15 +263,15 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
 
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据用户名查询管理员用户失败", e);
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -289,15 +289,15 @@ public class UserAdminController implements IAdminUserAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询启用状态的管理员用户列表失败", e);
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -315,15 +315,15 @@ public class UserAdminController implements IAdminUserAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据状态查询管理员用户列表失败", e);
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -367,15 +367,15 @@ public class UserAdminController implements IAdminUserAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据条件查询管理员用户列表失败", e);
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -392,15 +392,15 @@ public class UserAdminController implements IAdminUserAdminService {
                     .collect(Collectors.toList());
 
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有管理员用户失败", e);
             return Response.<List<AdminUserResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -421,7 +421,7 @@ public class UserAdminController implements IAdminUserAdminService {
         AdminUser adminUser = adminUserDao.selectOne(wrapper);
         if (adminUser == null) {
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户名或密码错误")
                     .data(null)
                     .build();
@@ -430,7 +430,7 @@ public class UserAdminController implements IAdminUserAdminService {
         // 检查用户状态
         if (adminUser.getStatus() == 0) {
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户已被禁用")
                     .data(null)
                     .build();
@@ -438,7 +438,7 @@ public class UserAdminController implements IAdminUserAdminService {
 
         if (adminUser.getStatus() == 2) {
             return Response.<AdminUserResponseDTO>builder()
-                    .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                    .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户已被锁定")
                     .data(null)
                     .build();
@@ -449,8 +449,8 @@ public class UserAdminController implements IAdminUserAdminService {
         responseDTO.setToken(jwtUtil.generateToken(adminUser.getUserId()));
 
         return Response.<AdminUserResponseDTO>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(responseDTO)
                 .build();
     }
@@ -464,7 +464,7 @@ public class UserAdminController implements IAdminUserAdminService {
             // 参数校验
             if (!StringUtils.hasText(request.getUsername()) || !StringUtils.hasText(request.getPassword())) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("用户名或密码不能为空")
                         .data(false)
                         .build();
@@ -478,8 +478,8 @@ public class UserAdminController implements IAdminUserAdminService {
             AdminUser adminUser = adminUserDao.selectOne(wrapper);
             if (adminUser == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.LOGIN_FAILED.getCode())
-                        .info(ResponseCode.LOGIN_FAILED.getInfo())
+                        .code(ErrorCode.LOGIN_FAILED.getCode())
+                        .info(ErrorCode.LOGIN_FAILED.getInfo())
                         .data(false)
                         .build();
             }
@@ -487,7 +487,7 @@ public class UserAdminController implements IAdminUserAdminService {
             // 检查用户状态
             if (adminUser.getStatus() == 0) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.LOGIN_FAILED.getCode())
+                        .code(ErrorCode.LOGIN_FAILED.getCode())
                         .info("用户已被禁用")
                         .data(false)
                         .build();
@@ -495,7 +495,7 @@ public class UserAdminController implements IAdminUserAdminService {
 
             if (adminUser.getStatus() == 2) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.LOGIN_FAILED.getCode())
+                        .code(ErrorCode.LOGIN_FAILED.getCode())
                         .info("用户已被锁定")
                         .data(false)
                         .build();
@@ -503,15 +503,15 @@ public class UserAdminController implements IAdminUserAdminService {
 
             // 登录校验成功
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(true)
                     .build();
         } catch (Exception e) {
             log.error("管理员用户登录校验失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }

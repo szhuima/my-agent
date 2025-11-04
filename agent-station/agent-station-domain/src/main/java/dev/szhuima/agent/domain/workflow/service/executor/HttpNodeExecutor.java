@@ -1,11 +1,9 @@
 package dev.szhuima.agent.domain.workflow.service.executor;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
 import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigHttpDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigHttp;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import jakarta.annotation.Resource;
@@ -27,21 +25,21 @@ import java.util.Map;
  **/
 @Slf4j
 @Component
-public class HttpCallNodeExecutor extends AbstractNodeExecutor {
+public class HttpNodeExecutor extends AbstractNodeExecutor {
 
     @Resource
     private IWorkflowRepository workflowRepository;
 
     private final WebClient webClient;
 
-    public HttpCallNodeExecutor(WebClient.Builder builder) {
+    public HttpNodeExecutor(WebClient.Builder builder) {
         this.webClient = builder.build();
     }
 
     @Override
     public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO) {
         String configJson = node.getConfigJson();
-        WorkflowNodeConfigHttpDO config = JSON.parseObject(configJson, WorkflowNodeConfigHttpDO.class);
+        WorkflowNodeConfigHttp config = JSON.parseObject(configJson, WorkflowNodeConfigHttp.class);
 
         if (config == null) {
             return NodeExecutionResult.failure("http config not found");

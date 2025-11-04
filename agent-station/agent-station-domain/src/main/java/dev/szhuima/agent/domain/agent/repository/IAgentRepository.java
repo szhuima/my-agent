@@ -2,7 +2,6 @@ package dev.szhuima.agent.domain.agent.repository;
 
 
 import dev.szhuima.agent.domain.agent.AgentClient;
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientAdvisorVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
 import dev.szhuima.agent.domain.agent.model.valobj.AiClientToolMcpVO;
 import dev.szhuima.agent.domain.agent.model.valobj.Knowledge;
@@ -16,17 +15,15 @@ import java.util.List;
  */
 public interface IAgentRepository {
 
-    List<AiClientModelVO> queryAiClientModelVOListByClientIds(List<Long> clientIdList);
+    List<AiClientModelVO> queryClientModelList(List<Long> clientIdList);
 
-    List<AiClientToolMcpVO> queryAiClientToolMcpVOListByClientIds(List<Long> clientIdList);
+    List<AiClientToolMcpVO> queryClientToolList(List<Long> clientIdList);
 
-    List<AiClientAdvisorVO> queryAdvisorConfigByClientIds(List<Long> clientIdList);
+    List<AgentClient> queryAgentClient(List<Long> clientIdList);
 
-    List<AgentClient> queryAiClientByClientIds(List<Long> clientIdList);
-
-    List<Long> queryAiClientIds();
+    List<Long> queryAgentClientIds();
 
     Long saveKnowledge(Knowledge knowledge);
 
-    Knowledge queryRagOrderById(Long ragId);
+    Knowledge queryKnowledge(Long knowledgeId);
 }

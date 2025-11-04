@@ -1,4 +1,4 @@
-package dev.szhuima.agent.domain.agent.service.chat;
+package dev.szhuima.agent.domain.agent.service;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.IdUtil;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  **/
 @Slf4j
 @Service
-public class ClientChatService implements StringTemplateRender {
+public class AgentClientChatService implements StringTemplateRender {
 
     @Resource
     private AgentBeanFactory agentBeanFactory;
@@ -69,7 +69,7 @@ public class ClientChatService implements StringTemplateRender {
     }
 
     public AgentClient getAgentClient(Long clientId) {
-        List<AgentClient> agentClients = repository.queryAiClientByClientIds(List.of(clientId));
+        List<AgentClient> agentClients = repository.queryAgentClient(List.of(clientId));
         if (agentClients.isEmpty()) {
             log.error("未找到客户端配置，clientId：{}", clientId);
             throw new IllegalArgumentException("未找到客户端配置");
@@ -157,7 +157,7 @@ public class ClientChatService implements StringTemplateRender {
     public String ragChat(Long clientId, String userPrompt, Long ragId) {
         String sessionId = IdUtil.simpleUUID();
 
-        Knowledge knowledge = repository.queryRagOrderById(ragId);
+        Knowledge knowledge = repository.queryKnowledge(ragId);
         ChatClient chatClient = getChatClient(clientId);
 
         SearchRequest request = SearchRequest.builder()
@@ -215,7 +215,7 @@ public class ClientChatService implements StringTemplateRender {
 
         log.info("RAG问答,用户问题:{} 被改写为:{}", userPrompt, rewriteResult);
 
-        Knowledge knowledge = repository.queryRagOrderById(ragId);
+        Knowledge knowledge = repository.queryKnowledge(ragId);
         ChatClient chatClient = getChatClient(clientId);
 
         SearchRequest request = SearchRequest.builder()

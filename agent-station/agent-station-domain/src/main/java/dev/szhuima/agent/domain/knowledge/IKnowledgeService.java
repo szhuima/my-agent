@@ -1,4 +1,4 @@
-package dev.szhuima.agent.domain.agent.service;
+package dev.szhuima.agent.domain.knowledge;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * @author xiaofuge bugstack.cn @小傅哥
  * 2025/10/4 09:11
  */
-public interface IRagService {
+public interface IKnowledgeService {
 
     void storeRagFile(String name, String tag, List<MultipartFile> files);
 

@@ -12,6 +12,7 @@ import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.PageDTO;
 import dev.szhuima.agent.api.dto.WorkflowQueryRequestDTO;
 import dev.szhuima.agent.api.dto.WorkflowResponseDTO;
+import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
@@ -134,7 +135,7 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Transactional(rollbackFor = Exception.class)
     public Response deleteWorkflow(@PathVariable("workflowId") Long workflowId) {
         if (workflowId == null) {
-            return Response.illegalParameter("工作流Id不能为空");
+            throw new BizException( "工作流ID不能为空");
         }
 
         // 检查该工作流下是否有工作流实例

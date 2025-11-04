@@ -8,7 +8,7 @@ import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
 import dev.szhuima.agent.domain.agent.service.config.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
 import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigAgentDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNodeAgentConfig;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +46,12 @@ public class AgentNodeExecutor extends AbstractNodeExecutor {
     @Override
     public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO) {
         String configJson = node.getConfigJson();
-        WorkflowNodeConfigAgentDO config = JSON.parseObject(configJson, WorkflowNodeConfigAgentDO.class, JSONReader.Feature.SupportSmartMatch);
+        WorkflowNodeAgentConfig config = JSON.parseObject(configJson, WorkflowNodeAgentConfig.class,
+                JSONReader.Feature.SupportSmartMatch);
 
         Long clientId = config.getClientId();
 
-        List<AgentClient> agentClients = agentRepository.queryAiClientByClientIds(List.of(clientId));
+        List<AgentClient> agentClients = agentRepository.queryAgentClient(List.of(clientId));
 
         if (agentClients.isEmpty()) {
             log.error("未找到客户端配置，clientId：{}", clientId);

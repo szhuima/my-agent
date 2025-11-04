@@ -1,4 +1,4 @@
-package dev.szhuima.agent.domain.agent.rag;
+package dev.szhuima.agent.domain.knowledge.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;

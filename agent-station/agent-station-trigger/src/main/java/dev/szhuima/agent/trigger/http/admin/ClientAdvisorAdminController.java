@@ -3,9 +3,9 @@ package dev.szhuima.agent.trigger.http.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientAdvisorAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.ResponseCode;
 import dev.szhuima.agent.api.dto.AiClientAdvisorQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientAdvisorRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientAdvisorResponseDTO;
@@ -50,15 +50,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             int result = aiClientAdvisorDao.insert(aiClientAdvisor);
             
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("创建顾问配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -72,7 +72,7 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             
             if (request.getId() == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("ID不能为空")
                         .data(false)
                         .build();
@@ -85,15 +85,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             int result = aiClientAdvisorDao.updateById(aiClientAdvisor);
             
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID更新顾问配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -107,7 +107,7 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             
             if (request.getId() == null) {
                 return Response.<Boolean>builder()
-                        .code(ResponseCode.ILLEGAL_PARAMETER.getCode())
+                        .code(ErrorCode.BIZ_ERROR.getCode())
                         .info("顾问ID不能为空")
                         .data(false)
                         .build();
@@ -120,15 +120,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             int result = aiClientAdvisorDao.updateById(aiClientAdvisor);
             
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据顾问ID更新顾问配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -143,15 +143,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             int result = aiClientAdvisorDao.deleteById(id);
             
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据ID删除顾问配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -166,15 +166,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             int result = aiClientAdvisorDao.deleteById(advisorId);
             
             return Response.<Boolean>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(result > 0)
                     .build();
         } catch (Exception e) {
             log.error("根据顾问ID删除顾问配置失败", e);
             return Response.<Boolean>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(false)
                     .build();
         }
@@ -190,7 +190,7 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             
             if (aiClientAdvisor == null) {
                 return Response.<AiClientAdvisorResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
+                        .code(ErrorCode.SUCCESS.getCode())
                         .info("未找到对应的顾问配置")
                         .data(null)
                         .build();
@@ -199,15 +199,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             AiClientAdvisorResponseDTO responseDTO = convertToAiClientAdvisorResponseDTO(aiClientAdvisor);
             
             return Response.<AiClientAdvisorResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询顾问配置失败", e);
             return Response.<AiClientAdvisorResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -223,7 +223,7 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             
             if (aiClientAdvisor == null) {
                 return Response.<AiClientAdvisorResponseDTO>builder()
-                        .code(ResponseCode.SUCCESS.getCode())
+                        .code(ErrorCode.SUCCESS.getCode())
                         .info("未找到对应的顾问配置")
                         .data(null)
                         .build();
@@ -232,15 +232,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
             AiClientAdvisorResponseDTO responseDTO = convertToAiClientAdvisorResponseDTO(aiClientAdvisor);
             
             return Response.<AiClientAdvisorResponseDTO>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据顾问ID查询顾问配置失败", e);
             return Response.<AiClientAdvisorResponseDTO>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -257,8 +257,8 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
                 .collect(Collectors.toList());
 
         return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .info(ResponseCode.SUCCESS.getInfo())
+                .code(ErrorCode.SUCCESS.getCode())
+                .info(ErrorCode.SUCCESS.getInfo())
                 .data(responseDTOs)
                 .build();
     }
@@ -276,15 +276,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
                     .collect(Collectors.toList());
             
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据状态查询顾问配置失败", e);
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -304,15 +304,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
                     .collect(Collectors.toList());
             
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据顾问类型查询顾问配置失败", e);
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -378,15 +378,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
                     .collect(Collectors.toList());
             
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("根据条件查询顾问配置列表失败", e);
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }
@@ -405,15 +405,15 @@ public class ClientAdvisorAdminController implements IAiClientAdvisorAdminServic
                     .collect(Collectors.toList());
             
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.SUCCESS.getCode())
-                    .info(ResponseCode.SUCCESS.getInfo())
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有顾问配置失败", e);
             return Response.<List<AiClientAdvisorResponseDTO>>builder()
-                    .code(ResponseCode.UN_ERROR.getCode())
-                    .info(ResponseCode.UN_ERROR.getInfo())
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
                     .build();
         }

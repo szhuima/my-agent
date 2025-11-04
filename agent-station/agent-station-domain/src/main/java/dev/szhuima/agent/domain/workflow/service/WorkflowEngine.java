@@ -61,7 +61,6 @@ public class WorkflowEngine {
      * @return 持久化后的工作流实例 DO
      */
     public NodeExecutionResult runWorkflow(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
-        //  执行工作流
         try {
             return workflowExecutor.execute(workflowInstance,inputParams);
         } catch (Exception ex) {
@@ -69,4 +68,9 @@ public class WorkflowEngine {
             throw ex;
         }
     }
+
+
+
+
+
 }

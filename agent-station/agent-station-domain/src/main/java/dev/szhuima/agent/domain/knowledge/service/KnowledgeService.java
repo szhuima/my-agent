@@ -1,10 +1,10 @@
-package dev.szhuima.agent.domain.agent.rag;
+package dev.szhuima.agent.domain.knowledge.service;
 
 
 import cn.hutool.core.collection.CollectionUtil;
 import dev.szhuima.agent.domain.agent.model.valobj.Knowledge;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
-import dev.szhuima.agent.domain.agent.service.IRagService;
+import dev.szhuima.agent.domain.knowledge.IKnowledgeService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class RagService implements IRagService {
+public class KnowledgeService implements IKnowledgeService {
 
     @Resource
     @Qualifier("tokenTextSplitter")

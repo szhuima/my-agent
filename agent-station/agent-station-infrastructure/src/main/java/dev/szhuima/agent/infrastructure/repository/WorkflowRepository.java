@@ -5,6 +5,7 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigHttp;
 import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import dev.szhuima.agent.infrastructure.mapper.*;
@@ -142,12 +143,12 @@ public class WorkflowRepository implements IWorkflowRepository {
     }
 
     @Override
-    public WorkflowNodeConfigHttpDO getHttpConfigNode(Long configId) {
-        WorkflowNodeConfigHttp workflowNodeConfigHttp = workflowNodeConfigHttpMapper.selectById(configId);
+    public WorkflowNodeConfigHttp getHttpConfigNode(Long configId) {
+        dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp workflowNodeConfigHttp = workflowNodeConfigHttpMapper.selectById(configId);
         if (workflowNodeConfigHttp == null) {
             return null;
         }
-        WorkflowNodeConfigHttpDO workflowNodeConfigHttpDO = new WorkflowNodeConfigHttpDO();
+        WorkflowNodeConfigHttp workflowNodeConfigHttpDO = new WorkflowNodeConfigHttp();
         BeanUtil.copyProperties(workflowNodeConfigHttp, workflowNodeConfigHttpDO, CopyOptions.create().setConverter((targetType, value) -> {
             if (value == null) {
                 return null;
@@ -196,7 +197,6 @@ public class WorkflowRepository implements IWorkflowRepository {
         }
         List<WorkflowNode> workflowNodes = workflowNodeMapper.selectList(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
         List<WorkflowEdge> workflowEdgeList = workflowEdgeMapper.selectList(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
-        List<WorkflowTriggerDO> triggerDOList = getTrigger(workflowId, null);
         List<WorkflowNodeDO> workflowNodeDOList = BeanUtil.copyToList(workflowNodes, WorkflowNodeDO.class, CopyOptions.create().setConverter((targetType, value) -> {
             if (targetType == NodeType.class) {
                 return NodeType.valueOf((String) value);
@@ -218,7 +218,6 @@ public class WorkflowRepository implements IWorkflowRepository {
                 .name(workflow.getName())
                 .meta(JSON.parseObject(workflow.getMetaJson(), new TypeReference<Map<String, Object>>() {
                 }))
-                .triggers(triggerDOList)
                 .nodes(workflowNodeDOList)
                 .edges(workflowEdgeDOList)
                 .createdAt(workflow.getCreatedAt())
@@ -247,8 +246,8 @@ public class WorkflowRepository implements IWorkflowRepository {
     }
 
     @Override
-    public Long saveHttpNodeConfig(WorkflowNodeConfigHttpDO nodeConfigHttpDO) {
-        WorkflowNodeConfigHttp workflowNodeConfigHttp = new WorkflowNodeConfigHttp();
+    public Long saveHttpNodeConfig(WorkflowNodeConfigHttp nodeConfigHttpDO) {
+        dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp workflowNodeConfigHttp = new dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp();
         BeanUtil.copyProperties(nodeConfigHttpDO, workflowNodeConfigHttp, CopyOptions.create().setConverter((target, value) -> {
             if (target == MultiValueMap.class) {
                 return JSON.toJSONString(value);

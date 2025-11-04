@@ -1,38 +1,24 @@
-package dev.szhuima.agent.api.dto;
+package dev.szhuima.agent.infrastructure.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * MCP客户端配置响应 DTO
- *
- * @author szhuima
- * @description MCP客户端配置响应数据传输对象
+ * MCP客户端配置表
+ * @TableName tb_mcp
  */
+@TableName(value ="tb_mcp")
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class AiClientToolMcpResponseDTO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
+public class TbMcp {
     /**
      * 主键ID
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
-
-    /**
-     * MCP ID
-     */
-    private String mcpId;
 
     /**
      * MCP名称
@@ -69,4 +55,13 @@ public class AiClientToolMcpResponseDTO implements Serializable {
      */
     private LocalDateTime updateTime;
 
+    /**
+     * 
+     */
+    private String createdBy;
+
+    /**
+     * 
+     */
+    private String tenantId;
 }

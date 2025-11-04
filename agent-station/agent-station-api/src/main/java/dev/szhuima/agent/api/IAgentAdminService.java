@@ -8,12 +8,12 @@ import dev.szhuima.agent.api.dto.AiClientResponseDTO;
 import java.util.List;
 
 /**
- * AI客户端管理服务接口
+ * 智能体管理服务接口
  *
  * @author szhuima
  * @description AI客户端配置管理服务接口
  */
-public interface IAiClientAdminService {
+public interface IAgentAdminService {
 
     /**
      * 创建AI客户端配置
@@ -69,12 +69,5 @@ public interface IAiClientAdminService {
      * @return AI客户端配置列表
      */
     Response<List<AiClientResponseDTO>> queryAiClientList(AiClientQueryRequestDTO request);
-
-    /**
-     * 查询所有AI客户端配置
-     *
-     * @return AI客户端配置列表
-     */
-    Response<List<AiClientResponseDTO>> queryAllAiClients();
 
 }

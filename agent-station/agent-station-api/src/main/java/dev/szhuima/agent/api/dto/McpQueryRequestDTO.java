@@ -18,15 +18,11 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AiClientToolMcpQueryRequestDTO implements Serializable {
+public class McpQueryRequestDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /**
-     * MCP ID
-     */
-    private String mcpId;
 
     /**
      * MCP名称（模糊查询）

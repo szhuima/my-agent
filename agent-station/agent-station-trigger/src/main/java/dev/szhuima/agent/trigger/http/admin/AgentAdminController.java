@@ -6,7 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import dev.szhuima.agent.api.ErrorCode;
-import dev.szhuima.agent.api.IAiClientAdminService;
+import dev.szhuima.agent.api.IAgentAdminService;
 import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.AiClientQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRequestDTO;
@@ -29,17 +29,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * AI客户端管理控制器
- *
- * @author szhuima
- * @description AI客户端配置管理控制器
- */
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/admin/ai-client")
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
-public class ClientAdminController implements IAiClientAdminService {
+public class AgentAdminController implements IAgentAdminService {
 
     @Resource
     private AgentMapper agentMapper;
@@ -317,32 +312,6 @@ public class ClientAdminController implements IAiClientAdminService {
                 .build();
     }
 
-    @Override
-    @GetMapping("/query-all")
-    public Response<List<AiClientResponseDTO>> queryAllAiClients() {
-        try {
-            log.info("查询所有AI客户端配置");
-
-            List<TbAgent> tbAgents = agentMapper.queryAll();
-
-            List<AiClientResponseDTO> responseDTOs = tbAgents.stream()
-                    .map(this::convertToAiClientResponseDTO)
-                    .collect(Collectors.toList());
-
-            return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ErrorCode.SUCCESS.getCode())
-                    .info(ErrorCode.SUCCESS.getInfo())
-                    .data(responseDTOs)
-                    .build();
-        } catch (Exception e) {
-            log.error("查询所有AI客户端配置失败", e);
-            return Response.<List<AiClientResponseDTO>>builder()
-                    .code(ErrorCode.UN_ERROR.getCode())
-                    .info(ErrorCode.UN_ERROR.getInfo())
-                    .data(null)
-                    .build();
-        }
-    }
 
     /**
      * DTO转PO对象

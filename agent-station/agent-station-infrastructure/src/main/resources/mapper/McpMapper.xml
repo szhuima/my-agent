@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.szhuima.agent.infrastructure.mapper.McpMapper">
+
+    <resultMap id="BaseResultMap" type="dev.szhuima.agent.infrastructure.entity.TbMcp">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="mcpName" column="mcp_name" jdbcType="VARCHAR"/>
+            <result property="transportType" column="transport_type" jdbcType="VARCHAR"/>
+            <result property="transportConfig" column="transport_config" jdbcType="VARCHAR"/>
+            <result property="requestTimeout" column="request_timeout" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+            <result property="tenantId" column="tenant_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mcp_name,transport_type,
+        transport_config,request_timeout,status,
+        create_time,update_time,created_by,
+        tenant_id
+    </sql>
+</mapper>

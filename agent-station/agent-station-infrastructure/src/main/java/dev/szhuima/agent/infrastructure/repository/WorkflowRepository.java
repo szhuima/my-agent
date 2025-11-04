@@ -7,10 +7,10 @@ import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
-import dev.szhuima.agent.infrastructure.entity.Workflow;
-import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
-import dev.szhuima.agent.infrastructure.entity.WorkflowEdge;
-import dev.szhuima.agent.infrastructure.entity.WorkflowNode;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowDsl;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowEdge;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowEdgeMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
@@ -45,7 +45,7 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     @Override
     public Long saveWorkflowDsl(Long workflowId, String dsl) {
-        WorkflowDsl workflowDsl = new WorkflowDsl();
+        TbWorkflowDsl workflowDsl = new TbWorkflowDsl();
         workflowDsl.setWorkflowId(workflowId);
         workflowDsl.setContent(dsl);
         workflowDsl.setVersion(1);
@@ -56,11 +56,11 @@ public class WorkflowRepository implements IWorkflowRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long saveWorkflow(WorkflowDO workflowDO) {
-        LambdaQueryWrapper<Workflow> queryWrapper = new LambdaQueryWrapper<Workflow>()
-                .eq(Workflow::getName, workflowDO.getName())
-                .orderByDesc(Workflow::getVersion);
+        LambdaQueryWrapper<TbWorkflow> queryWrapper = new LambdaQueryWrapper<TbWorkflow>()
+                .eq(TbWorkflow::getName, workflowDO.getName())
+                .orderByDesc(TbWorkflow::getVersion);
 
-        List<Workflow> oldWorkflowList = workflowMapper.selectList(queryWrapper);
+        List<TbWorkflow> oldWorkflowList = workflowMapper.selectList(queryWrapper);
         Integer version = 1;
         // 将之前的记录设置为非活动状态
         if (!oldWorkflowList.isEmpty()) {
@@ -72,7 +72,7 @@ public class WorkflowRepository implements IWorkflowRepository {
                     });
             version = oldWorkflowList.get(0).getVersion() + 1;
         }
-        Workflow workflow = BeanUtil.copyProperties(workflowDO, Workflow.class, "nodes", "edges");
+        TbWorkflow workflow = BeanUtil.copyProperties(workflowDO, TbWorkflow.class, "nodes", "edges");
         if (workflowDO.getMeta() != null) {
             workflow.setMetaJson(JSON.toJSONString(workflowDO.getMeta()));
         }
@@ -84,7 +84,7 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     @Override
     public Long saveWorkflowNode(WorkflowNodeDO workflowNode) {
-        WorkflowNode workflowNode1 = BeanUtil.copyProperties(workflowNode, WorkflowNode.class);
+        TbWorkflowNode workflowNode1 = BeanUtil.copyProperties(workflowNode, TbWorkflowNode.class);
         workflowNode1.setConditionExpr(workflowNode.getConditionExpr());
         workflowNodeMapper.insert(workflowNode1);
         return workflowNode1.getNodeId();
@@ -92,19 +92,19 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     @Override
     public Long saveWorkflowEdge(WorkflowEdgeDO workflowEdge) {
-        WorkflowEdge workflowEdge1 = BeanUtil.copyProperties(workflowEdge, WorkflowEdge.class);
+        TbWorkflowEdge workflowEdge1 = BeanUtil.copyProperties(workflowEdge, TbWorkflowEdge.class);
         workflowEdgeMapper.insert(workflowEdge1);
         return workflowEdge1.getEdgeId();
     }
 
     @Override
     public WorkflowDO getById(Long workflowId) {
-        Workflow workflow = workflowMapper.selectById(workflowId);
+        TbWorkflow workflow = workflowMapper.selectById(workflowId);
         if (workflow == null) {
             return null;
         }
-        List<WorkflowNode> workflowNodes = workflowNodeMapper.selectList(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
-        List<WorkflowEdge> workflowEdgeList = workflowEdgeMapper.selectList(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
+        List<TbWorkflowNode> workflowNodes = workflowNodeMapper.selectList(new LambdaQueryWrapper<TbWorkflowNode>().eq(TbWorkflowNode::getWorkflowId, workflowId));
+        List<TbWorkflowEdge> workflowEdgeList = workflowEdgeMapper.selectList(new LambdaQueryWrapper<TbWorkflowEdge>().eq(TbWorkflowEdge::getWorkflowId, workflowId));
         List<WorkflowNodeDO> workflowNodeDOList = BeanUtil.copyToList(workflowNodes, WorkflowNodeDO.class, CopyOptions.create().setConverter((targetType, value) -> {
             if (targetType == NodeType.class) {
                 return NodeType.valueOf((String) value);
@@ -137,9 +137,9 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     @Override
     public WorkflowDO getWorkflowByName(String workflowName) {
-        Workflow workflow = workflowMapper.selectOne(new LambdaQueryWrapper<Workflow>()
-                .eq(Workflow::getName, workflowName)
-                .eq(Workflow::getStatus, WorkflowStatus.ACTIVE.getCode())
+        TbWorkflow workflow = workflowMapper.selectOne(new LambdaQueryWrapper<TbWorkflow>()
+                .eq(TbWorkflow::getName, workflowName)
+                .eq(TbWorkflow::getStatus, WorkflowStatus.ACTIVE.getCode())
         );
         if (workflow == null) {
             return null;
@@ -152,17 +152,17 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     @Override
     public void deleteWorkflowByName(String workflowName) {
-        List<Workflow> workflows = workflowMapper.selectList(new LambdaQueryWrapper<Workflow>()
-                .select(Workflow::getWorkflowId)
-                .eq(Workflow::getName, workflowName)
+        List<TbWorkflow> workflows = workflowMapper.selectList(new LambdaQueryWrapper<TbWorkflow>()
+                .select(TbWorkflow::getWorkflowId)
+                .eq(TbWorkflow::getName, workflowName)
         );
         if (workflows.isEmpty()) {
             return;
         }
-        List<Long> workflowIdList = workflows.stream().map(Workflow::getWorkflowId).toList();
+        List<Long> workflowIdList = workflows.stream().map(TbWorkflow::getWorkflowId).toList();
         for (Long workflowId : workflowIdList) {
-            workflowNodeMapper.delete(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
-            workflowEdgeMapper.delete(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
+            workflowNodeMapper.delete(new LambdaQueryWrapper<TbWorkflowNode>().eq(TbWorkflowNode::getWorkflowId, workflowId));
+            workflowEdgeMapper.delete(new LambdaQueryWrapper<TbWorkflowEdge>().eq(TbWorkflowEdge::getWorkflowId, workflowId));
         }
         workflowMapper.deleteBatchIds(workflowIdList);
     }

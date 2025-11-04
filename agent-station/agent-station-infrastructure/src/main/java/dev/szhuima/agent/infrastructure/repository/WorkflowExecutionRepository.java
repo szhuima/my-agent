@@ -5,8 +5,8 @@ import com.alibaba.fastjson2.JSON;
 import dev.szhuima.agent.domain.workflow.model.NodeExecutionDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowExecutionDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowExecutionRepository;
-import dev.szhuima.agent.infrastructure.entity.WorkflowExecution;
-import dev.szhuima.agent.infrastructure.entity.WorkflowNodeExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowNodeExecution;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowExecutionMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeExecutionMapper;
 import jakarta.annotation.Resource;
@@ -28,14 +28,14 @@ public class WorkflowExecutionRepository implements IWorkflowExecutionRepository
 
     @Override
     public void saveWorkflowExecution(WorkflowExecutionDO workflowExecution) {
-        WorkflowExecution execution = BeanUtil.copyProperties(workflowExecution, WorkflowExecution.class);
+        TbWorkflowExecution execution = BeanUtil.copyProperties(workflowExecution, TbWorkflowExecution.class);
         workflowExecutionMapper.insert(execution);
         workflowExecution.setExecutionId(execution.getExecutionId());
     }
 
     @Override
     public void saveNodeExecution(Long instanceId, NodeExecutionDO nodeExec) {
-        WorkflowNodeExecution nodeExecution = new WorkflowNodeExecution();
+        TbWorkflowNodeExecution nodeExecution = new TbWorkflowNodeExecution();
         nodeExecution.setWorkflowExecutionId(nodeExec.getWorkflowExecutionId());
         nodeExecution.setNodeId(nodeExec.getNodeId());
         nodeExecution.setInstanceId(instanceId);
@@ -47,7 +47,7 @@ public class WorkflowExecutionRepository implements IWorkflowExecutionRepository
 
     @Override
     public void updateWorkflowExecution(WorkflowExecutionDO executionDO) {
-        WorkflowExecution execution = BeanUtil.copyProperties(executionDO, WorkflowExecution.class);
+        TbWorkflowExecution execution = BeanUtil.copyProperties(executionDO, TbWorkflowExecution.class);
         workflowExecutionMapper.updateById(execution);
     }
 }

@@ -10,7 +10,7 @@ import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.PageDTO;
 import dev.szhuima.agent.api.dto.WorkflowExecutionDTO;
 import dev.szhuima.agent.api.dto.WorkflowExecutionQuery;
-import dev.szhuima.agent.infrastructure.entity.WorkflowExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowExecution;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowExecutionMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -41,14 +41,14 @@ public class WorkflowExecutionAdminController extends BaseController implements 
     @Override
     @PostMapping("/query-list")
     public Response<PageDTO<WorkflowExecutionDTO>> queryList(@RequestBody WorkflowExecutionQuery query) {
-        Page<WorkflowExecution> pageQuery = new Page<>(query.getPageNum(), query.getPageSize());
+        Page<TbWorkflowExecution> pageQuery = new Page<>(query.getPageNum(), query.getPageSize());
 
-        LambdaQueryWrapper<WorkflowExecution> wrapper = Wrappers.lambdaQuery(WorkflowExecution.class)
-                .eq(StrUtil.isNotEmpty(query.getWorkflowName()), WorkflowExecution::getWorkflowName, query.getWorkflowName())
-                .eq(query.getInstanceId() != null, WorkflowExecution::getWorkflowInstanceId, query.getInstanceId())
-                .orderByDesc(WorkflowExecution::getStartTime);
+        LambdaQueryWrapper<TbWorkflowExecution> wrapper = Wrappers.lambdaQuery(TbWorkflowExecution.class)
+                .eq(StrUtil.isNotEmpty(query.getWorkflowName()), TbWorkflowExecution::getWorkflowName, query.getWorkflowName())
+                .eq(query.getInstanceId() != null, TbWorkflowExecution::getWorkflowInstanceId, query.getInstanceId())
+                .orderByDesc(TbWorkflowExecution::getStartTime);
 
-        IPage<WorkflowExecution> pageResult = executionMapper.selectPage(pageQuery, wrapper);
+        IPage<TbWorkflowExecution> pageResult = executionMapper.selectPage(pageQuery, wrapper);
         PageDTO<WorkflowExecutionDTO> pageDTO = copyPage(pageResult, WorkflowExecutionDTO.class);
         return Response.success(pageDTO);
     }

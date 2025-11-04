@@ -14,8 +14,8 @@ import dev.szhuima.agent.api.dto.PageDTO;
 import dev.szhuima.agent.api.dto.WorkflowInstanceDTO;
 import dev.szhuima.agent.api.dto.WorkflowInstanceQuery;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
-import dev.szhuima.agent.infrastructure.entity.WorkflowExecution;
-import dev.szhuima.agent.infrastructure.entity.WorkflowInstance;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowInstance;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowExecutionMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
@@ -52,21 +52,21 @@ public class WorkflowInstanceAdminController extends BaseController implements I
     @Override
     @PostMapping("/query-list")
     public Response<PageDTO<WorkflowInstanceDTO>> queryInstance(@RequestBody WorkflowInstanceQuery query) {
-        LambdaQueryWrapper<WorkflowInstance> wrapper = Wrappers.lambdaQuery(WorkflowInstance.class)
-                .eq(query.getWorkflowId() != null, WorkflowInstance::getWorkflowId, query.getWorkflowId())
-                .eq(StringUtils.isNotEmpty(query.getWorkflowName()), WorkflowInstance::getWorkflowName, query.getWorkflowName());
-        IPage<WorkflowInstance> page = new Page<>(query.getPageNum(), query.getPageSize());
+        LambdaQueryWrapper<TbWorkflowInstance> wrapper = Wrappers.lambdaQuery(TbWorkflowInstance.class)
+                .eq(query.getWorkflowId() != null, TbWorkflowInstance::getWorkflowId, query.getWorkflowId())
+                .eq(StringUtils.isNotEmpty(query.getWorkflowName()), TbWorkflowInstance::getWorkflowName, query.getWorkflowName());
+        IPage<TbWorkflowInstance> page = new Page<>(query.getPageNum(), query.getPageSize());
 
-        IPage<WorkflowInstance> pageResult = instanceMapper.selectPage(page, wrapper);
+        IPage<TbWorkflowInstance> pageResult = instanceMapper.selectPage(page, wrapper);
 
-        List<WorkflowInstance> records = pageResult.getRecords();
+        List<TbWorkflowInstance> records = pageResult.getRecords();
 
         List<WorkflowInstanceDTO> workflowInstanceDTOS = BeanUtil.copyToList(records, WorkflowInstanceDTO.class);
 
         if (CollectionUtil.isNotEmpty(workflowInstanceDTOS)) {
             for (WorkflowInstanceDTO workflowInstanceDTO : workflowInstanceDTOS) {
-                LambdaQueryWrapper<WorkflowExecution> eq = Wrappers.lambdaQuery(WorkflowExecution.class)
-                        .eq(WorkflowExecution::getWorkflowInstanceId, workflowInstanceDTO.getInstanceId());
+                LambdaQueryWrapper<TbWorkflowExecution> eq = Wrappers.lambdaQuery(TbWorkflowExecution.class)
+                        .eq(TbWorkflowExecution::getWorkflowInstanceId, workflowInstanceDTO.getInstanceId());
                 Long executionCount = executionMapper.selectCount(eq);
                 workflowInstanceDTO.setExecutionCount(executionCount);
             }
@@ -90,9 +90,9 @@ public class WorkflowInstanceAdminController extends BaseController implements I
     @Override
     @PostMapping("/un-deploy/{instanceId}")
     public Response<Boolean> unDeploy(@PathVariable("instanceId") Long instanceId) {
-        LambdaUpdateWrapper<WorkflowInstance> wrapper = Wrappers.lambdaUpdate(WorkflowInstance.class)
-                .eq(WorkflowInstance::getInstanceId, instanceId)
-                .set(WorkflowInstance::getStatus, WorkflowInstanceStatus.UN_DEPLOYED.name());
+        LambdaUpdateWrapper<TbWorkflowInstance> wrapper = Wrappers.lambdaUpdate(TbWorkflowInstance.class)
+                .eq(TbWorkflowInstance::getInstanceId, instanceId)
+                .set(TbWorkflowInstance::getStatus, WorkflowInstanceStatus.UN_DEPLOYED.name());
         int update = instanceMapper.update(wrapper);
         return Response.success(update > 0);
     }
@@ -106,9 +106,9 @@ public class WorkflowInstanceAdminController extends BaseController implements I
     @Override
     @PostMapping("/deploy/{instanceId}")
     public Response<Boolean> deploy(@PathVariable("instanceId") Long instanceId) {
-        LambdaUpdateWrapper<WorkflowInstance> wrapper = Wrappers.lambdaUpdate(WorkflowInstance.class)
-                .eq(WorkflowInstance::getInstanceId, instanceId)
-                .set(WorkflowInstance::getStatus, WorkflowInstanceStatus.DEPLOYED.name());
+        LambdaUpdateWrapper<TbWorkflowInstance> wrapper = Wrappers.lambdaUpdate(TbWorkflowInstance.class)
+                .eq(TbWorkflowInstance::getInstanceId, instanceId)
+                .set(TbWorkflowInstance::getStatus, WorkflowInstanceStatus.DEPLOYED.name());
         int update = instanceMapper.update(wrapper);
         return Response.success(update > 0);
     }
@@ -128,12 +128,12 @@ public class WorkflowInstanceAdminController extends BaseController implements I
         }
 
         // 删除工作流实例执行记录
-        LambdaQueryWrapper<WorkflowExecution> instanceIdEq = Wrappers.lambdaQuery(WorkflowExecution.class)
-                .eq(WorkflowExecution::getWorkflowInstanceId, instanceId);
+        LambdaQueryWrapper<TbWorkflowExecution> instanceIdEq = Wrappers.lambdaQuery(TbWorkflowExecution.class)
+                .eq(TbWorkflowExecution::getWorkflowInstanceId, instanceId);
         int delete = executionMapper.delete(instanceIdEq);
 
-        LambdaQueryWrapper<WorkflowInstance> instanceWrapper = Wrappers.lambdaQuery(WorkflowInstance.class)
-                .eq(WorkflowInstance::getInstanceId, instanceId);
+        LambdaQueryWrapper<TbWorkflowInstance> instanceWrapper = Wrappers.lambdaQuery(TbWorkflowInstance.class)
+                .eq(TbWorkflowInstance::getInstanceId, instanceId);
         instanceMapper.delete(instanceWrapper);
         return Response.success(true);
     }

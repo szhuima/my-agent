@@ -15,10 +15,10 @@ import dev.szhuima.agent.api.dto.WorkflowResponseDTO;
 import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
-import dev.szhuima.agent.infrastructure.entity.Workflow;
-import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
-import dev.szhuima.agent.infrastructure.entity.WorkflowInstance;
-import dev.szhuima.agent.infrastructure.entity.WorkflowNode;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowDsl;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowInstance;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
@@ -60,25 +60,25 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Override
     @PostMapping("/query-list")
     public Response<PageDTO<WorkflowResponseDTO>> queryWorkflow(@RequestBody WorkflowQueryRequestDTO request) {
-        IPage<Workflow> page = new Page<>(request.getPageNum(), request.getPageSize());
-        LambdaQueryWrapper<Workflow> wrapper = Wrappers.lambdaQuery(Workflow.class)
-                .eq(request.getWorkflowId() != null, Workflow::getWorkflowId, request.getWorkflowId())
-                .eq(request.getWorkflowName() != null, Workflow::getName, request.getWorkflowName())
-                .eq(request.getStatus() != null, Workflow::getStatus, request.getStatus())
-                .orderByDesc(Workflow::getUpdatedAt);
-        IPage<Workflow> workflowIPage = workflowMapper.selectPage(page, wrapper);
-        PageDTO<Workflow> workflowPage = convertPage(workflowIPage);
+        IPage<TbWorkflow> page = new Page<>(request.getPageNum(), request.getPageSize());
+        LambdaQueryWrapper<TbWorkflow> wrapper = Wrappers.lambdaQuery(TbWorkflow.class)
+                .eq(request.getWorkflowId() != null, TbWorkflow::getWorkflowId, request.getWorkflowId())
+                .eq(request.getWorkflowName() != null, TbWorkflow::getName, request.getWorkflowName())
+                .eq(request.getStatus() != null, TbWorkflow::getStatus, request.getStatus())
+                .orderByDesc(TbWorkflow::getUpdatedAt);
+        IPage<TbWorkflow> workflowIPage = workflowMapper.selectPage(page, wrapper);
+        PageDTO<TbWorkflow> workflowPage = convertPage(workflowIPage);
 
-        List<Workflow> records = workflowPage.getRecords();
+        List<TbWorkflow> records = workflowPage.getRecords();
         List<WorkflowResponseDTO> workflowResponseDTOS = BeanUtil.copyToList(records, WorkflowResponseDTO.class);
 
         if (CollectionUtil.isNotEmpty(workflowResponseDTOS)) {
 
             workflowResponseDTOS.stream()
                     .forEach((workflowResponseDTO -> {
-                        LambdaQueryWrapper<WorkflowInstance> eq = Wrappers.lambdaQuery(WorkflowInstance.class)
-                                .eq(WorkflowInstance::getWorkflowId, workflowResponseDTO.getWorkflowId())
-                                .eq(WorkflowInstance::getStatus, WorkflowInstanceStatus.DEPLOYED.name());
+                        LambdaQueryWrapper<TbWorkflowInstance> eq = Wrappers.lambdaQuery(TbWorkflowInstance.class)
+                                .eq(TbWorkflowInstance::getWorkflowId, workflowResponseDTO.getWorkflowId())
+                                .eq(TbWorkflowInstance::getStatus, WorkflowInstanceStatus.DEPLOYED.name());
                         Long count = instanceMapper.selectCount(eq);
                         workflowResponseDTO.setDeployCount(count);
                     }));
@@ -102,10 +102,10 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Override
     @GetMapping("/get-dsl/{workflowId}")
     public Response<String> queryDSL(@PathVariable("workflowId") Long workflowId) {
-        LambdaQueryWrapper<WorkflowDsl> wrapper = Wrappers.lambdaQuery(WorkflowDsl.class)
-                .select(WorkflowDsl::getContent)
-                .eq(WorkflowDsl::getWorkflowId, workflowId);
-        WorkflowDsl workflowDsl = workflowDslMapper.selectOne(wrapper);
+        LambdaQueryWrapper<TbWorkflowDsl> wrapper = Wrappers.lambdaQuery(TbWorkflowDsl.class)
+                .select(TbWorkflowDsl::getContent)
+                .eq(TbWorkflowDsl::getWorkflowId, workflowId);
+        TbWorkflowDsl workflowDsl = workflowDslMapper.selectOne(wrapper);
         String content = workflowDsl != null ? workflowDsl.getContent() : null;
         return Response.success(content);
     }
@@ -139,19 +139,19 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
         }
 
         // 检查该工作流下是否有工作流实例
-        LambdaQueryWrapper<WorkflowInstance> intWrapper = Wrappers.lambdaQuery(WorkflowInstance.class)
-                .eq(WorkflowInstance::getWorkflowId, workflowId);
+        LambdaQueryWrapper<TbWorkflowInstance> intWrapper = Wrappers.lambdaQuery(TbWorkflowInstance.class)
+                .eq(TbWorkflowInstance::getWorkflowId, workflowId);
         Long count = instanceMapper.selectCount(intWrapper);
         if (count > 0) {
             return Response.illegalParameter("该工作流下有正在运行的实例, 需要先删除该工作流下全部实例");
         }
 
-        LambdaQueryWrapper<WorkflowNode> wrapper = Wrappers.lambdaQuery(WorkflowNode.class)
-                .eq(WorkflowNode::getWorkflowId, workflowId);
+        LambdaQueryWrapper<TbWorkflowNode> wrapper = Wrappers.lambdaQuery(TbWorkflowNode.class)
+                .eq(TbWorkflowNode::getWorkflowId, workflowId);
         workflowNodeMapper.delete(wrapper);
 
-        LambdaQueryWrapper<WorkflowDsl> wrapper1 = Wrappers.lambdaQuery(WorkflowDsl.class)
-                .eq(WorkflowDsl::getWorkflowId, workflowId);
+        LambdaQueryWrapper<TbWorkflowDsl> wrapper1 = Wrappers.lambdaQuery(TbWorkflowDsl.class)
+                .eq(TbWorkflowDsl::getWorkflowId, workflowId);
         workflowDslMapper.delete(wrapper1);
 
         workflowMapper.deleteById(workflowId);

@@ -8,38 +8,34 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * @TableName workflow_instance
+ * @TableName workflow_dsl
  */
-@TableName(value = "tb_workflow_instance")
+@TableName(value = "tb_workflow_dsl")
 @Data
-public class WorkflowInstance {
+public class TbWorkflowDsl {
     /**
      *
      */
     @TableId(type = IdType.AUTO)
-    private Long instanceId;
+    private Long id;
 
     /**
      *
      */
     private Long workflowId;
 
-
-    private String workflowName;
+    /**
+     *
+     */
+    private Integer version;
 
     /**
      *
      */
-    private String status;
-
-
-    /**
-     *
-     */
-    private LocalDateTime createdAt;
+    private String content;
 
     /**
      *
      */
-    private LocalDateTime updatedAt;
+    private LocalDateTime createTime;
 }

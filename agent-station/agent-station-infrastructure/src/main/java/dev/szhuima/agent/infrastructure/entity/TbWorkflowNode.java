@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 @TableName(value = "tb_workflow_node")
 @Data
-public class WorkflowNode {
+public class TbWorkflowNode {
     /**
      *
      */

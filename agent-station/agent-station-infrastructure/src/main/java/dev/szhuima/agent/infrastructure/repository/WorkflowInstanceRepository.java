@@ -6,7 +6,7 @@ import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
-import dev.szhuima.agent.infrastructure.entity.WorkflowInstance;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowInstance;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,10 +33,10 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
      */
     @Override
     public WorkflowInstanceDO getLastInstance(String workflowName) {
-        LambdaQueryWrapper<WorkflowInstance> wrapper = Wrappers.lambdaQuery(WorkflowInstance.class)
-                .eq(WorkflowInstance::getWorkflowName, workflowName)
-                .orderByDesc(WorkflowInstance::getInstanceId).last("limit 1");
-        WorkflowInstance instance = workflowInstanceMapper.selectOne(wrapper);
+        LambdaQueryWrapper<TbWorkflowInstance> wrapper = Wrappers.lambdaQuery(TbWorkflowInstance.class)
+                .eq(TbWorkflowInstance::getWorkflowName, workflowName)
+                .orderByDesc(TbWorkflowInstance::getInstanceId).last("limit 1");
+        TbWorkflowInstance instance = workflowInstanceMapper.selectOne(wrapper);
         return convert2DO(instance);
     }
 
@@ -48,7 +48,7 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
      */
     @Override
     public void saveInstance(WorkflowInstanceDO workflowInstanceDO) {
-        WorkflowInstance instance = new WorkflowInstance();
+        TbWorkflowInstance instance = new TbWorkflowInstance();
         instance.setInstanceId(workflowInstanceDO.getInstanceId());
         instance.setWorkflowId(workflowInstanceDO.getWorkflowId());
         instance.setStatus(workflowInstanceDO.getStatus().name());
@@ -65,14 +65,14 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
      */
     @Override
     public WorkflowInstanceDO getInstance(Long instanceId) {
-        WorkflowInstance instance = workflowInstanceMapper.selectById(instanceId);
+        TbWorkflowInstance instance = workflowInstanceMapper.selectById(instanceId);
         if (instance == null) {
             return null;
         }
         return convert2DO(instance);
     }
 
-    private WorkflowInstanceDO convert2DO(WorkflowInstance instance) {
+    private WorkflowInstanceDO convert2DO(TbWorkflowInstance instance) {
         WorkflowInstanceDO workflowInstanceDO = new WorkflowInstanceDO();
         workflowInstanceDO.setInstanceId(instance.getInstanceId());
         workflowInstanceDO.setWorkflowId(instance.getWorkflowId());
@@ -88,7 +88,7 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
 
     @Override
     public void updateByInstanceId(WorkflowInstanceDO workflowInstance) {
-        WorkflowInstance instance = new WorkflowInstance();
+        TbWorkflowInstance instance = new TbWorkflowInstance();
         instance.setWorkflowId(workflowInstance.getWorkflowId());
         instance.setInstanceId(workflowInstance.getInstanceId());
         instance.setStatus(workflowInstance.getStatus().name());

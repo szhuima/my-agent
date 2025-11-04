@@ -1,7 +1,7 @@
 package dev.szhuima.agent.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import dev.szhuima.agent.infrastructure.entity.WorkflowExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowExecution;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @Entity dev.szhuima.agent.infrastructure.po.WorkflowExecution
  */
 @Mapper
-public interface WorkflowExecutionMapper extends BaseMapper<WorkflowExecution> {
+public interface WorkflowExecutionMapper extends BaseMapper<TbWorkflowExecution> {
 
 }
 

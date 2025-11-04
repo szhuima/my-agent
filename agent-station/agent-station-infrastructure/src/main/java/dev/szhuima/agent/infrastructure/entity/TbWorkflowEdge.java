@@ -8,38 +8,40 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * @TableName workflow
+ * @TableName workflow_edge
  */
-@TableName(value = "tb_workflow")
+@TableName(value = "tb_workflow_edge")
 @Data
-public class Workflow {
+public class TbWorkflowEdge {
     /**
      *
      */
     @TableId(type = IdType.AUTO)
+    private Long edgeId;
+
+    /**
+     *
+     */
     private Long workflowId;
 
     /**
      *
      */
-    private String name;
+    private Long fromNodeId;
 
-    private Integer version;
-
-    /**
-     * 元数据
-     */
-    private String metaJson;
+    private String fromNodeName;
 
     /**
      *
      */
-    private String description;
+    private Long toNodeId;
+
+    private String toNodeName;
 
     /**
-     *
+     * 分支标签，例如 true/false 或 branchA，用于表示 CONDITION 节点的哪个输出
      */
-    private String status;
+    private String label;
 
     /**
      *

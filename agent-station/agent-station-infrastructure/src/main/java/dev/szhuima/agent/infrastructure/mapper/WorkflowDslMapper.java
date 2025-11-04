@@ -1,7 +1,7 @@
 package dev.szhuima.agent.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowDsl;
 
 /**
  * @author jack
@@ -9,7 +9,7 @@ import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
  * @createDate 2025-09-28 09:41:56
  * @Entity dev.szhuima.agent.infrastructure.po.WorkflowDsl
  */
-public interface WorkflowDslMapper extends BaseMapper<WorkflowDsl> {
+public interface WorkflowDslMapper extends BaseMapper<TbWorkflowDsl> {
 
 }
 

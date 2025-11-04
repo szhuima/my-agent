@@ -8,34 +8,46 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * @TableName workflow_dsl
+ * @TableName workflow
  */
-@TableName(value = "tb_workflow_dsl")
+@TableName(value = "tb_workflow")
 @Data
-public class WorkflowDsl {
+public class TbWorkflow {
     /**
      *
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
-
-    /**
-     *
-     */
     private Long workflowId;
 
     /**
      *
      */
+    private String name;
+
     private Integer version;
 
     /**
-     *
+     * 元数据
      */
-    private String content;
+    private String metaJson;
 
     /**
      *
      */
-    private LocalDateTime createTime;
+    private String description;
+
+    /**
+     *
+     */
+    private String status;
+
+    /**
+     *
+     */
+    private LocalDateTime createdAt;
+
+    /**
+     *
+     */
+    private LocalDateTime updatedAt;
 }

@@ -1,7 +1,7 @@
 package dev.szhuima.agent.infrastructure.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import dev.szhuima.agent.infrastructure.entity.WorkflowNodeExecution;
+import dev.szhuima.agent.infrastructure.entity.TbWorkflowNodeExecution;
 
 /**
  * @author jack
@@ -9,7 +9,7 @@ import dev.szhuima.agent.infrastructure.entity.WorkflowNodeExecution;
  * @createDate 2025-10-17 10:09:44
  * @Entity dev.szhuima.agent.infrastructure.po.WorkflowNodeExecution
  */
-public interface WorkflowNodeExecutionMapper extends BaseMapper<WorkflowNodeExecution> {
+public interface WorkflowNodeExecutionMapper extends BaseMapper<TbWorkflowNodeExecution> {
 
 }
 

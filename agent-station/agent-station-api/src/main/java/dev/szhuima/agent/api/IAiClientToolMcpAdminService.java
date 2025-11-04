@@ -1,7 +1,6 @@
 package dev.szhuima.agent.api;
 
 
-
 import dev.szhuima.agent.api.dto.AiClientToolMcpQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientToolMcpRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientToolMcpResponseDTO;
@@ -18,6 +17,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 创建MCP客户端配置
+     *
      * @param request MCP客户端配置请求对象
      * @return 操作结果
      */
@@ -25,6 +25,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据ID更新MCP客户端配置
+     *
      * @param request MCP客户端配置请求对象
      * @return 操作结果
      */
@@ -33,6 +34,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据ID删除MCP客户端配置
+     *
      * @param id 主键ID
      * @return 操作结果
      */
@@ -40,6 +42,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据MCP ID删除MCP客户端配置
+     *
      * @param mcpId MCP ID
      * @return 操作结果
      */
@@ -47,6 +50,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据ID查询MCP客户端配置
+     *
      * @param id 主键ID
      * @return MCP客户端配置对象
      */
@@ -54,6 +58,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据MCP ID查询MCP客户端配置
+     *
      * @param mcpId MCP ID
      * @return MCP客户端配置对象
      */
@@ -61,12 +66,14 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 查询所有MCP客户端配置
+     *
      * @return MCP客户端配置列表
      */
     Response<List<AiClientToolMcpResponseDTO>> queryAllAiClientToolMcps();
 
     /**
      * 根据状态查询MCP客户端配置
+     *
      * @param status 状态
      * @return MCP客户端配置列表
      */
@@ -74,6 +81,7 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 根据传输类型查询MCP客户端配置
+     *
      * @param transportType 传输类型
      * @return MCP客户端配置列表
      */
@@ -81,12 +89,14 @@ public interface IAiClientToolMcpAdminService {
 
     /**
      * 查询启用的MCP客户端配置
+     *
      * @return MCP客户端配置列表
      */
     Response<List<AiClientToolMcpResponseDTO>> queryEnabledAiClientToolMcps();
 
     /**
      * 根据查询条件查询MCP客户端配置列表
+     *
      * @param request 查询请求对象
      * @return MCP客户端配置列表
      */

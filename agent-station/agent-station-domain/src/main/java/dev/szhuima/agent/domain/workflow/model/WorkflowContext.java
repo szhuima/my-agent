@@ -26,9 +26,10 @@ public class WorkflowContext {
     }
 
 
-    public WorkflowContext() {}
+    public WorkflowContext() {
+    }
 
-    public WorkflowContext(Map<String,Object> initialVariables) {
+    public WorkflowContext(Map<String, Object> initialVariables) {
         if (CollectionUtil.isNotEmpty(initialVariables)) {
             variables.putAll(initialVariables);
         }

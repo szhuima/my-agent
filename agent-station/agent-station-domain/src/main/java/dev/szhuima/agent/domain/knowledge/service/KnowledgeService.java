@@ -2,9 +2,9 @@ package dev.szhuima.agent.domain.knowledge.service;
 
 
 import cn.hutool.core.collection.CollectionUtil;
-import dev.szhuima.agent.domain.agent.model.valobj.Knowledge;
-import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
+import dev.szhuima.agent.domain.agent.model.Knowledge;
 import dev.szhuima.agent.domain.knowledge.IKnowledgeService;
+import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.document.Document;
@@ -40,7 +40,7 @@ public class KnowledgeService implements IKnowledgeService {
     private PgVectorStore vectorStore;
 
     @Resource
-    private IAgentRepository repository;
+    private IKnowledgeRepository repository;
 
     @Override
     public void storeRagFile(String name, String tag, List<MultipartFile> files) {

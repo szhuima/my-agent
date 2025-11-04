@@ -5,23 +5,25 @@
 -- 2) 创建数据库（如果不存在）
 
 -- 连接到 postgres（默认库）
-\c postgres;
+\
+c postgres;
 
 -- 创建数据库 springai（如果不存在）
 DO
-$$
-    BEGIN
-        IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'springai') THEN
-            CREATE DATABASE springai;
-        END IF;
-    END
+    $$
+BEGIN IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'springai') THEN
+CREATE DATABASE springai;
+END IF;
+END
 $$;
 
 -- 切换到目标数据库 springai
-\c springai;
+\
+c springai;
 
 -- 安装 pgvector 扩展（如果还没安装）
-CREATE EXTENSION IF NOT EXISTS vector;
+CREATE
+EXTENSION IF NOT EXISTS vector;
 
 -- 查询表
 -- SELECT * FROM information_schema.tables;
@@ -32,8 +34,8 @@ DROP TABLE IF EXISTS public.vector_store_768;
 -- 创建新表
 CREATE TABLE public.vector_store_768
 (
-    id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    content   TEXT NOT NULL,
-    metadata  JSONB,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    content TEXT NOT NULL,
+    metadata JSONB,
     embedding VECTOR(768)
 );

@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class WorkflowNodeConfigHttp {
     /**
-     * 
+     *
      */
     private Long configHttpId;
 
@@ -37,12 +37,12 @@ public class WorkflowNodeConfigHttp {
     /**
      * 请求头 JSON 字符串，例如 {"Authorization":"Bearer xxx"}
      */
-    private Map<String,String> headers;
+    private Map<String, String> headers;
 
     /**
      * URL 参数 JSON 字符串，例如 {"userId":"123"}
      */
-    private Map<String,Object> params;
+    private Map<String, Object> params;
 
     /**
      * 请求体 JSON 字符串
@@ -70,12 +70,12 @@ public class WorkflowNodeConfigHttp {
     private Integer retryCount;
 
     /**
-     * 
+     *
      */
     private LocalDateTime createdAt;
 
     /**
-     * 
+     *
      */
     private LocalDateTime updatedAt;
 

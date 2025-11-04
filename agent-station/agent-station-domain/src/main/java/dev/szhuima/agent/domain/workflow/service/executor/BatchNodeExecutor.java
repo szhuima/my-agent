@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * * @Author: szhuima
@@ -23,7 +22,7 @@ import java.util.Map;
  **/
 @Slf4j
 @Service
-public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowExecutorRouter{
+public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowExecutorRouter {
 
 
     @Resource
@@ -59,7 +58,7 @@ public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowE
                 NodeExecutionResult result = executor.execute(bodyNodeDO, context, workflowDO);
                 if (!result.isCompleted()) {
                     if (batchConfigNode.getErrorStrategy() == WorkflowNodeConfigBatchDO.ErrorStrategy.BREAK) {
-                        log.info("bodyNode:{} is break,result:{}", nodeName,result);
+                        log.info("bodyNode:{} is break,result:{}", nodeName, result);
                         return result;
                     }
                 }

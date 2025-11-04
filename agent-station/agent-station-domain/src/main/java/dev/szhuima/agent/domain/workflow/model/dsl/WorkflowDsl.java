@@ -1,7 +1,7 @@
 package dev.szhuima.agent.domain.workflow.model.dsl;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import dev.szhuima.agent.domain.workflow.model.TriggerType;
+import com.microsoft.schemas.office.visio.x2012.main.TriggerType;
 import lombok.Data;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class WorkflowDsl {
 
     private String name;
     private String title;
-    private Map<String,Object> meta;
+    private Map<String, Object> meta;
     private List<BaseNode<?>> nodes;
     private List<Edge> edges;
     private List<BaseTrigger<?>> triggers;
@@ -38,7 +38,7 @@ public class WorkflowDsl {
         public static class HttpConfig {
             private String url;
             private String method;
-            private Map<String,String> headers;
+            private Map<String, String> headers;
             private List<Field> params;
             private List<Field> body;
 
@@ -65,7 +65,6 @@ public class WorkflowDsl {
             private String queue;
         }
     }
-
 
 
     @Data
@@ -117,7 +116,7 @@ public class WorkflowDsl {
         public static class HttpConfig {
             private String url;
             private String method;
-            private Map<String,String> headers;
+            private Map<String, String> headers;
             private Map<String, Object> params; // 支持任意结构（模板字符串、对象）
             private Map<String, Object> body; // 支持任意结构（模板字符串、对象）
         }

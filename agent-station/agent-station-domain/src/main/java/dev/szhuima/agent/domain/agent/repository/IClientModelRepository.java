@@ -1,6 +1,6 @@
 package dev.szhuima.agent.domain.agent.repository;
 
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
+import dev.szhuima.agent.domain.agent.model.ModelApi;
 
 /**
  * * @Author: szhuima
@@ -9,6 +9,6 @@ import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
  **/
 public interface IClientModelRepository {
 
-    AiClientModelVO getClientModelById(Long modelId);
+    ModelApi getClientModelById(Long modelId);
 
 }

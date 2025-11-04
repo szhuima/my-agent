@@ -1,10 +1,6 @@
 package dev.szhuima.agent.domain.workflow.reository;
 
-import dev.szhuima.agent.domain.workflow.model.TriggerType;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceTriggerDO;
-
-import java.util.List;
 
 /**
  * * @Author: szhuima
@@ -18,9 +14,6 @@ public interface IWorkflowInstanceRepository {
      * 根据工作流名称获取最新部署的实例
      */
     WorkflowInstanceDO getLastInstance(String workflowName);
-
-    List<WorkflowInstanceTriggerDO> findTriggerInstances(Long instanceId, TriggerType triggerType);
-
 
     /**
      * 保存工作流实例
@@ -41,5 +34,4 @@ public interface IWorkflowInstanceRepository {
 
     void updateByInstanceId(WorkflowInstanceDO workflowInstance);
 
-    void saveInstanceTrigger(WorkflowInstanceTriggerDO triggerDO);
 }

@@ -2,9 +2,7 @@ package dev.szhuima.agent.infrastructure.convert;
 
 import cn.hutool.core.bean.BeanUtil;
 import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
-import dev.szhuima.agent.infrastructure.po.Workflow;
-import dev.szhuima.agent.infrastructure.po.WorkflowInstance;
-import dev.szhuima.agent.infrastructure.po.WorkflowNode;
+import dev.szhuima.agent.infrastructure.entity.Workflow;
 
 import java.util.List;
 

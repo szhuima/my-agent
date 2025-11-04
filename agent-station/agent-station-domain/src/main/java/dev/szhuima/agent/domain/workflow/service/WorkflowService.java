@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -43,7 +42,6 @@ public class WorkflowService {
 
     @Resource
     private DynamicTaskService dynamicTaskService;
-
 
 
     /**
@@ -97,10 +95,6 @@ public class WorkflowService {
         workflowDO.getEdges().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowEdge);
         log.info("Workflow saved, workflowName={}, workflowId={}", workflowDO.getName(), workflowId);
         return workflowId;
-    }
-
-    public List<WorkflowTriggerDO> getTrigger(Long workflowId, TriggerType triggerType) {
-        return workflowRepository.getTrigger(workflowId, triggerType);
     }
 
     public String parseWorkflowName(String content) {

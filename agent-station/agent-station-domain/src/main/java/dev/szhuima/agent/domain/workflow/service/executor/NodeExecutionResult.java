@@ -3,8 +3,6 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 import com.alibaba.fastjson2.JSON;
 import lombok.Data;
 
-import java.util.Map;
-
 
 @Data
 public class NodeExecutionResult {

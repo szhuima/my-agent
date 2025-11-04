@@ -1,8 +1,8 @@
 package dev.szhuima.agent.trigger.http.admin;
 
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.domain.agent.model.valobj.enums.ModelSource;
-import dev.szhuima.agent.domain.agent.model.valobj.enums.ModelType;
+import dev.szhuima.agent.domain.agent.model.ModelSource;
+import dev.szhuima.agent.domain.agent.model.ModelType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

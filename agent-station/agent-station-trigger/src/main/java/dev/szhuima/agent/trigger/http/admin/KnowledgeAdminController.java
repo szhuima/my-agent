@@ -9,8 +9,8 @@ import dev.szhuima.agent.api.dto.AiClientRagOrderQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRagOrderRequestDTO;
 import dev.szhuima.agent.api.dto.AiClientRagOrderResponseDTO;
 import dev.szhuima.agent.domain.knowledge.IKnowledgeService;
-import dev.szhuima.agent.infrastructure.mapper.AiKnowledgeMapper;
-import dev.szhuima.agent.infrastructure.po.AiKnowledge;
+import dev.szhuima.agent.infrastructure.entity.TbKnowledge;
+import dev.szhuima.agent.infrastructure.mapper.KnowledgeMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
 
     @Resource
-    private AiKnowledgeMapper aiClientRagOrderDao;
+    private KnowledgeMapper aiClientRagOrderDao;
 
     @Resource
     private IKnowledgeService ragService;
@@ -47,7 +47,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             log.info("创建知识库配置请求：{}", request);
 
             // DTO转PO
-            AiKnowledge aiClientRagOrder = convertToAiClientRagOrder(request);
+            TbKnowledge aiClientRagOrder = convertToAiClientRagOrder(request);
             aiClientRagOrder.setCreateTime(LocalDateTime.now());
             aiClientRagOrder.setUpdateTime(LocalDateTime.now());
 
@@ -83,7 +83,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             }
 
             // DTO转PO
-            AiKnowledge aiClientRagOrder = convertToAiClientRagOrder(request);
+            TbKnowledge aiClientRagOrder = convertToAiClientRagOrder(request);
             aiClientRagOrder.setUpdateTime(LocalDateTime.now());
 
             int result = aiClientRagOrderDao.updateById(aiClientRagOrder);
@@ -150,7 +150,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
         try {
             log.info("根据ID查询知识库配置：{}", id);
 
-            AiKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(id);
+            TbKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(id);
             if (aiClientRagOrder == null) {
                 return Response.<AiClientRagOrderResponseDTO>builder()
                         .code(ErrorCode.SUCCESS.getCode())
@@ -182,7 +182,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
         try {
             log.info("根据知识库ID查询知识库配置：{}", ragId);
 
-            AiKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(ragId);
+            TbKnowledge aiClientRagOrder = aiClientRagOrderDao.selectById(ragId);
             if (aiClientRagOrder == null) {
                 return Response.<AiClientRagOrderResponseDTO>builder()
                         .code(ErrorCode.SUCCESS.getCode())
@@ -214,10 +214,10 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
         try {
             log.info("查询启用的知识库配置");
 
-            LambdaQueryWrapper<AiKnowledge> wrapper = Wrappers.lambdaQuery(AiKnowledge.class)
-                    .eq(AiKnowledge::getStatus, 1);
+            LambdaQueryWrapper<TbKnowledge> wrapper = Wrappers.lambdaQuery(TbKnowledge.class)
+                    .eq(TbKnowledge::getStatus, 1);
 
-            List<AiKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(wrapper);
+            List<TbKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(wrapper);
             List<AiClientRagOrderResponseDTO> responseDTOs = aiClientRagOrders.stream()
                     .map(this::convertToAiClientRagOrderResponseDTO)
                     .collect(Collectors.toList());
@@ -242,9 +242,9 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
     public Response<List<AiClientRagOrderResponseDTO>> queryAiClientRagOrdersByKnowledgeTag(@PathVariable("knowledgeTag") String knowledgeTag) {
         try {
             log.info("根据知识标签查询知识库配置：{}", knowledgeTag);
-            LambdaQueryWrapper<AiKnowledge> wrapper = Wrappers.lambdaQuery(AiKnowledge.class)
-                    .eq(AiKnowledge::getKnowledgeTag, knowledgeTag);
-            List<AiKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(wrapper);
+            LambdaQueryWrapper<TbKnowledge> wrapper = Wrappers.lambdaQuery(TbKnowledge.class)
+                    .eq(TbKnowledge::getKnowledgeTag, knowledgeTag);
+            List<TbKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(wrapper);
             List<AiClientRagOrderResponseDTO> responseDTOs = aiClientRagOrders.stream()
                     .map(this::convertToAiClientRagOrderResponseDTO)
                     .collect(Collectors.toList());
@@ -271,7 +271,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             log.info("根据状态查询知识库配置：{}", status);
 
             // 这里需要根据实际的DAO方法实现，如果没有可以通过queryAll然后过滤
-            List<AiKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
+            List<TbKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
             List<AiClientRagOrderResponseDTO> responseDTOs = aiClientRagOrders.stream()
                     .filter(order -> order.getStatus().equals(status))
                     .map(this::convertToAiClientRagOrderResponseDTO)
@@ -299,10 +299,10 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
             log.info("分页查询知识库配置列表：{}", request);
 
             // 这里简化实现，实际项目中可能需要实现分页查询
-            List<AiKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
+            List<TbKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
 
             // 根据查询条件过滤
-            List<AiKnowledge> filteredOrders = aiClientRagOrders.stream()
+            List<TbKnowledge> filteredOrders = aiClientRagOrders.stream()
                     .filter(order -> {
                         boolean match = true;
 //                        if (StringUtils.hasText(request.getRagId())) {
@@ -357,7 +357,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
         try {
             log.info("查询所有知识库配置");
 
-            List<AiKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
+            List<TbKnowledge> aiClientRagOrders = aiClientRagOrderDao.selectList(Wrappers.emptyWrapper());
             List<AiClientRagOrderResponseDTO> responseDTOs = aiClientRagOrders.stream()
                     .map(this::convertToAiClientRagOrderResponseDTO)
                     .collect(Collectors.toList());
@@ -380,8 +380,8 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
     /**
      * DTO转PO
      */
-    private AiKnowledge convertToAiClientRagOrder(AiClientRagOrderRequestDTO requestDTO) {
-        AiKnowledge aiClientRagOrder = new AiKnowledge();
+    private TbKnowledge convertToAiClientRagOrder(AiClientRagOrderRequestDTO requestDTO) {
+        TbKnowledge aiClientRagOrder = new TbKnowledge();
         BeanUtils.copyProperties(requestDTO, aiClientRagOrder);
         return aiClientRagOrder;
     }
@@ -400,7 +400,7 @@ public class KnowledgeAdminController implements IAiClientRagOrderAdminService {
     /**
      * PO转DTO
      */
-    private AiClientRagOrderResponseDTO convertToAiClientRagOrderResponseDTO(AiKnowledge aiClientRagOrder) {
+    private AiClientRagOrderResponseDTO convertToAiClientRagOrderResponseDTO(TbKnowledge aiClientRagOrder) {
         AiClientRagOrderResponseDTO responseDTO = new AiClientRagOrderResponseDTO();
         BeanUtils.copyProperties(aiClientRagOrder, responseDTO);
         return responseDTO;

@@ -12,7 +12,8 @@ public interface WorkflowNodeExecutor extends StringTemplateRender {
 
     /**
      * 执行节点
-     * @param node 节点配置
+     *
+     * @param node    节点配置
      * @param context 当前工作流上下文
      * @return 执行结果
      */

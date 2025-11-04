@@ -5,10 +5,10 @@ import com.alibaba.fastjson2.JSON;
 import dev.szhuima.agent.domain.workflow.model.NodeExecutionDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowExecutionDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowExecutionRepository;
+import dev.szhuima.agent.infrastructure.entity.WorkflowExecution;
+import dev.szhuima.agent.infrastructure.entity.WorkflowNodeExecution;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowExecutionMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeExecutionMapper;
-import dev.szhuima.agent.infrastructure.po.WorkflowExecution;
-import dev.szhuima.agent.infrastructure.po.WorkflowNodeExecution;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 

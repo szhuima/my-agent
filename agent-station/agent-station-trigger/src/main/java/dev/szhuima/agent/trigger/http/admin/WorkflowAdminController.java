@@ -15,14 +15,14 @@ import dev.szhuima.agent.api.dto.WorkflowResponseDTO;
 import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
+import dev.szhuima.agent.infrastructure.entity.Workflow;
+import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
+import dev.szhuima.agent.infrastructure.entity.WorkflowInstance;
+import dev.szhuima.agent.infrastructure.entity.WorkflowNode;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeMapper;
-import dev.szhuima.agent.infrastructure.po.Workflow;
-import dev.szhuima.agent.infrastructure.po.WorkflowDsl;
-import dev.szhuima.agent.infrastructure.po.WorkflowInstance;
-import dev.szhuima.agent.infrastructure.po.WorkflowNode;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +135,7 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Transactional(rollbackFor = Exception.class)
     public Response deleteWorkflow(@PathVariable("workflowId") Long workflowId) {
         if (workflowId == null) {
-            throw new BizException( "工作流ID不能为空");
+            throw new BizException("工作流ID不能为空");
         }
 
         // 检查该工作流下是否有工作流实例

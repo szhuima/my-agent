@@ -29,8 +29,6 @@ public class WorkflowDO {
 
     private Map<String, Object> meta;
 
-    private List<WorkflowTriggerDO> triggers;
-
     /**
      * 节点列表，key为节点ID
      */

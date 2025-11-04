@@ -17,7 +17,7 @@ import java.util.Map;
  **/
 public interface StringTemplateRender {
 
-     MustacheFactory mf = new DefaultMustacheFactory();
+    MustacheFactory mf = new DefaultMustacheFactory();
 
     /**
      * 使用 Mustache 渲染模板字符串
@@ -48,7 +48,7 @@ public interface StringTemplateRender {
      * 使用 Mustache 渲染模板字符串
      *
      * @param template 模板内容，例如 "Hello {{name}}"
-     * @param scope   上下文数据，例如 Map.of("name", "Jobs")
+     * @param scope    上下文数据，例如 Map.of("name", "Jobs")
      * @return 渲染后的字符串
      */
     default String render(String template, Object scope) {

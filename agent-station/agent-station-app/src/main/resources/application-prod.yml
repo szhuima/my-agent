@@ -1,4 +1,3 @@
-
 server:
   port: 8093
   servlet:
@@ -94,7 +93,6 @@ xfg:
 
 agent-station:
   rag:
-    text-splitter-model-id: 3
     query-rewrite-model-id: 5
   workflow:
     dsl-path: /data/workflow

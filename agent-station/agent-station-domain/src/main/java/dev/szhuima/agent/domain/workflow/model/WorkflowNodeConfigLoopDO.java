@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.N;
 
 import java.time.LocalDateTime;
 
 /**
  * 循环节点配置表
+ *
  * @TableName workflow_node_config_loop
  */
 @Data

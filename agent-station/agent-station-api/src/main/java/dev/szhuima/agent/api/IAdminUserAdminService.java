@@ -1,7 +1,6 @@
 package dev.szhuima.agent.api;
 
 
-
 import dev.szhuima.agent.api.dto.AdminUserLoginRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserRequestDTO;
@@ -19,6 +18,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 创建管理员用户
+     *
      * @param request 管理员用户请求对象
      * @return 操作结果
      */
@@ -26,6 +26,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据ID更新管理员用户
+     *
      * @param request 管理员用户请求对象
      * @return 操作结果
      */
@@ -33,6 +34,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据用户ID更新管理员用户
+     *
      * @param request 管理员用户请求对象
      * @return 操作结果
      */
@@ -40,6 +42,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据ID删除管理员用户
+     *
      * @param id 主键ID
      * @return 操作结果
      */
@@ -47,6 +50,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据用户ID删除管理员用户
+     *
      * @param userId 用户ID
      * @return 操作结果
      */
@@ -54,6 +58,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据ID查询管理员用户
+     *
      * @param id 主键ID
      * @return 管理员用户对象
      */
@@ -61,6 +66,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据用户ID查询管理员用户
+     *
      * @param userId 用户ID
      * @return 管理员用户对象
      */
@@ -68,6 +74,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据用户名查询管理员用户
+     *
      * @param username 用户名
      * @return 管理员用户对象
      */
@@ -75,12 +82,14 @@ public interface IAdminUserAdminService {
 
     /**
      * 查询所有启用状态的管理员用户
+     *
      * @return 管理员用户列表
      */
     Response<List<AdminUserResponseDTO>> queryEnabledAdminUsers();
 
     /**
      * 根据状态查询管理员用户列表
+     *
      * @param status 状态
      * @return 管理员用户列表
      */
@@ -88,6 +97,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 根据条件查询管理员用户列表
+     *
      * @param request 查询条件
      * @return 管理员用户列表
      */
@@ -95,12 +105,14 @@ public interface IAdminUserAdminService {
 
     /**
      * 查询所有管理员用户
+     *
      * @return 管理员用户列表
      */
     Response<List<AdminUserResponseDTO>> queryAllAdminUsers();
 
     /**
      * 用户登录验证
+     *
      * @param request 登录请求对象
      * @return 管理员用户对象
      */
@@ -108,6 +120,7 @@ public interface IAdminUserAdminService {
 
     /**
      * 用户登录校验
+     *
      * @param request 登录请求对象
      * @return 登录校验结果，成功返回true，失败返回false
      */

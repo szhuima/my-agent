@@ -1,24 +1,22 @@
 package dev.szhuima.agent.infrastructure.repository;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.szhuima.agent.domain.agent.AgentClient;
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientModelVO;
-import dev.szhuima.agent.domain.agent.model.valobj.AiClientToolMcpVO;
-import dev.szhuima.agent.domain.agent.model.valobj.Knowledge;
+import dev.szhuima.agent.domain.agent.Agent;
+import dev.szhuima.agent.domain.agent.model.Knowledge;
+import dev.szhuima.agent.domain.agent.model.ModelApi;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
-import dev.szhuima.agent.infrastructure.mapper.*;
-import dev.szhuima.agent.infrastructure.po.*;
+import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
+import dev.szhuima.agent.infrastructure.entity.TbAgent;
+import dev.szhuima.agent.infrastructure.entity.TbAgentKnowledgeConfig;
+import dev.szhuima.agent.infrastructure.entity.TbModelApi;
+import dev.szhuima.agent.infrastructure.mapper.AgentKnowledgeConfigMapper;
+import dev.szhuima.agent.infrastructure.mapper.AgentMapper;
+import dev.szhuima.agent.infrastructure.mapper.ModelApiMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,203 +33,54 @@ import java.util.stream.Collectors;
 public class AgentRepository implements IAgentRepository {
 
     @Resource
-    private AiClientMapper aiClientMapper;
+    private AgentMapper agentMapper;
 
     @Resource
-    private AiClientModelMapper aiClientModelMapper;
+    private ModelApiMapper modelApiMapper;
 
     @Resource
-    private AiClientToolMcpMapper aiClientToolMcpDao;
+    private IKnowledgeRepository knowledgeRepository;
 
     @Resource
-    private AiClientToolConfigMapper aiClientToolConfigDao;
+    private AgentKnowledgeConfigMapper agentKnowledgeConfigMapper;
 
-    @Resource
-    private AiClientAdvisorConfigMapper aiClientAdvisorConfigDao;
-
-    @Resource
-    private AiKnowledgeMapper knowledgeMapper;
-
-    @Resource
-    private AiClientKnowledgeConfigMapper aiClientKnowledgeConfigMapper;
 
     @Override
-    public List<AiClientModelVO> queryClientModelList(List<Long> clientIdList) {
-        // 根据客户端ID列表查询模型配置
-        LambdaQueryWrapper<AiClient> clientWrapper = Wrappers.lambdaQuery(AiClient.class)
-                .in(CollectionUtil.isNotEmpty(clientIdList), AiClient::getId, clientIdList)
-                .select(AiClient::getModelId);
-        List<Long> modelIds = aiClientMapper.selectList(clientWrapper).stream().map(AiClient::getModelId).distinct().toList();
-
-        if (CollectionUtils.isEmpty(modelIds)) return new ArrayList<>();
-
-        LambdaQueryWrapper<AiClientModel> modelWrapper = Wrappers.lambdaQuery(AiClientModel.class)
-                .in(CollectionUtil.isNotEmpty(modelIds), AiClientModel::getId, modelIds);
-        List<AiClientModel> aiClientModels = aiClientModelMapper.selectList(modelWrapper);
-        if (null == aiClientModels || aiClientModels.isEmpty()) return new ArrayList<>();
-
-        // 将PO对象转换为VO对象
-        List<AiClientModelVO> aiClientModelVOList = new ArrayList<>();
-        for (AiClientModel aiClientModel : aiClientModels) {
-            AiClientModelVO vo = new AiClientModelVO();
-            vo.setId(aiClientModel.getId());
-            vo.setModelName(aiClientModel.getModelApiName());
-            vo.setBaseUrl(aiClientModel.getBaseUrl());
-            vo.setApiKey(aiClientModel.getApiKey());
-            vo.setCompletionsPath(aiClientModel.getCompletionsPath());
-            vo.setEmbeddingsPath(aiClientModel.getEmbeddingsPath());
-            vo.setModelType(aiClientModel.getModelType());
-            vo.setModelSource(aiClientModel.getModelSource());
-            vo.setModelVersion(aiClientModel.getModelName());
-            vo.setTimeout(aiClientModel.getTimeout());
-            aiClientModelVOList.add(vo);
-        }
-
-        return aiClientModelVOList;
-    }
-
-    @Override
-    public List<AiClientToolMcpVO> queryClientToolList(List<Long> clientIdList) {
-        List<AiClientToolMcp> aiClientToolMcps = aiClientToolMcpDao.queryMcpConfigByClientIds(clientIdList);
-
-        // 将PO对象转换为VO对象
-        List<AiClientToolMcpVO> aiClientToolMcpVOList = new ArrayList<>();
-        if (null == aiClientToolMcps || aiClientToolMcps.isEmpty()) return aiClientToolMcpVOList;
-        for (AiClientToolMcp aiClientToolMcp : aiClientToolMcps) {
-            AiClientToolMcpVO vo = new AiClientToolMcpVO();
-            vo.setId(aiClientToolMcp.getId());
-            vo.setMcpName(aiClientToolMcp.getMcpName());
-            vo.setTransportType(aiClientToolMcp.getTransportType());
-            vo.setRequestTimeout(aiClientToolMcp.getRequestTimeout());
-
-            // 根据传输类型解析JSON配置
-            String transportType = aiClientToolMcp.getTransportType();
-            String transportConfig = aiClientToolMcp.getTransportConfig();
-
-            try {
-                if ("sse".equals(transportType)) {
-                    // 解析SSE配置
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    AiClientToolMcpVO.TransportConfigSse sseConfig = objectMapper.readValue(transportConfig, AiClientToolMcpVO.TransportConfigSse.class);
-                    vo.setTransportConfigSse(sseConfig);
-                } else if ("stdio".equals(transportType)) {
-                    // 解析STDIO配置
-                    Map<String, AiClientToolMcpVO.TransportConfigStdio.Stdio> stdio = JSON.parseObject(transportConfig,
-                            new com.alibaba.fastjson.TypeReference<>() {
-                            });
-                    AiClientToolMcpVO.TransportConfigStdio stdioConfig = new AiClientToolMcpVO.TransportConfigStdio();
-                    stdioConfig.setStdio(stdio);
-
-                    vo.setTransportConfigStdio(stdioConfig);
-                }
-            } catch (Exception e) {
-                log.error("解析传输配置失败: {}", e.getMessage(), e);
-            }
-            aiClientToolMcpVOList.add(vo);
-        }
-
-        return aiClientToolMcpVOList;
-    }
-
-    @Override
-    public List<AgentClient> queryAgentClient(List<Long> clientIdList) {
-        if (null == clientIdList || clientIdList.isEmpty()) {
+    public List<Agent> queryAgentList(List<Long> agentIdList) {
+        if (null == agentIdList || agentIdList.isEmpty()) {
             return Collections.emptyList();
         }
-        List<AiClient> aiClients = aiClientMapper.selectBatchIds(clientIdList);
-
-
-        // 查询MCP工具配置
-        List<AiClientToolConfig> clientToolConfigs = aiClientToolConfigDao.queryToolConfigByClientIds(clientIdList);
-        Map<Long, List<AiClientToolConfig>> mcpMap = clientToolConfigs.stream()
-                .collect(Collectors.groupingBy(AiClientToolConfig::getClientId));
-
-        // 查询顾问配置
-        List<AiClientAdvisorConfig> advisorConfigs = aiClientAdvisorConfigDao.queryClientAdvisorConfigByClientIds(clientIdList);
-        Map<Long, List<AiClientAdvisorConfig>> advisorConfigMap = advisorConfigs.stream()
-                .collect(Collectors.groupingBy(AiClientAdvisorConfig::getClientId));
+        List<TbAgent> tbAgents = agentMapper.selectBatchIds(agentIdList);
 
         // 查询知识库配置
-        List<AiClientKnowledgeConfig> knowledgeConfigs = aiClientKnowledgeConfigMapper.selectList(Wrappers.lambdaQuery(AiClientKnowledgeConfig.class)
-                .in(AiClientKnowledgeConfig::getClientId, clientIdList));
-        Map<Long, List<AiClientKnowledgeConfig>> knowledgeConfigMap = knowledgeConfigs.stream()
-                .collect(Collectors.groupingBy(AiClientKnowledgeConfig::getClientId));
+        List<TbAgentKnowledgeConfig> knowledgeConfigs = agentKnowledgeConfigMapper.selectList(Wrappers.lambdaQuery(TbAgentKnowledgeConfig.class)
+                .in(TbAgentKnowledgeConfig::getClientId, agentIdList));
+        Map<Long, List<TbAgentKnowledgeConfig>> knowledgeConfigMap = knowledgeConfigs.stream()
+                .collect(Collectors.groupingBy(TbAgentKnowledgeConfig::getClientId));
 
-        // 构建AiClientVO列表
-        List<AgentClient> result = new ArrayList<>();
-        for (AiClient client : aiClients) {
+        List<Agent> result = new ArrayList<>();
+        for (TbAgent client : tbAgents) {
+            TbModelApi tbModelApi = modelApiMapper.selectById(client.getModelId());
+            ModelApi modelApi = BeanUtil.copyProperties(tbModelApi, ModelApi.class);
             Long clientId = client.getId();
-            AgentClient agentCLient = AgentClient.builder()
-                    .clientId(clientId)
+            Agent agentClient = Agent.builder()
+                    .id(clientId)
                     .systemPrompt(client.getSystemPrompt())
-                    .modelId(String.valueOf(client.getModelId()))
+                    .modelApi(modelApi)
                     .memorySize(client.getMemorySize())
                     .build();
-
-            // 设置MCP工具ID列表
-            if (mcpMap.containsKey(clientId)) {
-                List<String> mcpBeanIdList = mcpMap.get(clientId).stream()
-                        .map(mcp -> String.valueOf(mcp.getToolId()))
-                        .collect(Collectors.toList());
-                agentCLient.setMcpIdList(mcpBeanIdList);
-            } else {
-                agentCLient.setMcpIdList(new ArrayList<>());
-            }
-
-            // 设置顾问ID列表
-            if (advisorConfigMap.containsKey(clientId)) {
-                List<String> advisorBeanIdList = advisorConfigMap.get(clientId).stream()
-                        .map(advisor -> String.valueOf(advisor.getAdvisorId()))
-                        .collect(Collectors.toList());
-                agentCLient.setAdvisorIdList(advisorBeanIdList);
-            } else {
-                agentCLient.setAdvisorIdList(new ArrayList<>());
-            }
 
             // 设置知识库ID列表
             if (knowledgeConfigMap.containsKey(clientId)) {
                 List<Long> knowledgeIdList = knowledgeConfigMap.get(clientId).stream()
-                        .map(AiClientKnowledgeConfig::getKnowledgeId)
+                        .map(TbAgentKnowledgeConfig::getKnowledgeId)
                         .collect(Collectors.toList());
 
-                List<AiKnowledge> aiKnowledgeList = knowledgeMapper.selectBatchIds(knowledgeIdList);
-                List<Knowledge> knowledgeList = BeanUtil.copyToList(aiKnowledgeList, Knowledge.class);
-                agentCLient.setKnowledgeList(knowledgeList);
+                List<Knowledge> knowledgeList = knowledgeRepository.queryKnowledgeList(knowledgeIdList);
+                agentClient.setKnowledgeList(knowledgeList);
             }
-            result.add(agentCLient);
+            result.add(agentClient);
         }
-
         return result;
     }
-
-    @Override
-    public List<Long> queryAgentClientIds() {
-
-        LambdaQueryWrapper<AiClient> wrapper = Wrappers.lambdaQuery(AiClient.class)
-                .select(AiClient::getId)
-                .eq(AiClient::getStatus, 1);
-
-        return aiClientMapper.selectList(wrapper).stream().map(AiClient::getId).toList();
-    }
-
-    @Override
-    public Long saveKnowledge(Knowledge knowledge) {
-        AiKnowledge aiKnowledge = new AiKnowledge();
-        aiKnowledge.setRagName(knowledge.getRagName());
-        aiKnowledge.setKnowledgeTag(knowledge.getKnowledgeTag());
-        aiKnowledge.setContent(knowledge.getContent());
-        aiKnowledge.setStatus(1);
-        aiKnowledge.setCreateTime(LocalDateTime.now());
-        aiKnowledge.setUpdateTime(LocalDateTime.now());
-        knowledgeMapper.insert(aiKnowledge);
-        return aiKnowledge.getId();
-    }
-
-    @Override
-    public Knowledge queryKnowledge(Long knowledgeId) {
-        AiKnowledge aiKnowledge = knowledgeMapper.selectById(knowledgeId);
-        return BeanUtil.copyProperties(aiKnowledge, Knowledge.class);
-    }
-
-
 }

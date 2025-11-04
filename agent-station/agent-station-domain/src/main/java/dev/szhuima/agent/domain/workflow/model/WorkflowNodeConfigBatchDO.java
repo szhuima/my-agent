@@ -30,9 +30,9 @@ public class WorkflowNodeConfigBatchDO {
      */
     private String itemKey;
 
-     /**
-      * 遍历每个元素后，执行的节点名称列表
-      */
+    /**
+     * 遍历每个元素后，执行的节点名称列表
+     */
     private List<String> bodyNodes;
 
     /**
@@ -40,9 +40,9 @@ public class WorkflowNodeConfigBatchDO {
      */
     private ErrorStrategy errorStrategy = ErrorStrategy.CONTINUE;
 
-     /**
-      * 错误处理策略
-      */
+    /**
+     * 错误处理策略
+     */
     public enum ErrorStrategy {
         CONTINUE,
         BREAK

@@ -14,23 +14,4 @@ public interface IChatService {
 
     Response<ChatMessageResponse> nonStreamChat(@RequestBody ChatMessageRequest request);
 
-    /**
-     * 简单的交互方式，非流式输出，无对话记忆
-     *
-     * @param request
-     * @return
-     */
-    Response<ChatMessageResponse> simpleChat(ChatMessageRequest request);
-
-    /**
-     * 具备对话记忆的聊天
-     *
-     * @param request
-     * @return
-     */
-    Response<ChatMessageResponse> memoryChat(ChatMessageRequest request);
-
-    Response<ChatMessageResponse> ragChat(ChatMessageRequest request);
-
-
 }

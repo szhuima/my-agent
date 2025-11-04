@@ -39,38 +39,32 @@ public class WorkflowEngine {
     private ThreadPoolExecutor threadPoolExecutor;
 
 
-
-
     /**
      * 异步执行工作流
+     *
      * @param workflowInstance 工作流实例
-     * @param inputParams 输入参数，作为工作流上下文
+     * @param inputParams      输入参数，作为工作流上下文
      */
     public void runWorkflowAsync(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
         CompletableFuture.runAsync(() -> runWorkflow(workflowInstance, inputParams), threadPoolExecutor);
     }
 
 
-
-
     /**
      * 同步执行工作流
      *
      * @param workflowInstance 工作流实例
-     * @param inputParams 输入参数，作为工作流上下文
+     * @param inputParams      输入参数，作为工作流上下文
      * @return 持久化后的工作流实例 DO
      */
     public NodeExecutionResult runWorkflow(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
         try {
-            return workflowExecutor.execute(workflowInstance,inputParams);
+            return workflowExecutor.execute(workflowInstance, inputParams);
         } catch (Exception ex) {
             log.error("工作流执行异常, instanceId={}", workflowInstance.getInstanceId(), ex);
             throw ex;
         }
     }
-
-
-
 
 
 }

@@ -29,7 +29,7 @@ public class DynamicTaskService {
 
 
     // 启动任务
-    public void startTask(String taskId, String cronExpression,Runnable task) {
+    public void startTask(String taskId, String cronExpression, Runnable task) {
         if (tasks.containsKey(taskId)) {
             log.info("任务 {} 已存在，先停止再启动。", taskId);
             stopTask(taskId);
@@ -51,9 +51,9 @@ public class DynamicTaskService {
     }
 
     // 修改任务
-    public void updateTask(String taskId, String newCron,Runnable task) {
+    public void updateTask(String taskId, String newCron, Runnable task) {
         stopTask(taskId);
-        startTask(taskId, newCron,task);
+        startTask(taskId, newCron, task);
         System.out.println("任务 " + taskId + " 已更新为新表达式：" + newCron);
     }
 

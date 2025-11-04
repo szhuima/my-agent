@@ -29,7 +29,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
         WorkflowDO workflow = instance.getWorkflowDO();
         WorkflowContext workflowContext = new WorkflowContext(workflow.getMeta());
         workflowContext.putAll(inputParams);
-        log.info("开始执行工作流:{},instanceId:{},上下文:{},",workflow.getName(),instance.getInstanceId(),workflowContext);
+        log.info("开始执行工作流:{},instanceId:{},上下文:{},", workflow.getName(), instance.getInstanceId(), workflowContext);
         WorkflowExecutionDO workflowExecutionDO = WorkflowExecutionDO.builder()
                 .workflowInstanceId(instance.getInstanceId())
                 .workflowName(workflow.getName())
@@ -63,7 +63,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
                 persistNodeExecution(instance.getInstanceId(), nodeExecutionDO);
                 if (nodeExecResult.isCompleted()) {
                     current = workflow.nextNode(current.getName(), null);
-                }  else {
+                } else {
                     break;
                 }
             } catch (Exception e) {

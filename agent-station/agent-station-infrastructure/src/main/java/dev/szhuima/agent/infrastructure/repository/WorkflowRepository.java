@@ -5,17 +5,20 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigHttp;
 import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
-import dev.szhuima.agent.infrastructure.mapper.*;
-import dev.szhuima.agent.infrastructure.po.*;
+import dev.szhuima.agent.infrastructure.entity.Workflow;
+import dev.szhuima.agent.infrastructure.entity.WorkflowDsl;
+import dev.szhuima.agent.infrastructure.entity.WorkflowEdge;
+import dev.szhuima.agent.infrastructure.entity.WorkflowNode;
+import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
+import dev.szhuima.agent.infrastructure.mapper.WorkflowEdgeMapper;
+import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
+import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
 
@@ -34,25 +37,10 @@ public class WorkflowRepository implements IWorkflowRepository {
     private WorkflowDslMapper workflowDslMapper;
 
     @Resource
-    private WorkflowTriggerMapper workflowTriggerMapper;
-
-    @Resource
     private WorkflowNodeMapper workflowNodeMapper;
 
     @Resource
     private WorkflowEdgeMapper workflowEdgeMapper;
-
-    @Resource
-    private WorkflowNodeConfigFormMapper workflowNodeConfigFormMapper;
-
-    @Resource
-    private WorkflowNodeConfigHttpMapper workflowNodeConfigHttpMapper;
-
-    @Resource
-    private WorkflowNodeConfigBatchMapper workflowNodeConfigBatchMapper;
-
-    @Resource
-    private WorkflowNodeConfigLoopMapper workflowNodeConfigLoopMapper;
 
 
     @Override
@@ -93,12 +81,6 @@ public class WorkflowRepository implements IWorkflowRepository {
         return workflow.getWorkflowId();
     }
 
-    @Override
-    public Long saveWorkflowTrigger(WorkflowTriggerDO workflowTriggerDO) {
-        WorkflowTrigger workflowTrigger1 = BeanUtil.copyProperties(workflowTriggerDO, WorkflowTrigger.class);
-        workflowTriggerMapper.insert(workflowTrigger1);
-        return workflowTrigger1.getId();
-    }
 
     @Override
     public Long saveWorkflowNode(WorkflowNodeDO workflowNode) {
@@ -113,80 +95,6 @@ public class WorkflowRepository implements IWorkflowRepository {
         WorkflowEdge workflowEdge1 = BeanUtil.copyProperties(workflowEdge, WorkflowEdge.class);
         workflowEdgeMapper.insert(workflowEdge1);
         return workflowEdge1.getEdgeId();
-    }
-
-
-    @Override
-    public Long saveFormNodeConfig(WorkflowNodeConfigFormDO nodeConfigFormDO) {
-        WorkflowNodeConfigForm workflowNodeConfigForm = BeanUtil.copyProperties(nodeConfigFormDO, WorkflowNodeConfigForm.class);
-        workflowNodeConfigFormMapper.insert(workflowNodeConfigForm);
-        return workflowNodeConfigForm.getConfigFormId();
-    }
-
-    @Override
-    public WorkflowNodeDO getNodeById(Long nodeId) {
-        WorkflowNode workflowNode = workflowNodeMapper.selectById(nodeId);
-        if (workflowNode == null) {
-            return null;
-        }
-        WorkflowNodeDO workflowNodeDO = new WorkflowNodeDO();
-        BeanUtil.copyProperties(workflowNode, workflowNodeDO,
-                CopyOptions.create()
-                        .setConverter((targetType, value) -> {
-                            if (targetType == NodeType.class) {
-                                return NodeType.valueOf((String) value);
-                            }
-                            return value;
-                        })
-                        .setIgnoreNullValue(true));
-        return workflowNodeDO;
-    }
-
-    @Override
-    public WorkflowNodeConfigHttp getHttpConfigNode(Long configId) {
-        dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp workflowNodeConfigHttp = workflowNodeConfigHttpMapper.selectById(configId);
-        if (workflowNodeConfigHttp == null) {
-            return null;
-        }
-        WorkflowNodeConfigHttp workflowNodeConfigHttpDO = new WorkflowNodeConfigHttp();
-        BeanUtil.copyProperties(workflowNodeConfigHttp, workflowNodeConfigHttpDO, CopyOptions.create().setConverter((targetType, value) -> {
-            if (value == null) {
-                return null;
-            }
-
-            Class<?> rawType = null;
-            if (targetType instanceof Class<?>) {
-                rawType = (Class<?>) targetType;
-            } else if (targetType instanceof ParameterizedType) {
-                rawType = (Class<?>) ((ParameterizedType) targetType).getRawType();
-            }
-
-            if (rawType != null) {
-                if (MultiValueMap.class.isAssignableFrom(rawType)) {
-                    return JSON.parseObject((String) value, new TypeReference<MultiValueMap<String, String>>() {
-                    });
-                }
-                if (Map.class.isAssignableFrom(rawType)) {
-                    return JSON.parseObject((String) value, new TypeReference<Map<String, Object>>() {
-                    });
-                }
-            }
-
-            return value;
-        }));
-
-        return workflowNodeConfigHttpDO;
-    }
-
-    @Override
-    public WorkflowNodeConfigBatchDO getBatchConfigNode(Long configId) {
-        WorkflowNodeConfigBatch workflowNodeConfigBatch = workflowNodeConfigBatchMapper.selectById(configId);
-        if (workflowNodeConfigBatch == null) {
-            return null;
-        }
-        WorkflowNodeConfigBatchDO workflowNodeConfigBatchDO = new WorkflowNodeConfigBatchDO();
-        BeanUtil.copyProperties(workflowNodeConfigBatch, workflowNodeConfigBatchDO);
-        return workflowNodeConfigBatchDO;
     }
 
     @Override
@@ -226,64 +134,6 @@ public class WorkflowRepository implements IWorkflowRepository {
 
     }
 
-    @Override
-    public WorkflowNodeConfigLoopDO getLoopConfigNode(Long workflowId) {
-        WorkflowNodeConfigLoop workflowNodeConfigLoop = workflowNodeConfigLoopMapper.selectById(workflowId);
-        if (workflowNodeConfigLoop == null) {
-            return null;
-        }
-        WorkflowNodeConfigLoopDO workflowNodeConfigLoopDO = new WorkflowNodeConfigLoopDO();
-        BeanUtil.copyProperties(workflowNodeConfigLoop, workflowNodeConfigLoopDO);
-        return workflowNodeConfigLoopDO;
-    }
-
-    @Override
-    public Long saveLoopConfigNode(WorkflowNodeConfigLoopDO loopConfigDO) {
-        WorkflowNodeConfigLoop workflowNodeConfigLoop = new WorkflowNodeConfigLoop();
-        BeanUtil.copyProperties(loopConfigDO, workflowNodeConfigLoop);
-        workflowNodeConfigLoopMapper.insert(workflowNodeConfigLoop);
-        return workflowNodeConfigLoop.getId();
-    }
-
-    @Override
-    public Long saveHttpNodeConfig(WorkflowNodeConfigHttp nodeConfigHttpDO) {
-        dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp workflowNodeConfigHttp = new dev.szhuima.agent.infrastructure.po.WorkflowNodeConfigHttp();
-        BeanUtil.copyProperties(nodeConfigHttpDO, workflowNodeConfigHttp, CopyOptions.create().setConverter((target, value) -> {
-            if (target == MultiValueMap.class) {
-                return JSON.toJSONString(value);
-            }
-            if (target == Map.class) {
-                return JSON.toJSONString(value);
-            }
-            return value;
-        }));
-        workflowNodeConfigHttpMapper.insert(workflowNodeConfigHttp);
-        return workflowNodeConfigHttp.getConfigHttpId();
-    }
-
-    @Override
-    public List<WorkflowTriggerDO> getTrigger(Long workflowId, TriggerType triggerType) {
-        List<WorkflowTrigger> workflowTriggers = workflowTriggerMapper.selectList(new LambdaQueryWrapper<WorkflowTrigger>()
-                .eq(WorkflowTrigger::getWorkflowId, workflowId)
-                .eq(triggerType != null, WorkflowTrigger::getTriggerType, triggerType == null ? null : triggerType.name())
-        );
-        if (workflowTriggers == null) {
-            return null;
-        }
-        List<WorkflowTriggerDO> workflowTriggerDOS = BeanUtil.copyToList(workflowTriggers, WorkflowTriggerDO.class);
-        return workflowTriggerDOS;
-    }
-
-    @Override
-    public WorkflowTriggerDO getTriggerById(Long triggerId) {
-        WorkflowTrigger workflowTrigger = workflowTriggerMapper.selectById(triggerId);
-        if (workflowTrigger == null) {
-            return null;
-        }
-        WorkflowTriggerDO workflowTriggerDO = new WorkflowTriggerDO();
-        BeanUtil.copyProperties(workflowTrigger, workflowTriggerDO);
-        return workflowTriggerDO;
-    }
 
     @Override
     public WorkflowDO getWorkflowByName(String workflowName) {
@@ -313,7 +163,6 @@ public class WorkflowRepository implements IWorkflowRepository {
         for (Long workflowId : workflowIdList) {
             workflowNodeMapper.delete(new LambdaQueryWrapper<WorkflowNode>().eq(WorkflowNode::getWorkflowId, workflowId));
             workflowEdgeMapper.delete(new LambdaQueryWrapper<WorkflowEdge>().eq(WorkflowEdge::getWorkflowId, workflowId));
-            workflowTriggerMapper.delete(new LambdaQueryWrapper<WorkflowTrigger>().eq(WorkflowTrigger::getWorkflowName, workflowName));
         }
         workflowMapper.deleteBatchIds(workflowIdList);
     }

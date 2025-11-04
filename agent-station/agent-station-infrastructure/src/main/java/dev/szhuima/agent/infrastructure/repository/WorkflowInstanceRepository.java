@@ -1,18 +1,15 @@
 package dev.szhuima.agent.infrastructure.repository;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import dev.szhuima.agent.domain.workflow.model.*;
+import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
+import dev.szhuima.agent.infrastructure.entity.WorkflowInstance;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
-import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceTriggerMapper;
-import dev.szhuima.agent.infrastructure.po.WorkflowInstance;
-import dev.szhuima.agent.infrastructure.po.WorkflowInstanceTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * * @Author: szhuima
@@ -28,8 +25,6 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
     @Autowired
     private WorkflowInstanceMapper workflowInstanceMapper;
 
-    @Autowired
-    private WorkflowInstanceTriggerMapper workflowInstanceTriggerMapper;
 
     /**
      * 根据工作流名称获取最新部署的实例
@@ -45,22 +40,6 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
         return convert2DO(instance);
     }
 
-    @Override
-    public List<WorkflowInstanceTriggerDO> findTriggerInstances(Long instanceId, TriggerType triggerType) {
-        LambdaQueryWrapper<WorkflowInstanceTrigger> queryWrapper = new LambdaQueryWrapper<WorkflowInstanceTrigger>()
-                .eq(instanceId != null, WorkflowInstanceTrigger::getWorkflowInstanceId, instanceId)
-                .eq(triggerType != null, WorkflowInstanceTrigger::getTriggerType, triggerType == null ? null : triggerType.name())
-                .eq(WorkflowInstanceTrigger::getEnabled, 1);
-        List<WorkflowInstanceTrigger> triggers = workflowInstanceTriggerMapper.selectList(queryWrapper);
-        List<WorkflowInstanceTriggerDO> triggerDOs = BeanUtil.copyToList(triggers, WorkflowInstanceTriggerDO.class);
-        triggerDOs.forEach(triggerDO -> {
-            WorkflowTriggerDO workflowTriggerDO = workflowRepository.getTriggerById(triggerDO.getWorkflowTriggerId());
-            triggerDO.setWorkflowTriggerDO(workflowTriggerDO);
-            WorkflowInstanceDO workflowInstanceDO = getInstance(triggerDO.getWorkflowInstanceId());
-            triggerDO.setWorkflowInstanceDO(workflowInstanceDO);
-        });
-        return triggerDOs;
-    }
 
     /**
      * 保存工作流实例
@@ -116,9 +95,4 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
         workflowInstanceMapper.updateById(instance);
     }
 
-    @Override
-    public void saveInstanceTrigger(WorkflowInstanceTriggerDO triggerDO) {
-        WorkflowInstanceTrigger trigger = BeanUtil.copyProperties(triggerDO, WorkflowInstanceTrigger.class);
-        workflowInstanceTriggerMapper.insert(trigger);
-    }
 }

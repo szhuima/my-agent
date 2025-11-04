@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class CustomTenantHandler implements TenantLineHandler {
 
-    private static final List<String> ignoreTables = List.of("admin_user", "ai_agent");
+    private static final List<String> ignoreTables = List.of("tb_admin_user");
 
     @Override
     public Expression getTenantId() {

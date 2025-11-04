@@ -21,7 +21,7 @@ public class NodeExecutionDO {
         this.status = NodeExecutionStatus.RUNNING;
     }
 
-    public void markCompleted(Object  result) {
+    public void markCompleted(Object result) {
         this.status = NodeExecutionStatus.COMPLETED;
         this.result = result;
     }

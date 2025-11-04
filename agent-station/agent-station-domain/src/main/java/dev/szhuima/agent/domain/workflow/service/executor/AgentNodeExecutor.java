@@ -3,9 +3,9 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
-import dev.szhuima.agent.domain.agent.AgentClient;
+import dev.szhuima.agent.domain.agent.Agent;
+import dev.szhuima.agent.domain.agent.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
-import dev.szhuima.agent.domain.agent.service.config.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
 import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeAgentConfig;
@@ -51,13 +51,13 @@ public class AgentNodeExecutor extends AbstractNodeExecutor {
 
         Long clientId = config.getClientId();
 
-        List<AgentClient> agentClients = agentRepository.queryAgentClient(List.of(clientId));
+        List<Agent> agents = agentRepository.queryAgentList(List.of(clientId));
 
-        if (agentClients.isEmpty()) {
+        if (agents.isEmpty()) {
             log.error("未找到客户端配置，clientId：{}", clientId);
             return NodeExecutionResult.failure("未找到客户端配置");
         }
-        AgentClient agentClient = agentClients.get(0);
+        Agent agent = agents.get(0);
 
         ChatClient chatClient = agentBeanFactory.getChatClient(clientId);
 
@@ -67,8 +67,8 @@ public class AgentNodeExecutor extends AbstractNodeExecutor {
         ChatClient.ChatClientRequestSpec requestSpec = chatClient.prompt()
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, sessionId));
 
-        if (!StringUtils.isEmpty(agentClient.getSystemPrompt())) {
-            String systemPrompt = render(agentClient.getSystemPrompt(), context.getAll());
+        if (!StringUtils.isEmpty(agent.getSystemPrompt())) {
+            String systemPrompt = render(agent.getSystemPrompt(), context.getAll());
             requestSpec = requestSpec.system(systemPrompt);
         }
 

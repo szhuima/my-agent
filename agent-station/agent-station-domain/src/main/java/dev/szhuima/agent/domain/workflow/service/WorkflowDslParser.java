@@ -34,7 +34,7 @@ public class WorkflowDslParser {
 
         WorkflowDsl dsl = new WorkflowDsl();
         dsl.setName((String) root.get("name"));
-        Map<String,Object> metaMap = (Map<String,Object>)root.get("meta");
+        Map<String, Object> metaMap = (Map<String, Object>) root.get("meta");
         dsl.setMeta(metaMap);
 
         List<Object> nodesRaw = (List<Object>) root.get("nodes");
@@ -55,7 +55,7 @@ public class WorkflowDslParser {
                 if (configJson != null) {
                     WorkflowDsl.BaseNode newInstance = nodeType.getNodeClass().newInstance();
 
-                    Object config = JSON.parseObject(configJson,nodeType.getConfigClass());
+                    Object config = JSON.parseObject(configJson, nodeType.getConfigClass());
                     newInstance.setConfig(config);
                     newInstance.setId(id);
                     newInstance.setType(type);

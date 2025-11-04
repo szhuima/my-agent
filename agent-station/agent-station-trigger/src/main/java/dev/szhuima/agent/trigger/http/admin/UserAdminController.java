@@ -9,8 +9,8 @@ import dev.szhuima.agent.api.dto.AdminUserLoginRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserQueryRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserRequestDTO;
 import dev.szhuima.agent.api.dto.AdminUserResponseDTO;
+import dev.szhuima.agent.infrastructure.entity.TbAdminUser;
 import dev.szhuima.agent.infrastructure.mapper.AdminUserMapper;
-import dev.szhuima.agent.infrastructure.po.AdminUser;
 import dev.szhuima.agent.trigger.util.JwtUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +44,11 @@ public class UserAdminController implements IAdminUserAdminService {
             log.info("创建管理员用户请求：{}", request);
 
             // DTO转PO
-            AdminUser adminUser = convertToAdminUser(request);
-            adminUser.setCreateTime(LocalDateTime.now());
-            adminUser.setUpdateTime(LocalDateTime.now());
+            TbAdminUser tbAdminUser = convertToAdminUser(request);
+            tbAdminUser.setCreateTime(LocalDateTime.now());
+            tbAdminUser.setUpdateTime(LocalDateTime.now());
 
-            int result = adminUserDao.insert(adminUser);
+            int result = adminUserDao.insert(tbAdminUser);
 
             return Response.<Boolean>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -80,10 +80,10 @@ public class UserAdminController implements IAdminUserAdminService {
             }
 
             // DTO转PO
-            AdminUser adminUser = convertToAdminUser(request);
-            adminUser.setUpdateTime(LocalDateTime.now());
+            TbAdminUser tbAdminUser = convertToAdminUser(request);
+            tbAdminUser.setUpdateTime(LocalDateTime.now());
 
-            int result = adminUserDao.updateById(adminUser);
+            int result = adminUserDao.updateById(tbAdminUser);
 
             return Response.<Boolean>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -115,10 +115,10 @@ public class UserAdminController implements IAdminUserAdminService {
             }
 
             // DTO转PO
-            AdminUser adminUser = convertToAdminUser(request);
-            adminUser.setUpdateTime(LocalDateTime.now());
+            TbAdminUser tbAdminUser = convertToAdminUser(request);
+            tbAdminUser.setUpdateTime(LocalDateTime.now());
 
-            int result = adminUserDao.updateById(adminUser);
+            int result = adminUserDao.updateById(tbAdminUser);
 
             return Response.<Boolean>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -187,8 +187,8 @@ public class UserAdminController implements IAdminUserAdminService {
         try {
             log.info("根据ID查询管理员用户请求：{}", id);
 
-            AdminUser adminUser = adminUserDao.selectById(id);
-            if (adminUser == null) {
+            TbAdminUser tbAdminUser = adminUserDao.selectById(id);
+            if (tbAdminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
                         .code(ErrorCode.SUCCESS.getCode())
                         .info(ErrorCode.SUCCESS.getInfo())
@@ -196,7 +196,7 @@ public class UserAdminController implements IAdminUserAdminService {
                         .build();
             }
 
-            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
+            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(tbAdminUser);
 
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -219,8 +219,8 @@ public class UserAdminController implements IAdminUserAdminService {
         try {
             log.info("根据用户ID查询管理员用户请求：{}", userId);
 
-            AdminUser adminUser = adminUserDao.selectById(userId);
-            if (adminUser == null) {
+            TbAdminUser tbAdminUser = adminUserDao.selectById(userId);
+            if (tbAdminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
                         .code(ErrorCode.SUCCESS.getCode())
                         .info(ErrorCode.SUCCESS.getInfo())
@@ -228,7 +228,7 @@ public class UserAdminController implements IAdminUserAdminService {
                         .build();
             }
 
-            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
+            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(tbAdminUser);
 
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -251,8 +251,8 @@ public class UserAdminController implements IAdminUserAdminService {
         try {
             log.info("根据用户名查询管理员用户请求：{}", username);
 
-            AdminUser adminUser = adminUserDao.selectOne(Wrappers.lambdaQuery(AdminUser.class).eq(AdminUser::getUsername, username));
-            if (adminUser == null) {
+            TbAdminUser tbAdminUser = adminUserDao.selectOne(Wrappers.lambdaQuery(TbAdminUser.class).eq(TbAdminUser::getUsername, username));
+            if (tbAdminUser == null) {
                 return Response.<AdminUserResponseDTO>builder()
                         .code(ErrorCode.SUCCESS.getCode())
                         .info(ErrorCode.SUCCESS.getInfo())
@@ -260,7 +260,7 @@ public class UserAdminController implements IAdminUserAdminService {
                         .build();
             }
 
-            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
+            AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(tbAdminUser);
 
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -283,8 +283,8 @@ public class UserAdminController implements IAdminUserAdminService {
         try {
             log.info("查询启用状态的管理员用户列表");
 
-            List<AdminUser> adminUsers = adminUserDao.selectList(Wrappers.lambdaQuery(AdminUser.class).eq(AdminUser::getStatus,1));
-            List<AdminUserResponseDTO> responseDTOs = adminUsers.stream()
+            List<TbAdminUser> tbAdminUsers = adminUserDao.selectList(Wrappers.lambdaQuery(TbAdminUser.class).eq(TbAdminUser::getStatus, 1));
+            List<AdminUserResponseDTO> responseDTOs = tbAdminUsers.stream()
                     .map(this::convertToAdminUserResponseDTO)
                     .collect(Collectors.toList());
 
@@ -309,8 +309,8 @@ public class UserAdminController implements IAdminUserAdminService {
         try {
             log.info("根据状态查询管理员用户列表请求：{}", status);
 
-            List<AdminUser> adminUsers = adminUserDao.selectList(Wrappers.lambdaQuery(AdminUser.class).eq(AdminUser::getStatus,status));
-            List<AdminUserResponseDTO> responseDTOs = adminUsers.stream()
+            List<TbAdminUser> tbAdminUsers = adminUserDao.selectList(Wrappers.lambdaQuery(TbAdminUser.class).eq(TbAdminUser::getStatus, status));
+            List<AdminUserResponseDTO> responseDTOs = tbAdminUsers.stream()
                     .map(this::convertToAdminUserResponseDTO)
                     .collect(Collectors.toList());
 
@@ -336,10 +336,10 @@ public class UserAdminController implements IAdminUserAdminService {
             log.info("根据条件查询管理员用户列表请求：{}", request);
 
             // 这里可以根据查询条件进行过滤，暂时先查询所有
-            List<AdminUser> adminUsers = adminUserDao.selectList(Wrappers.emptyWrapper());
+            List<TbAdminUser> tbAdminUsers = adminUserDao.selectList(Wrappers.emptyWrapper());
 
             // 根据查询条件进行过滤
-            List<AdminUser> filteredUsers = adminUsers.stream()
+            List<TbAdminUser> filteredUsers = tbAdminUsers.stream()
                     .filter(user -> {
                         boolean match = true;
                         if (StringUtils.hasText(request.getUserId())) {
@@ -361,7 +361,7 @@ public class UserAdminController implements IAdminUserAdminService {
             int startIndex = (pageNum - 1) * pageSize;
             int endIndex = Math.min(startIndex + pageSize, filteredUsers.size());
 
-            List<AdminUser> pagedUsers = filteredUsers.subList(startIndex, endIndex);
+            List<TbAdminUser> pagedUsers = filteredUsers.subList(startIndex, endIndex);
             List<AdminUserResponseDTO> responseDTOs = pagedUsers.stream()
                     .map(this::convertToAdminUserResponseDTO)
                     .collect(Collectors.toList());
@@ -386,8 +386,8 @@ public class UserAdminController implements IAdminUserAdminService {
     public Response<List<AdminUserResponseDTO>> queryAllAdminUsers() {
         try {
             log.info("查询所有管理员用户");
-            List<AdminUser> adminUsers = adminUserDao.selectList(Wrappers.emptyWrapper());
-            List<AdminUserResponseDTO> responseDTOs = adminUsers.stream()
+            List<TbAdminUser> tbAdminUsers = adminUserDao.selectList(Wrappers.emptyWrapper());
+            List<AdminUserResponseDTO> responseDTOs = tbAdminUsers.stream()
                     .map(this::convertToAdminUserResponseDTO)
                     .collect(Collectors.toList());
 
@@ -414,12 +414,12 @@ public class UserAdminController implements IAdminUserAdminService {
     public Response<AdminUserResponseDTO> loginAdminUser(@RequestBody AdminUserLoginRequestDTO request) {
         log.info("管理员用户登录请求：{}", request.getUsername());
 
-        LambdaQueryWrapper<AdminUser> wrapper = Wrappers.lambdaQuery(AdminUser.class)
-                .eq(AdminUser::getUsername, request.getUsername())
-                .eq(AdminUser::getPassword, request.getPassword());
+        LambdaQueryWrapper<TbAdminUser> wrapper = Wrappers.lambdaQuery(TbAdminUser.class)
+                .eq(TbAdminUser::getUsername, request.getUsername())
+                .eq(TbAdminUser::getPassword, request.getPassword());
 
-        AdminUser adminUser = adminUserDao.selectOne(wrapper);
-        if (adminUser == null) {
+        TbAdminUser tbAdminUser = adminUserDao.selectOne(wrapper);
+        if (tbAdminUser == null) {
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户名或密码错误")
@@ -428,7 +428,7 @@ public class UserAdminController implements IAdminUserAdminService {
         }
 
         // 检查用户状态
-        if (adminUser.getStatus() == 0) {
+        if (tbAdminUser.getStatus() == 0) {
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户已被禁用")
@@ -436,7 +436,7 @@ public class UserAdminController implements IAdminUserAdminService {
                     .build();
         }
 
-        if (adminUser.getStatus() == 2) {
+        if (tbAdminUser.getStatus() == 2) {
             return Response.<AdminUserResponseDTO>builder()
                     .code(ErrorCode.BIZ_ERROR.getCode())
                     .info("用户已被锁定")
@@ -444,9 +444,9 @@ public class UserAdminController implements IAdminUserAdminService {
                     .build();
         }
 
-        AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(adminUser);
+        AdminUserResponseDTO responseDTO = convertToAdminUserResponseDTO(tbAdminUser);
 
-        responseDTO.setToken(jwtUtil.generateToken(adminUser.getUserId()));
+        responseDTO.setToken(jwtUtil.generateToken(tbAdminUser.getUserId()));
 
         return Response.<AdminUserResponseDTO>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -471,12 +471,12 @@ public class UserAdminController implements IAdminUserAdminService {
             }
 
             // 查询用户
-            LambdaQueryWrapper<AdminUser> wrapper = Wrappers.lambdaQuery(AdminUser.class)
-                    .eq(AdminUser::getUsername, request.getUsername())
-                    .eq(AdminUser::getPassword, request.getPassword());
+            LambdaQueryWrapper<TbAdminUser> wrapper = Wrappers.lambdaQuery(TbAdminUser.class)
+                    .eq(TbAdminUser::getUsername, request.getUsername())
+                    .eq(TbAdminUser::getPassword, request.getPassword());
 
-            AdminUser adminUser = adminUserDao.selectOne(wrapper);
-            if (adminUser == null) {
+            TbAdminUser tbAdminUser = adminUserDao.selectOne(wrapper);
+            if (tbAdminUser == null) {
                 return Response.<Boolean>builder()
                         .code(ErrorCode.LOGIN_FAILED.getCode())
                         .info(ErrorCode.LOGIN_FAILED.getInfo())
@@ -485,7 +485,7 @@ public class UserAdminController implements IAdminUserAdminService {
             }
 
             // 检查用户状态
-            if (adminUser.getStatus() == 0) {
+            if (tbAdminUser.getStatus() == 0) {
                 return Response.<Boolean>builder()
                         .code(ErrorCode.LOGIN_FAILED.getCode())
                         .info("用户已被禁用")
@@ -493,7 +493,7 @@ public class UserAdminController implements IAdminUserAdminService {
                         .build();
             }
 
-            if (adminUser.getStatus() == 2) {
+            if (tbAdminUser.getStatus() == 2) {
                 return Response.<Boolean>builder()
                         .code(ErrorCode.LOGIN_FAILED.getCode())
                         .info("用户已被锁定")
@@ -520,18 +520,18 @@ public class UserAdminController implements IAdminUserAdminService {
     /**
      * DTO转PO
      */
-    private AdminUser convertToAdminUser(AdminUserRequestDTO requestDTO) {
-        AdminUser adminUser = new AdminUser();
-        BeanUtils.copyProperties(requestDTO, adminUser);
-        return adminUser;
+    private TbAdminUser convertToAdminUser(AdminUserRequestDTO requestDTO) {
+        TbAdminUser tbAdminUser = new TbAdminUser();
+        BeanUtils.copyProperties(requestDTO, tbAdminUser);
+        return tbAdminUser;
     }
 
     /**
      * PO转DTO
      */
-    private AdminUserResponseDTO convertToAdminUserResponseDTO(AdminUser adminUser) {
+    private AdminUserResponseDTO convertToAdminUserResponseDTO(TbAdminUser tbAdminUser) {
         AdminUserResponseDTO responseDTO = new AdminUserResponseDTO();
-        BeanUtils.copyProperties(adminUser, responseDTO);
+        BeanUtils.copyProperties(tbAdminUser, responseDTO);
         return responseDTO;
     }
 

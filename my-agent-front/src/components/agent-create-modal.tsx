@@ -1,43 +1,13 @@
-import React, { useState } from "react";
-import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  Toast,
-  Space,
-  TextArea,
-  InputNumber,
-} from "@douyinfe/semi-ui";
-import {
-  aiClientAdminService,
-  AiClientRequestDTO,
-} from "../services/ai-client-admin-service";
+import React, {useState} from "react";
+import {Button, Input, InputNumber, Modal, Select, Space, TextArea, Toast,} from "@douyinfe/semi-ui";
+import {aiClientAdminService, AiClientRequestDTO,} from "../services/ai-client-admin-service";
 
-import {
-  aiClientAdvisorAdminService,
-  AiClientAdvisorQueryRequestDTO,
-  AiClientAdvisorResponseDTO,
-  AiClientAdvisorRequestDTO,
-} from "../services/ai-client-advisor-admin-service";
 
-import {
-  aiClientApiAdminService,
-  AiClientApiQueryRequestDTO,
-  AiClientApiResponseDTO,
-} from "../services/model-api-service";
+import {aiClientApiAdminService, AiClientApiResponseDTO,} from "../services/model-api-service";
 
-import {
-  aiClientToolMcpAdminService,
-  AiClientToolMcpQueryRequestDTO,
-  AiClientToolMcpResponseDTO,
-  AiClientToolMcpRequestDTO,
-} from "../services/ai-client-tool-mcp-admin-service";
+import {aiClientToolMcpAdminService, AiClientToolMcpResponseDTO,} from "../services/ai-client-tool-mcp-admin-service";
 
-import {
-  aiClientRagOrderAdminService,
-  AiClientRagOrderResponseDTO,
-} from "../services/knowledge-admin-service";
+import {aiClientRagOrderAdminService, AiClientRagOrderResponseDTO,} from "../services/knowledge-admin-service";
 
 interface ClientCreateModalProps {
   visible: boolean;
@@ -47,7 +17,7 @@ interface ClientCreateModalProps {
 }
 
 interface FormData {
-  clientName: string;
+  agentName: string;
   description: string;
   status: number;
   modelId?: number;
@@ -58,7 +28,7 @@ interface FormData {
   knowledgeIds: number[];
 }
 
-export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
+export const AgentCreateModal: React.FC<ClientCreateModalProps> = ({
   visible,
   onCancel,
   onSuccess,
@@ -66,7 +36,7 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    clientName: "",
+    agentName: "",
     description: "",
     systemPrompt:"",
     status: 1,
@@ -78,12 +48,11 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
 
   const [models, setModels] = useState<AiClientApiResponseDTO[]>([]); // 模型列表
-  const [advisors, setAdvisors] = useState<AiClientAdvisorResponseDTO[]>([]); // 顾问列表
   const [mcpTools, setMcpTools] = useState<AiClientToolMcpResponseDTO[]>([]); // MCP工具列表
   const [knowledges, setKnowledges] = useState<AiClientRagOrderResponseDTO[]>([]); // 知识库列表
 
   interface FormErrors {
-    clientName?: string;
+    agentName?: string;
     description?: string;
   }
 
@@ -91,12 +60,12 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.clientName.trim()) {
-      newErrors.clientName = "请输入客户端名称";
-    } else if (formData.clientName.trim().length < 2) {
-      newErrors.clientName = "客户端名称至少2个字符";
-    } else if (formData.clientName.trim().length > 50) {
-      newErrors.clientName = "客户端名称不能超过50个字符";
+    if (!formData.agentName.trim()) {
+      newErrors.agentName = "请输入客户端名称";
+    } else if (formData.agentName.trim().length < 2) {
+      newErrors.agentName = "客户端名称至少2个字符";
+    } else if (formData.agentName.trim().length > 50) {
+      newErrors.agentName = "客户端名称不能超过50个字符";
     }
 
     if (formData.description && formData.description.length > 200) {
@@ -115,13 +84,6 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
     }
   };
 
-  const fetchAdvisors = async () => {
-    const advisorResponse =
-      await aiClientAdvisorAdminService.queryEnabledAdvisors();
-    if (advisorResponse.code === "0000" && advisorResponse.data) {
-      setAdvisors(advisorResponse.data);
-    }
-  };
 
   const fetchMcpTools = async () => {
     const toolResponse = await aiClientToolMcpAdminService.queryEnabledAiClientToolMcps();
@@ -140,7 +102,6 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
   // 组件挂载时获取模型数据
   React.useEffect(() => {
     fetchModelApis();
-    fetchAdvisors();
     fetchMcpTools();
     fetchKnowledges();
   }, []);
@@ -154,7 +115,7 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
     setLoading(true);
     try {
       const request: AiClientRequestDTO = {
-        clientName: formData.clientName.trim(),
+        agentName: formData.agentName.trim(),
         description: formData.description.trim() || "",
         status: formData.status,
         modelId: formData.modelId,
@@ -185,7 +146,7 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
   // 重置表单
   const handleReset = () => {
     setFormData({
-      clientName: "",
+      agentName: "",
       description: "",
       status: 1,
       modelId: undefined,
@@ -233,18 +194,18 @@ export const ClientCreateModal: React.FC<ClientCreateModalProps> = ({
             </span>
             <Input
               placeholder="请输入客户端名称"
-              value={formData.clientName}
+              value={formData.agentName}
               onChange={(value: string) =>
-                setFormData((prev) => ({ ...prev, clientName: value }))
+                setFormData((prev) => ({ ...prev, agentName: value }))
               }
               style={{ flex: 1 }}
             />
           </div>
-          {errors.clientName && (
+          {errors.agentName && (
             <div
               style={{ marginLeft: "112px", color: "red", fontSize: "12px" }}
             >
-              {errors.clientName}
+              {errors.agentName}
             </div>
           )}
         </div>

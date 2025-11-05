@@ -35,7 +35,7 @@ interface FormErrors {
   description?: string;
 }
 
-export const ClientEditModal: React.FC<ClientEditModalProps> = ({
+export const AgentEditModal: React.FC<ClientEditModalProps> = ({
   visible,
   onCancel,
   onSuccess,
@@ -66,7 +66,7 @@ export const ClientEditModal: React.FC<ClientEditModalProps> = ({
     if (visible && clientData) {
       setFormData({
         id: clientData.id,
-        clientName: clientData.clientName,
+        clientName: clientData.agentName,
         description: clientData.description || "",
         status: clientData.status,
         modelId: clientData.modelId,
@@ -139,7 +139,7 @@ export const ClientEditModal: React.FC<ClientEditModalProps> = ({
     try {
       const request: AiClientRequestDTO = {
         id: formData.id,
-        clientName: formData.clientName.trim(),
+        agentName: formData.clientName.trim(),
         description: formData.description.trim() || "",
         status: formData.status,
         modelId: formData.modelId,

@@ -53,11 +53,6 @@ public class ModelApi {
     private ModelSource modelSource;
 
     /**
-     * 模型版本
-     */
-    private String modelVersion;
-
-    /**
      * 超时时间(秒)
      */
     private Integer timeout;

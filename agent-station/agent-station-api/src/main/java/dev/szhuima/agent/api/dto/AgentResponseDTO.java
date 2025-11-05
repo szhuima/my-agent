@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AiClientResponseDTO implements Serializable {
+public class AgentResponseDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class AiClientResponseDTO implements Serializable {
     /**
      * 客户端名称
      */
-    private String clientName;
+    private String agentName;
 
     /**
      * 模型ID
@@ -56,15 +56,6 @@ public class AiClientResponseDTO implements Serializable {
      */
     private Integer memorySize;
 
-    /**
-     * 顾问ID列表
-     */
-    private List<Long> advisorIds;
-
-    /**
-     * 顾问名称列表
-     */
-    private List<String> advisorNames;
 
     /**
      * 知识库ID列表

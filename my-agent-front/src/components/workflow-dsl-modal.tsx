@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, Toast } from "@douyinfe/semi-ui";
+import React, {useState} from "react";
+import {Modal} from "@douyinfe/semi-ui";
 import MonacoEditor from "react-monaco-editor";
 import * as monaco from "monaco-editor";
 import yaml from "js-yaml";

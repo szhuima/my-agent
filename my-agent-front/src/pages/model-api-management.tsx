@@ -1,37 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Layout,
-  Table, 
-  Button, 
-  Input, 
-  Space, 
-  Typography, 
-  Toast,
-  Tag,
-  Popconfirm,
-  Card
-} from '@douyinfe/semi-ui';
-import { 
-  IconSearch, 
-  IconEdit, 
-  IconDelete,
-  IconRefresh,
-  IconPlus,
-  IconDownload
-} from '@douyinfe/semi-icons';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Button, Card, Input, Layout, Popconfirm, Space, Table, Tag, Toast, Typography} from '@douyinfe/semi-ui';
+import {IconDelete, IconEdit, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
-import { Sidebar, Header } from '../components/layout';
-import { AiClientApiCreateModal } from '../components/ai-client-api-create-modal';
-import { AiClientApiEditModal } from '../components/ai-client-api-edit-modal';
-import { 
-  aiClientApiAdminService, 
-  AiClientApiQueryRequestDTO, 
-  AiClientApiResponseDTO 
+import {theme} from '../styles/theme';
+import {Header, Sidebar} from '../components/layout';
+import {ModelApiCreateModal} from '../components/model-api-create-modal';
+import {ModelApiEditModal} from '../components/model-api-edit-modal';
+import {
+    aiClientApiAdminService,
+    AiClientApiQueryRequestDTO,
+    AiClientApiResponseDTO
 } from '../services/model-api-service';
-import { PageDTO } from '../typings/page';
-import { AiAgentService } from '../services/ai-agent-service';
+import {PageDTO} from '../typings/page';
+import {AiAgentService} from '../services/ai-agent-service';
 import useHandleNavigation from '../utils/useHandleNavigation';
 
 
@@ -510,13 +492,13 @@ export const AiClientApiManagement: React.FC = () => {
         </ContentArea>
       </MainContent>
 
-      <AiClientApiCreateModal
+      <ModelApiCreateModal
         visible={createModalVisible}
         onCancel={handleCreateCancel}
         onSuccess={handleCreateSuccess}
       />
 
-      <AiClientApiEditModal
+      <ModelApiEditModal
         visible={modalVisible}
         editingRecord={editingRecord}
         onCancel={handleModalCancel}

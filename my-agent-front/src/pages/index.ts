@@ -8,6 +8,5 @@ export { WorkflowExecutionPage } from './workflow-execution';
 export { default as WorkflowCreatePage } from './workflow-create';
 export { ClientManagement } from './client-management';
 export { AiClientApiManagement } from './model-api-management';
-export { AdvisorManagement } from './advisor-management';
 export { RagOrderManagement } from './knowledge-management';
 export { ClientToolMcpManagement } from './client-tool-mcp-management';

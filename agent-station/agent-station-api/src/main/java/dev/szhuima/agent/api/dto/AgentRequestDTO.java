@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AiClientRequestDTO implements Serializable {
+public class AgentRequestDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -30,9 +30,9 @@ public class AiClientRequestDTO implements Serializable {
     private Long id;
 
     /**
-     * 客户端名称
+     * 名称
      */
-    private String clientName;
+    private String agentName;
 
     /**
      * 描述

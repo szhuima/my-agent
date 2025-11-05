@@ -1,19 +1,7 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  Toast,
-  Space,
-  TextArea
-} from '@douyinfe/semi-ui';
-import { 
-  aiClientApiAdminService, 
-  AiClientApiRequestDTO 
-} from '../services/model-api-service';
-import { fetchModelSourceList, fetchModelTypeList } from '../services/support-service';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, Modal, Select, Space, Toast} from '@douyinfe/semi-ui';
+import {aiClientApiAdminService, AiClientApiRequestDTO} from '../services/model-api-service';
+import {fetchModelSourceList, fetchModelTypeList} from '../services/support-service';
 
 interface AiClientApiCreateModalProps {
   visible: boolean;
@@ -44,7 +32,7 @@ interface FormErrors {
   embeddingsPath?: string;
 }
 
-export const AiClientApiCreateModal: React.FC<AiClientApiCreateModalProps> = ({
+export const ModelApiCreateModal: React.FC<AiClientApiCreateModalProps> = ({
   visible,
   onCancel,
   onSuccess

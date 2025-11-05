@@ -1,37 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Layout,
-  Table, 
-  Button, 
-  Input, 
-  Space, 
-  Typography, 
-  Toast,
-  Tag,
-  Popconfirm,
-  Tooltip,
-  Card
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {
+    Button,
+    Card,
+    Input,
+    Layout,
+    Popconfirm,
+    Space,
+    Table,
+    Tag,
+    Toast,
+    Tooltip,
+    Typography
 } from '@douyinfe/semi-ui';
-import { 
-  IconSearch, 
-  IconPlus, 
-  IconEdit, 
-  IconDelete,
-  IconRefresh,
-  IconPlay
-} from '@douyinfe/semi-icons';
+import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
-import { Sidebar, Header } from '../components/layout';
-import { ClientCreateModal } from '../components/client-create-modal';
-import { ClientEditModal } from '../components/client-edit-modal';
-import { ClientDebugChatModal } from '../components/client-debug-chat-modal';
-import { 
-  aiClientAdminService, 
-  AiClientQueryRequestDTO, 
-  AiClientResponseDTO 
-} from '../services/ai-client-admin-service';
+import {theme} from '../styles/theme';
+import {Header, Sidebar} from '../components/layout';
+import {AgentCreateModal} from '../components/agent-create-modal';
+import {AgentEditModal} from '../components/agent-edit-modal';
+import {AgentDebugChatModal} from '../components/agent-debug-chat-modal';
+import {aiClientAdminService, AiClientQueryRequestDTO, AiClientResponseDTO} from '../services/ai-client-admin-service';
 import useHandleNavigation from '../utils/useHandleNavigation';
 
 
@@ -152,8 +141,8 @@ export const ClientManagement: React.FC = () => {
     },
     {
       title: "客户端名称",
-      dataIndex: "clientName",
-      key: "clientName",
+      dataIndex: "agentName",
+      key: "agentName",
       width: 150,
     },
     {
@@ -195,7 +184,7 @@ export const ClientManagement: React.FC = () => {
       width: 150,
       key: "modelName",
       render: (text: string) => text || "-",
-    }, // advisorNames
+    },
     {
       title: "MCP工具",
       dataIndex: "mcpToolNames",
@@ -297,7 +286,7 @@ export const ClientManagement: React.FC = () => {
     setLoading(true);
     try {
       const request: AiClientQueryRequestDTO = {
-        clientName: searchText || undefined,
+        agentName: searchText || undefined,
         pageNum: currentPage,
         pageSize: pageSize,
       };
@@ -307,7 +296,7 @@ export const ClientManagement: React.FC = () => {
       if (result.code === '0000') {
         const data = result.data || [];
         setDataSource(data);
-        setTotal(data.length); // 简单实现，实际应该从后端返回总数
+        setTotal(data.length);
       } else {
         throw new Error(result.info || '查询失败');
       }
@@ -490,7 +479,7 @@ export const ClientManagement: React.FC = () => {
           </ClientManagementContainer>
 
           {/* 新增客户端弹窗 */}
-          <ClientCreateModal
+          <AgentCreateModal
             visible={createModalVisible}
             onCancel={handleCreateCancel}
             onSuccess={handleCreateSuccess}
@@ -498,7 +487,7 @@ export const ClientManagement: React.FC = () => {
           />
 
           {/* 编辑客户端弹窗 */}
-          <ClientEditModal
+          <AgentEditModal
             visible={editModalVisible}
             clientData={currentEditClient}
             onCancel={handleEditCancel}
@@ -508,7 +497,7 @@ export const ClientManagement: React.FC = () => {
 
           {/* 调试聊天弹窗 */}
           {currentDebugClient && (
-            <ClientDebugChatModal
+            <AgentDebugChatModal
               visible={debugModalVisible}
               client={currentDebugClient}
               userId={userInfo?.username || 'anonymous'}

@@ -1,9 +1,9 @@
 package dev.szhuima.agent.api;
 
 
+import dev.szhuima.agent.api.dto.AgentRequestDTO;
+import dev.szhuima.agent.api.dto.AgentResponseDTO;
 import dev.szhuima.agent.api.dto.AiClientQueryRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientResponseDTO;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public interface IAgentAdminService {
      * @param request AI客户端配置请求对象
      * @return 操作结果
      */
-    Response<Boolean> createAiClient(AiClientRequestDTO request);
+    Response<Boolean> createAiClient(AgentRequestDTO request);
 
     /**
      * 根据ID更新AI客户端配置
@@ -29,7 +29,7 @@ public interface IAgentAdminService {
      * @param request AI客户端配置请求对象
      * @return 操作结果
      */
-    Response<Boolean> updateAiClientById(AiClientRequestDTO request);
+    Response<Boolean> updateAiClientById(AgentRequestDTO request);
 
     /**
      * 根据客户端ID更新AI客户端配置
@@ -37,7 +37,7 @@ public interface IAgentAdminService {
      * @param request AI客户端配置请求对象
      * @return 操作结果
      */
-    Response<Boolean> updateAiClientByClientId(AiClientRequestDTO request);
+    Response<Boolean> updateAiClientByClientId(AgentRequestDTO request);
 
     /**
      * 根据ID删除AI客户端配置
@@ -53,14 +53,14 @@ public interface IAgentAdminService {
      * @param id 主键ID
      * @return AI客户端配置对象
      */
-    Response<AiClientResponseDTO> queryAiClientById(Long id);
+    Response<AgentResponseDTO> queryAiClientById(Long id);
 
     /**
      * 查询所有启用的AI客户端配置
      *
      * @return AI客户端配置列表
      */
-    Response<List<AiClientResponseDTO>> queryEnabledAiClients();
+    Response<List<AgentResponseDTO>> queryEnabledAiClients();
 
     /**
      * 根据条件查询AI客户端配置列表
@@ -68,6 +68,6 @@ public interface IAgentAdminService {
      * @param request 查询条件
      * @return AI客户端配置列表
      */
-    Response<List<AiClientResponseDTO>> queryAiClientList(AiClientQueryRequestDTO request);
+    Response<List<AgentResponseDTO>> queryAiClientList(AiClientQueryRequestDTO request);
 
 }

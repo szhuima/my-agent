@@ -8,9 +8,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAgentAdminService;
 import dev.szhuima.agent.api.Response;
+import dev.szhuima.agent.api.dto.AgentRequestDTO;
+import dev.szhuima.agent.api.dto.AgentResponseDTO;
 import dev.szhuima.agent.api.dto.AiClientQueryRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientResponseDTO;
 import dev.szhuima.agent.infrastructure.entity.TbAgent;
 import dev.szhuima.agent.infrastructure.entity.TbAgentKnowledgeConfig;
 import dev.szhuima.agent.infrastructure.entity.TbKnowledge;
@@ -53,7 +53,7 @@ public class AgentAdminController implements IAgentAdminService {
     @Override
     @PostMapping("/create")
     @Transactional(rollbackFor = Exception.class)
-    public Response<Boolean> createAiClient(@RequestBody AiClientRequestDTO request) {
+    public Response<Boolean> createAiClient(@RequestBody AgentRequestDTO request) {
         log.info("创建AI客户端配置请求：{}", request);
 
         Long modelId = request.getModelId();
@@ -97,7 +97,7 @@ public class AgentAdminController implements IAgentAdminService {
     @Override
     @PutMapping("/update-by-id")
     @Transactional(rollbackFor = Exception.class)
-    public Response<Boolean> updateAiClientById(@RequestBody AiClientRequestDTO request) {
+    public Response<Boolean> updateAiClientById(@RequestBody AgentRequestDTO request) {
         log.info("根据ID更新AI客户端配置请求：{}", request);
 
         if (request.getId() == null) {
@@ -145,7 +145,7 @@ public class AgentAdminController implements IAgentAdminService {
 
     @Override
     @PutMapping("/update-by-client-id")
-    public Response<Boolean> updateAiClientByClientId(@RequestBody AiClientRequestDTO request) {
+    public Response<Boolean> updateAiClientByClientId(@RequestBody AgentRequestDTO request) {
         try {
             log.info("根据客户端ID更新AI客户端配置请求：{}", request);
 
@@ -204,14 +204,14 @@ public class AgentAdminController implements IAgentAdminService {
 
     @Override
     @GetMapping("/query-by-id/{id}")
-    public Response<AiClientResponseDTO> queryAiClientById(@PathVariable Long id) {
+    public Response<AgentResponseDTO> queryAiClientById(@PathVariable Long id) {
         try {
             log.info("根据ID查询AI客户端配置请求：{}", id);
 
-            TbAgent tbAgent = agentMapper.queryById(id);
+            TbAgent tbAgent = agentMapper.selectById(id);
 
             if (tbAgent == null) {
-                return Response.<AiClientResponseDTO>builder()
+                return Response.<AgentResponseDTO>builder()
                         .code(ErrorCode.UN_ERROR.getCode())
                         .info("未找到对应的AI客户端配置")
                         .data(null)
@@ -219,16 +219,16 @@ public class AgentAdminController implements IAgentAdminService {
             }
 
             // PO转DTO
-            AiClientResponseDTO responseDTO = convertToAiClientResponseDTO(tbAgent);
+            AgentResponseDTO responseDTO = convertToAiClientResponseDTO(tbAgent);
 
-            return Response.<AiClientResponseDTO>builder()
+            return Response.<AgentResponseDTO>builder()
                     .code(ErrorCode.SUCCESS.getCode())
                     .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTO)
                     .build();
         } catch (Exception e) {
             log.error("根据ID查询AI客户端配置失败", e);
-            return Response.<AiClientResponseDTO>builder()
+            return Response.<AgentResponseDTO>builder()
                     .code(ErrorCode.UN_ERROR.getCode())
                     .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
@@ -238,24 +238,24 @@ public class AgentAdminController implements IAgentAdminService {
 
     @Override
     @GetMapping("/query-enabled")
-    public Response<List<AiClientResponseDTO>> queryEnabledAiClients() {
+    public Response<List<AgentResponseDTO>> queryEnabledAiClients() {
         try {
             log.info("查询所有启用的AI客户端配置");
+            LambdaQueryWrapper<TbAgent> wrapper = Wrappers.lambdaQuery(TbAgent.class).eq(TbAgent::getStatus, 1);
+            List<TbAgent> tbAgents = agentMapper.selectList(wrapper);
 
-            List<TbAgent> tbAgents = agentMapper.queryEnabledClients();
-
-            List<AiClientResponseDTO> responseDTOs = tbAgents.stream()
+            List<AgentResponseDTO> responseDTOs = tbAgents.stream()
                     .map(this::convertToAiClientResponseDTO)
                     .collect(Collectors.toList());
 
-            return Response.<List<AiClientResponseDTO>>builder()
+            return Response.<List<AgentResponseDTO>>builder()
                     .code(ErrorCode.SUCCESS.getCode())
                     .info(ErrorCode.SUCCESS.getInfo())
                     .data(responseDTOs)
                     .build();
         } catch (Exception e) {
             log.error("查询所有启用的AI客户端配置失败", e);
-            return Response.<List<AiClientResponseDTO>>builder()
+            return Response.<List<AgentResponseDTO>>builder()
                     .code(ErrorCode.UN_ERROR.getCode())
                     .info(ErrorCode.UN_ERROR.getInfo())
                     .data(null)
@@ -265,12 +265,12 @@ public class AgentAdminController implements IAgentAdminService {
 
     @Override
     @PostMapping("/query-list")
-    public Response<List<AiClientResponseDTO>> queryAiClientList(@RequestBody AiClientQueryRequestDTO request) {
+    public Response<List<AgentResponseDTO>> queryAiClientList(@RequestBody AiClientQueryRequestDTO request) {
         log.info("根据条件查询AI客户端配置列表请求：{}", request);
 
         LambdaQueryWrapper<TbAgent> clientWrapper = Wrappers.lambdaQuery(TbAgent.class)
-                .eq(request.getClientId() != null, TbAgent::getId, request.getClientId())
-                .eq(StrUtil.isNotEmpty(request.getClientName()), TbAgent::getAgentName, request.getClientName())
+                .eq(request.getAgentId() != null, TbAgent::getId, request.getAgentId())
+                .eq(StrUtil.isNotEmpty(request.getAgentName()), TbAgent::getAgentName, request.getAgentName())
                 .eq(request.getStatus() != null, TbAgent::getStatus, request.getStatus())
                 .orderByDesc(TbAgent::getUpdateTime);
 
@@ -287,7 +287,7 @@ public class AgentAdminController implements IAgentAdminService {
             }
         }
 
-        List<AiClientResponseDTO> responseDTOs = tbAgents.stream()
+        List<AgentResponseDTO> responseDTOs = tbAgents.stream()
                 .map(this::convertToAiClientResponseDTO)
                 .peek((client) -> {
                     TbModelApi tbModelApi = modelMapper.selectById(client.getModelId());
@@ -305,7 +305,7 @@ public class AgentAdminController implements IAgentAdminService {
                 })
                 .collect(Collectors.toList());
 
-        return Response.<List<AiClientResponseDTO>>builder()
+        return Response.<List<AgentResponseDTO>>builder()
                 .code(ErrorCode.SUCCESS.getCode())
                 .info(ErrorCode.SUCCESS.getInfo())
                 .data(responseDTOs)
@@ -316,7 +316,7 @@ public class AgentAdminController implements IAgentAdminService {
     /**
      * DTO转PO对象
      */
-    private TbAgent convertToAiClient(AiClientRequestDTO requestDTO) {
+    private TbAgent convertToAiClient(AgentRequestDTO requestDTO) {
         TbAgent tbAgent = new TbAgent();
         BeanUtils.copyProperties(requestDTO, tbAgent);
         return tbAgent;
@@ -325,8 +325,8 @@ public class AgentAdminController implements IAgentAdminService {
     /**
      * PO转DTO对象
      */
-    private AiClientResponseDTO convertToAiClientResponseDTO(TbAgent tbAgent) {
-        AiClientResponseDTO responseDTO = new AiClientResponseDTO();
+    private AgentResponseDTO convertToAiClientResponseDTO(TbAgent tbAgent) {
+        AgentResponseDTO responseDTO = new AgentResponseDTO();
         BeanUtils.copyProperties(tbAgent, responseDTO);
         return responseDTO;
     }

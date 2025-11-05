@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-import { Field } from '@flowgram.ai/free-layout-editor';
-import { Select } from '@douyinfe/semi-ui';
+import {Field} from '@flowgram.ai/free-layout-editor';
+import {Select} from '@douyinfe/semi-ui';
 
-import { aiClientAdminService } from '../../../services/ai-client-admin-service';
-import type { AiClientResponseDTO } from '../../../services/ai-client-admin-service';
-import { useIsSidebar, useNodeRenderContext } from '../../../hooks';
-import { FormItem } from '../../../form-components';
+import type {AiClientResponseDTO} from '../../../services/ai-client-admin-service';
+import {aiClientAdminService} from '../../../services/ai-client-admin-service';
+import {useIsSidebar, useNodeRenderContext} from '../../../hooks';
+import {FormItem} from '../../../form-components';
 
 /**
  * LLM节点的“模型客户端”下拉选择
@@ -29,7 +29,7 @@ export function LLMClientSelect() {
         const result = await aiClientAdminService.queryEnabledClients();
         const clients: AiClientResponseDTO[] = result?.data || [];
         const options = clients.map(client => ({
-          label: client.clientName,
+          label: client.agentName,
           value: String(client.id),
         }));
         setClientOptions(options);

@@ -43,7 +43,7 @@ public class ChatModelFactory {
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model(modelVO.getModelVersion())
+                        .model(modelVO.getModelName())
                         .build())
                 .build();
     }
@@ -56,7 +56,7 @@ public class ChatModelFactory {
         OllamaChatModel chatModel = OllamaChatModel.builder()
                 .ollamaApi(ollamaApi)
                 .defaultOptions(OllamaOptions.builder()
-                        .model(modelVO.getModelVersion())
+                        .model(modelVO.getModelName())
                         .build())
                 .build();
         return chatModel;

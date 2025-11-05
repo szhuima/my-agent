@@ -24,14 +24,14 @@ public class AiClientQueryRequestDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端ID
+     * ID
      */
-    private Long clientId;
+    private Long agentId;
 
     /**
-     * 客户端名称（模糊查询）
+     * 名称（模糊查询）
      */
-    private String clientName;
+    private String agentName;
 
     /**
      * 状态(0:禁用,1:启用)

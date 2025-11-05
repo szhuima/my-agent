@@ -1,8 +1,20 @@
-import React, { useContext, useEffect } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage, DashboardPage, AgentConfigPage, AgentListPage, ClientManagement, AiClientApiManagement, AdvisorManagement, RagOrderManagement, ClientToolMcpManagement, WorkflowListPage, WorkflowInstancePage, WorkflowExecutionPage, WorkflowCreatePage } from './pages';
-import { ThemeProvider, ThemeContext } from './context/theme-context';
+import React, {useContext, useEffect} from 'react';
+import {createRoot} from 'react-dom/client';
+import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
+import {
+    AgentConfigPage,
+    AgentListPage,
+    AiClientApiManagement,
+    ClientManagement,
+    ClientToolMcpManagement,
+    LoginPage,
+    RagOrderManagement,
+    WorkflowCreatePage,
+    WorkflowExecutionPage,
+    WorkflowInstancePage,
+    WorkflowListPage
+} from './pages';
+import {ThemeContext, ThemeProvider} from './context/theme-context';
 import './styles/theme.css';
 
 // 统一的认证检查函数
@@ -110,14 +122,6 @@ const ThemeApp: React.FC = () => {
           element={
             <ProtectedRoute>
               <AiClientApiManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/advisor-management"
-          element={
-            <ProtectedRoute>
-              <AdvisorManagement />
             </ProtectedRoute>
           }
         />

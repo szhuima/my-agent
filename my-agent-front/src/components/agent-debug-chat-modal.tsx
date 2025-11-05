@@ -1,30 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import hljs from "highlight.js";
 import "highlight.js/styles/github.css";
+import {Button, Divider, Input, Modal, Space, Switch, TextArea, Toast, Typography,} from "@douyinfe/semi-ui";
+import {API_ENDPOINTS, DEFAULT_HEADERS} from "../config";
+import {AiClientResponseDTO} from "../services/ai-client-admin-service";
 import {
-  Modal,
-  Button,
-  Input,
-  Space,
-  Typography,
-  Divider,
-  Toast,
-  TextArea,
-  Switch,
-} from "@douyinfe/semi-ui";
-import { API_ENDPOINTS, DEFAULT_HEADERS } from "../config";
-import { AiClientResponseDTO } from "../services/ai-client-admin-service";
-import {
-  sendChatMessage,
-  sendChatMessageStream,
-  loadChatHistory,
-  saveChatHistory,
-  clearChatHistory,
-  clearChatServerMemory,
-  ChatMessage,
+    ChatMessage,
+    clearChatHistory,
+    clearChatServerMemory,
+    loadChatHistory,
+    saveChatHistory,
+    sendChatMessage,
+    sendChatMessageStream,
 } from "../services/chat-debug-service";
 
 interface ClientDebugChatModalProps {
@@ -35,7 +25,7 @@ interface ClientDebugChatModalProps {
   width?: number;
 }
 
-export const ClientDebugChatModal: React.FC<ClientDebugChatModalProps> = ({
+export const AgentDebugChatModal: React.FC<ClientDebugChatModalProps> = ({
   visible,
   onCancel,
   client,
@@ -479,7 +469,7 @@ export const ClientDebugChatModal: React.FC<ClientDebugChatModalProps> = ({
     onCancel();
   };
 
-  const title = `调试 - ${client?.clientName ?? ""}`;
+  const title = `调试 - ${client?.agentName ?? ""}`;
 
   // 从系统提示词中解析 {{var}} 变量名，作为上下文变量的 key 预填
   const extractContextKeysFromPrompt = (prompt?: string): string[] => {

@@ -8,7 +8,7 @@ import {Header, Sidebar} from "../components/layout";
 import {PageDTO, WorkflowQueryRequestDTO, WorkflowResponseDTO, WorkflowService,} from "../services/workflow-service";
 import useHandleNavigation from "../utils/useHandleNavigation";
 import yaml from "js-yaml";
-import WorkflowDslModal from "../components/WorkflowDslModal";
+import WorkflowDslModal from "../components/workflow-dsl-modal";
 
 const { Content } = Layout;
 const { Title } = Typography;

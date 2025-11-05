@@ -1,10 +1,10 @@
-import { API_CONFIG, DEFAULT_HEADERS } from '../config/api';
-import { apiRequestRaw } from '../utils/request';
+import {API_CONFIG, DEFAULT_HEADERS} from '../config/api';
+import {apiRequestRaw} from '../utils/request';
 
 // 请求和响应接口定义
 export interface AiClientQueryRequestDTO {
-  clientId?: string;
-  clientName?: string;
+  id?: string;
+  agentName?: string;
   status?: number;
   pageNum?: number;
   pageSize?: number;
@@ -14,7 +14,7 @@ export interface AiClientQueryRequestDTO {
 export interface AiClientRequestDTO {
   id?: number;
   clientId?: string;
-  clientName: string;
+  agentName: string;
   description?: string;
   status: number;
   modelId?: number;
@@ -36,7 +36,7 @@ export interface AiClientResponseDTO {
   mcpToolIds?: number[];
   mcpToolNames?: string[];
   knowledgeIds?: number[];
-  clientName: string;
+  agentName: string;
   description?: string;
   status: number;
   createTime: string;

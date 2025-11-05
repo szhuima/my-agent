@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Modal,
-  Input,
-  Select,
-  Button,
-  Toast,
-  Space
-} from '@douyinfe/semi-ui';
-import { 
-  aiClientApiAdminService, 
-  AiClientApiRequestDTO,
-  AiClientApiResponseDTO 
-} from '../services/model-api-service';
-import { fetchModelSourceList, fetchModelTypeList } from '../services/support-service';
+import React, {useEffect, useState} from 'react';
+import {Button, Input, Modal, Select, Space, Toast} from '@douyinfe/semi-ui';
+import {aiClientApiAdminService, AiClientApiRequestDTO, AiClientApiResponseDTO} from '../services/model-api-service';
+import {fetchModelSourceList, fetchModelTypeList} from '../services/support-service';
 
 interface AiClientApiEditModalProps {
   visible: boolean;
@@ -44,7 +33,7 @@ interface FormErrors {
   embeddingsPath?: string;
 }
 
-export const AiClientApiEditModal: React.FC<AiClientApiEditModalProps> = ({
+export const ModelApiEditModal: React.FC<AiClientApiEditModalProps> = ({
   visible,
   editingRecord,
   onCancel,

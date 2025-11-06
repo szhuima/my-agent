@@ -1,14 +1,18 @@
 package dev.szhuima.agent.infrastructure.repository;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import dev.szhuima.agent.domain.agent.model.Knowledge;
 import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
+import dev.szhuima.agent.infrastructure.entity.TbAgentKnowledgeConfig;
 import dev.szhuima.agent.infrastructure.entity.TbKnowledge;
+import dev.szhuima.agent.infrastructure.mapper.AgentKnowledgeConfigMapper;
 import dev.szhuima.agent.infrastructure.mapper.KnowledgeMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,6 +25,9 @@ public class KnowledgeRepository implements IKnowledgeRepository {
 
     @Resource
     private KnowledgeMapper knowledgeMapper;
+
+    @Resource
+    private AgentKnowledgeConfigMapper agentKnowledgeConfigMapper;
 
     @Override
     public Long saveKnowledge(Knowledge knowledge) {
@@ -45,5 +52,18 @@ public class KnowledgeRepository implements IKnowledgeRepository {
     public List<Knowledge> queryKnowledgeList(List<Long> knowledgeIds) {
         List<TbKnowledge> tbKnowledgeList = knowledgeMapper.selectBatchIds(knowledgeIds);
         return BeanUtil.copyToList(tbKnowledgeList, Knowledge.class);
+    }
+
+    @Override
+    public List<Knowledge> queryByAgentId(Long agentId) {
+        List<Long> knowledgeIds = agentKnowledgeConfigMapper.selectList(Wrappers.lambdaQuery(TbAgentKnowledgeConfig.class)
+                .eq(TbAgentKnowledgeConfig::getAgentId, agentId))
+                .stream()
+                .map(TbAgentKnowledgeConfig::getKnowledgeId)
+                .toList();
+        if (knowledgeIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return queryKnowledgeList(knowledgeIds);
     }
 }

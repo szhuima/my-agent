@@ -17,8 +17,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * 智能体节点
  * * @Author: szhuima
@@ -49,17 +47,11 @@ public class AgentNodeExecutor extends AbstractNodeExecutor {
         WorkflowNodeAgentConfig config = JSON.parseObject(configJson, WorkflowNodeAgentConfig.class,
                 JSONReader.Feature.SupportSmartMatch);
 
-        Long clientId = config.getClientId();
+        Long agentId = config.getAgentId();
 
-        List<Agent> agents = agentRepository.queryAgentList(List.of(clientId));
+        Agent agent = agentRepository.getAgent(agentId);
 
-        if (agents.isEmpty()) {
-            log.error("未找到客户端配置，clientId：{}", clientId);
-            return NodeExecutionResult.failure("未找到客户端配置");
-        }
-        Agent agent = agents.get(0);
-
-        ChatClient chatClient = agentBeanFactory.getChatClient(clientId);
+        ChatClient chatClient = agentBeanFactory.getChatClient(agentId);
 
         String userMessage = config.getUserMessage();
         String sessionId = StringUtils.isEmpty(config.getSessionId()) ? IdUtil.simpleUUID() : config.getSessionId();

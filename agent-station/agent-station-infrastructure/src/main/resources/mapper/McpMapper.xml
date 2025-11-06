@@ -8,7 +8,7 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="mcpName" column="mcp_name" jdbcType="VARCHAR"/>
             <result property="transportType" column="transport_type" jdbcType="VARCHAR"/>
-            <result property="transportConfig" column="transport_config" jdbcType="VARCHAR"/>
+            <result property="transportConfig" column="config" jdbcType="VARCHAR"/>
             <result property="requestTimeout" column="request_timeout" jdbcType="INTEGER"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

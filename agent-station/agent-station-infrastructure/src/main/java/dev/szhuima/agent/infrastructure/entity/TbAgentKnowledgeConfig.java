@@ -19,8 +19,8 @@ public class TbAgentKnowledgeConfig {
     /**
      * 客户端ID
      */
-    @TableField(value = "client_id")
-    private Long clientId;
+    @TableField(value = "agent_id")
+    private Long agentId;
 
     /**
      * 知识库ID

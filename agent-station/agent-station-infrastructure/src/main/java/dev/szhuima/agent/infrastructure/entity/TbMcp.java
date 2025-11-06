@@ -20,20 +20,28 @@ public class TbMcp {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /**
-     * MCP名称
-     */
-    private String mcpName;
 
     /**
-     * 传输类型(sse/stdio)
+     * JSON配置,格式如下：
+     * {
+     *   "mcpServers": {
+     *     "mysql": {
+     *       "command": "npx",
+     *       "args": [
+     *         "-y",
+     *         "@fhuang/mcp-mysql-server"
+     *       ],
+     *       "env": {
+     *         "MYSQL_HOST": "your_host",
+     *         "MYSQL_USER": "your_user",
+     *         "MYSQL_PASSWORD": "your_password",
+     *         "MYSQL_DATABASE": "your_database"
+     *       }
+     *     }
+     *   }
+     * }
      */
-    private String transportType;
-
-    /**
-     * 传输配置(sse/stdio)
-     */
-    private String transportConfig;
+    private String config;
 
     /**
      * 请求超时时间(分钟)

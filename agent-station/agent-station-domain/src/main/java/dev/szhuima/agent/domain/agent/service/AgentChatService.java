@@ -5,18 +5,14 @@ import dev.szhuima.agent.domain.agent.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.agent.model.AgentExecuteParams;
 import dev.szhuima.agent.domain.agent.model.ChatRequest;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
-import dev.szhuima.agent.domain.agent.repository.IClientModelRepository;
-import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
+import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.support.utils.StringTemplateRender;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-
-import java.util.List;
 
 
 /**
@@ -32,33 +28,23 @@ public class AgentChatService implements StringTemplateRender {
     private AgentBeanFactory agentBeanFactory;
 
     @Resource
-    private PgVectorStore vectorStore;
-
-    @Resource
-    private IAgentRepository repository;
-
-    @Resource
-    private IKnowledgeRepository knowledgeRepository;
-
-    @Resource
-    private IClientModelRepository modelRepository;
+    private IAgentRepository agentRepository;
 
     @Resource
     private AgentExecutor agentExecutor;
 
 
-    public Agent getAgentClient(Long clientId) {
-        List<Agent> agents = repository.queryAgentList(List.of(clientId));
-        if (agents.isEmpty()) {
-            log.error("未找到客户端配置，clientId：{}", clientId);
-            throw new IllegalArgumentException("未找到客户端配置");
+    public Agent getAgent(Long agentId) {
+        Agent agent = agentRepository.getAgent(agentId);
+        if (agent == null) {
+            throw BizException.of("智能体不存在");
         }
-        return agents.get(0);
+        return agent;
     }
 
 
     public String noneStreamChat(ChatRequest chatRequest) {
-        Agent agent = getAgentClient(chatRequest.getClientId());
+        Agent agent = getAgent(chatRequest.getClientId());
         AgentExecuteParams params = AgentExecuteParams.builder()
                 .agent(agent)
                 .userMessage(chatRequest.getUserMessage())
@@ -72,7 +58,7 @@ public class AgentChatService implements StringTemplateRender {
     }
 
     public Flux<String> streamChat(ChatRequest chatRequest) {
-        Agent agent = getAgentClient(chatRequest.getClientId());
+        Agent agent = getAgent(chatRequest.getClientId());
         AgentExecuteParams params = AgentExecuteParams.builder()
                 .agent(agent)
                 .userMessage(chatRequest.getUserMessage())

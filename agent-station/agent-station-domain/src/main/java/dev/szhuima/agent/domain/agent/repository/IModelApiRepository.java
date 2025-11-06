@@ -7,8 +7,8 @@ import dev.szhuima.agent.domain.agent.model.ModelApi;
  * * @Date    2025/10/18 16:43
  * * @Description
  **/
-public interface IClientModelRepository {
+public interface IModelApiRepository {
 
-    ModelApi getClientModelById(Long modelId);
+    ModelApi getModelApi(Long modelId);
 
 }

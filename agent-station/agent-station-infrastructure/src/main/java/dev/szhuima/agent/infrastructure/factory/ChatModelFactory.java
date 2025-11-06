@@ -32,18 +32,18 @@ public class ChatModelFactory {
         }
     }
 
-    private OpenAiChatModel createOpenAiChatModel(ModelApi modelVO) {
+    private OpenAiChatModel createOpenAiChatModel(ModelApi modelApi) {
         // 构建OpenAiApi
         OpenAiApi openAiApi = OpenAiApi.builder()
-                .baseUrl(modelVO.getBaseUrl())
-                .apiKey(modelVO.getApiKey())
-                .completionsPath(modelVO.getCompletionsPath())
-                .embeddingsPath(modelVO.getEmbeddingsPath())
+                .baseUrl(modelApi.getBaseUrl())
+                .apiKey(modelApi.getApiKey())
+                .completionsPath(modelApi.getCompletionsPath())
+                .embeddingsPath(modelApi.getEmbeddingsPath())
                 .build();
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model(modelVO.getModelName())
+                        .model(modelApi.getModelName())
                         .build())
                 .build();
     }

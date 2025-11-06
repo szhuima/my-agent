@@ -81,7 +81,7 @@ public class AgentAdminController implements IAgentAdminService {
                     throw new IllegalArgumentException("知识库不存在");
                 }
                 TbAgentKnowledgeConfig knowledgeConfig = new TbAgentKnowledgeConfig();
-                knowledgeConfig.setClientId(tbAgent.getId());
+                knowledgeConfig.setAgentId(tbAgent.getId());
                 knowledgeConfig.setKnowledgeId(knowledgeId);
                 clientKnowledgeConfigMapper.insert(knowledgeConfig);
             }
@@ -117,7 +117,7 @@ public class AgentAdminController implements IAgentAdminService {
 
         // 先删除之前的知识库配置ID
         LambdaQueryWrapper<TbAgentKnowledgeConfig> knowledgeWrapper = Wrappers.lambdaQuery(TbAgentKnowledgeConfig.class)
-                .eq(TbAgentKnowledgeConfig::getClientId, tbAgent.getId());
+                .eq(TbAgentKnowledgeConfig::getAgentId, tbAgent.getId());
         clientKnowledgeConfigMapper.delete(knowledgeWrapper);
 
         // 保存 新知识库配置
@@ -129,7 +129,7 @@ public class AgentAdminController implements IAgentAdminService {
                     throw new IllegalArgumentException("知识库不存在");
                 }
                 TbAgentKnowledgeConfig knowledgeConfig = new TbAgentKnowledgeConfig();
-                knowledgeConfig.setClientId(tbAgent.getId());
+                knowledgeConfig.setAgentId(tbAgent.getId());
                 knowledgeConfig.setKnowledgeId(knowledgeId);
                 clientKnowledgeConfigMapper.insert(knowledgeConfig);
             }
@@ -297,7 +297,7 @@ public class AgentAdminController implements IAgentAdminService {
 
                     // 获取知识库ID
                     LambdaQueryWrapper<TbAgentKnowledgeConfig> knowledgeWrapper = Wrappers.lambdaQuery(TbAgentKnowledgeConfig.class)
-                            .eq(TbAgentKnowledgeConfig::getClientId, client.getId());
+                            .eq(TbAgentKnowledgeConfig::getAgentId, client.getId());
                     List<Long> knowledgeIds = clientKnowledgeConfigMapper.selectList(knowledgeWrapper).stream().map(TbAgentKnowledgeConfig::getKnowledgeId).toList();
                     if (CollectionUtil.isNotEmpty(knowledgeIds)) {
                         client.setKnowledgeIds(knowledgeIds);

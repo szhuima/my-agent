@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class WorkflowNodeAgentConfig {
 
-    private Long clientId;
+    private Long agentId;
 
     private String userMessage;
 

@@ -3,8 +3,6 @@ package dev.szhuima.agent.domain.agent.repository;
 
 import dev.szhuima.agent.domain.agent.Agent;
 
-import java.util.List;
-
 /**
  * 仓储服务
  *
@@ -13,6 +11,6 @@ import java.util.List;
  */
 public interface IAgentRepository {
 
-    List<Agent> queryAgentList(List<Long> agentIdList);
+    Agent getAgent(Long agentId);
 
 }

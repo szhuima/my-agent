@@ -8,17 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-/**
- * MCP VO 对象
- *
- * @author Fuzhengwei bugstack.cn @小傅哥
- * 2025-05-02 19:11
- */
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgentMcpTool {
+public class Mcp {
 
     /**
      * 主键ID
@@ -30,23 +25,25 @@ public class AgentMcpTool {
      */
     private String mcpName;
 
+    private String config;
+
     /**
      * 传输类型(sse/stdio)
      */
-    private String transportType;
+    private McpTransportType transportType;
 
     /**
      * 传输配置 - sse
      */
-    private TransportConfigSse transportConfigSse;
+    private SseConfig sseConfig;
 
     /**
      * 传输配置 - stdio
      */
-    private TransportConfigStdio transportConfigStdio;
+    private StdioConfig stdioConfig;
 
     /**
-     * 请求超时时间(分钟)
+     * 请求超时时间
      */
     private Integer requestTimeout;
 
@@ -54,7 +51,7 @@ public class AgentMcpTool {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class TransportConfigSse {
+    public static class SseConfig {
         private String baseUri;
         private String sseEndpoint;
     }
@@ -72,7 +69,7 @@ public class AgentMcpTool {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class TransportConfigStdio {
+    public static class StdioConfig {
 
         private Map<String, Stdio> stdio;
 
@@ -80,6 +77,8 @@ public class AgentMcpTool {
         public static class Stdio {
             private String command;
             private List<String> args;
+            private Map<String,Object> env;
+
         }
     }
 

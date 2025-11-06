@@ -39,6 +39,7 @@ public class ChatClientFactory implements StringTemplateRender {
     private ChatClient createChatClient(Agent agent) {
         ChatModel chatModel = chatModelFactory.createChatModel(agent.getModelApi());
         List<Advisor> advisors = new ArrayList<>();
+        //配置记忆顾问
         if (agent.getMemorySize() > 0) {
             MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
                     .maxMessages(agent.getMemorySize()).build();

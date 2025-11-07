@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Card, Input, Layout, Popconfirm, Space, Table, Tag, Toast, Typography} from '@douyinfe/semi-ui';
-import {IconDelete, IconEdit, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
+import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
 import {ModelApiCreateModal} from '../components/model-api-create-modal';
 import {ModelApiEditModal} from '../components/model-api-edit-modal';
+import {ModelApiTestModal} from '../components/model-api-test-modal';
 import {
   aiClientApiAdminService,
   AiClientApiQueryRequestDTO,
@@ -111,6 +112,8 @@ export const AiClientApiManagement: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<AiClientApiResponseDTO | null>(null);
   const [loadingApiIds, setLoadingApiIds] = useState<Set<string>>(new Set());
+  const [testVisible, setTestVisible] = useState(false);
+  const [testingRecord, setTestingRecord] = useState<AiClientApiResponseDTO | null>(null);
 
   // 表格列定义
   const columns = [
@@ -238,7 +241,7 @@ export const AiClientApiManagement: React.FC = () => {
     {
       title: "操作",
       key: "action",
-      width: 100,
+      width: 120,
       fixed: "right" as const,
       render: (_: any, record: any) => (
         <Space>
@@ -249,6 +252,13 @@ export const AiClientApiManagement: React.FC = () => {
             onClick={() => handleEdit(record)}
           >
             
+          </ActionButton>
+          <ActionButton
+            type="secondary"
+            size="small"
+            icon={<IconPlay />}
+            onClick={() => handleTest(record)}
+          >
           </ActionButton>
           <Popconfirm
             title="确定要删除这个API配置吗？"
@@ -331,6 +341,12 @@ export const AiClientApiManagement: React.FC = () => {
     setModalVisible(true);
   };
 
+  // 测试
+  const handleTest = (record: AiClientApiResponseDTO) => {
+    setTestingRecord(record);
+    setTestVisible(true);
+  };
+
   // 模态框成功回调
   const handleModalSuccess = () => {
     setModalVisible(false);
@@ -342,6 +358,11 @@ export const AiClientApiManagement: React.FC = () => {
   const handleModalCancel = () => {
     setModalVisible(false);
     setEditingRecord(null);
+  };
+
+  const handleTestCancel = () => {
+    setTestVisible(false);
+    setTestingRecord(null);
   };
 
   // 删除
@@ -512,6 +533,12 @@ export const AiClientApiManagement: React.FC = () => {
         editingRecord={editingRecord}
         onCancel={handleModalCancel}
         onSuccess={handleModalSuccess}
+      />
+
+      <ModelApiTestModal
+        visible={testVisible}
+        record={testingRecord}
+        onCancel={handleTestCancel}
       />
     </AiClientApiManagementLayout>
   );

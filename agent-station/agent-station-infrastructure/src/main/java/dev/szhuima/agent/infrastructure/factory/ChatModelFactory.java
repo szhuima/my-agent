@@ -36,14 +36,11 @@ public class ChatModelFactory {
 
     public ChatModel createChatModel(ModelApi modelApi) {
         ModelSource modelSource = modelApi.getModelSource();
-        switch (modelSource) {
-            case OLLAMA:
-                return createOllamaChatModel(modelApi);
-            case OPENAI:
-                return createOpenAiChatModel(modelApi);
-            default:
-                throw BizException.of("不支持模型来源: " + modelSource);
-        }
+        return switch (modelSource) {
+            case OLLAMA -> createOllamaChatModel(modelApi);
+            case OPENAI -> createOpenAiChatModel(modelApi);
+            default -> throw BizException.of("不支持模型来源: " + modelSource);
+        };
     }
 
     private OpenAiChatModel createOpenAiChatModel(ModelApi modelApi) {

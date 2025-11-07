@@ -2,8 +2,8 @@ import React, {useContext, useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {
+    AgentList,
     AiClientApiManagement,
-    ClientManagement,
     ClientToolMcpManagement,
     LoginPage,
     RagOrderManagement,
@@ -95,7 +95,7 @@ const ThemeApp: React.FC = () => {
           path="/client-management"
           element={
             <ProtectedRoute>
-              <ClientManagement />
+              <AgentList />
             </ProtectedRoute>
           }
         />

@@ -1,17 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {
-    Button,
-    Card,
-    Input,
-    Layout,
-    Popconfirm,
-    Space,
-    Table,
-    Tag,
-    Toast,
-    Tooltip,
-    Typography
+  Button,
+  Card,
+  Input,
+  Layout,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Toast,
+  Tooltip,
+  Typography
 } from '@douyinfe/semi-ui';
 import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
@@ -102,7 +102,7 @@ const ActionButton = styled(Button)`
   margin-right: ${theme.spacing.sm};
 `;
 
-export const ClientManagement: React.FC = () => {
+export const AgentList: React.FC = () => {
   const navigate = useNavigate();
   const handleNavigation = useHandleNavigation();
 

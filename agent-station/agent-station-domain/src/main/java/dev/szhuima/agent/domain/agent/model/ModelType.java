@@ -6,16 +6,7 @@ package dev.szhuima.agent.domain.agent.model;
  * * @Description
  **/
 public enum ModelType {
-    CHAT("chat"),
-    EMBEDDING("embedding");
+    CHAT,
+    EMBEDDING;
 
-    private final String name;
-
-    ModelType(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

@@ -23,15 +23,15 @@ public class SupportController {
 
 
     @GetMapping("/model-source/query-list")
-    public Response<List<String>> queryModelSourceList() {
-        List<String> modelSources = Arrays.stream(ModelSource.values()).map(ModelSource::getName).toList();
+    public Response<List<ModelSource>> queryModelSourceList() {
+        List<ModelSource> modelSources = Arrays.stream(ModelSource.values()).toList();
         return Response.success(modelSources);
     }
 
 
     @GetMapping("/model-type/query-list")
-    public Response<List<String>> queryModelTypeList() {
-        List<String> modelTypes = Arrays.stream(ModelType.values()).map(ModelType::getName).toList();
+    public Response<List<ModelType>> queryModelTypeList() {
+        List<ModelType> modelTypes = Arrays.stream(ModelType.values()).toList();
         return Response.success(modelTypes);
     }
 

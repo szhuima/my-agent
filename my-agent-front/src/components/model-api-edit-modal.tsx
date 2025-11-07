@@ -104,12 +104,6 @@ export const ModelApiEditModal: React.FC<AiClientApiEditModalProps> = ({
       newErrors.baseUrl = '请输入有效的URL格式（以http://或https://开头）';
     }
 
-    // if (!formData.apiKey.trim()) {
-    //   newErrors.apiKey = '请输入API密钥';
-    // } else if (formData.apiKey.trim().length < 10) {
-    //   newErrors.apiKey = 'API密钥长度至少10个字符';
-    // }
-
     if (!formData.completionsPath.trim()) {
       newErrors.completionsPath = '请输入对话路径';
     }
@@ -283,7 +277,9 @@ export const ModelApiEditModal: React.FC<AiClientApiEditModalProps> = ({
               style={{ flex: 1 }}
             >
               {modelTypeOptions.map(item => (
-                <Select.Option key={item} value={item}>{item}</Select.Option>
+                <Select.Option key={item} value={item}>
+                  {item === 'CHAT' ? '对话模型' : item === 'EMBEDDING' ? '嵌入模型' : item}
+                </Select.Option>
               ))}
             </Select>
           </div>

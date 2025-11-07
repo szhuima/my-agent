@@ -8,7 +8,6 @@ import dev.szhuima.agent.domain.agent.model.McpTransportType;
 import dev.szhuima.agent.domain.agent.repository.IMcpRepository;
 import dev.szhuima.agent.infrastructure.entity.TbMcp;
 import dev.szhuima.agent.infrastructure.mapper.McpMapper;
-import dev.szhuima.agent.infrastructure.util.McpUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Repository;
 
@@ -39,13 +38,13 @@ public class McpRepository implements IMcpRepository {
         JSONObject mcpConfig = JSON.parseObject(config);
         JSONObject mcpServers = mcpConfig.getJSONObject("mcpServers");
     
-        // 使用 McpUtil 工具类推断传输类型
-        McpTransportType transportType = McpUtil.inferTransportType(mcpServers);
+        // 推断传输类型
+        McpTransportType transportType = inferTransportType(mcpServers);
         
         // 构建 Mcp 对象
         Mcp.McpBuilder mcpBuilder = Mcp.builder()
                 .id(tbMcp.getId())
-                .mcpName(McpUtil.inferMcpName(mcpServers)) // 使用 McpUtil 工具类推断 MCP 名称
+                .mcpName(inferMcpName(mcpServers)) // 从配置推断 MCP 名称
                 .transportType(transportType)
                 .config(config)
                 .requestTimeout(tbMcp.getRequestTimeout());
@@ -70,6 +69,44 @@ public class McpRepository implements IMcpRepository {
         }
     
         return mcpBuilder.build();
+    }
+    
+    /**
+     * 根据 mcpServers 配置推断传输类型
+     */
+    private McpTransportType inferTransportType(JSONObject mcpServers) {
+        if (mcpServers == null) {
+            return McpTransportType.STUDIO; // 默认使用 STUDIO
+        }
+        
+        // 检查是否有 SSE 相关的配置（如 baseUri）
+        for (String serverName : mcpServers.keySet()) {
+            JSONObject serverConfig = mcpServers.getJSONObject(serverName);
+            if (serverConfig != null) {
+                if (serverConfig.containsKey("baseUri")) {
+                    return McpTransportType.SSE;
+                }
+                if (serverConfig.containsKey("command") || serverConfig.containsKey("args")) {
+                    return McpTransportType.STUDIO;
+                }
+            }
+        }
+        
+        // 默认使用 STUDIO
+        return McpTransportType.STUDIO;
+    }
+    
+    /**
+     * 推断 MCP 名称
+     */
+    private String inferMcpName(JSONObject mcpServers) {
+        if (mcpServers == null || mcpServers.isEmpty()) {
+            return "Unknown MCP";
+        }
+        
+        // 使用第一个服务器名称作为 MCP 名称
+        String firstServerName = mcpServers.keySet().iterator().next();
+        return firstServerName;
     }
     
     /**

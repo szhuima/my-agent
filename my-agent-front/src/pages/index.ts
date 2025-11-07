@@ -6,5 +6,5 @@ export { WorkflowExecutionPage } from './workflow-execution';
 export { default as WorkflowCreatePage } from './workflow-create';
 export { AgentList } from './agent-list';
 export { AiClientApiManagement } from './model-api-list';
-export { RagOrderManagement } from './knowledge-management';
-export { ClientToolMcpManagement } from './client-tool-mcp-management';
+export { RagOrderManagement } from './knowledge-list';
+export { McpList } from './mcp-list';

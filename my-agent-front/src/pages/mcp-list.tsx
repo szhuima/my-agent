@@ -1,39 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Layout,
-  Table, 
-  Button, 
-  Input, 
-  Space, 
-  Typography, 
-  Toast,
-  Tag,
-  Popconfirm,
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {
+  Button,
   Card,
-  Select,
+  Input,
+  Layout,
   Modal,
-  TextArea
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Tag,
+  TextArea,
+  Toast,
+  Typography
 } from '@douyinfe/semi-ui';
-import { 
-  IconSearch, 
-  IconPlus, 
-  IconEdit, 
-  IconDelete,
-  IconRefresh,
-  IconEyeOpened
-} from '@douyinfe/semi-icons';
+import {IconDelete, IconEdit, IconEyeOpened, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
-import { Sidebar, Header } from '../components/layout';
-import { 
-  aiClientToolMcpAdminService, 
-  AiClientToolMcpQueryRequestDTO, 
-  AiClientToolMcpResponseDTO,
-  AiClientToolMcpRequestDTO 
+import {theme} from '../styles/theme';
+import {Header, Sidebar} from '../components/layout';
+import {
+  aiClientToolMcpAdminService,
+  AiClientToolMcpQueryRequestDTO,
+  AiClientToolMcpRequestDTO,
+  AiClientToolMcpResponseDTO
 } from '../services/ai-client-tool-mcp-admin-service';
 import useHandleNavigation from "../utils/useHandleNavigation";
-
 
 
 const { Content } = Layout;
@@ -142,7 +134,7 @@ const ConfigModalContent = styled.pre`
   overflow-y: auto;
 `;
 
-export const ClientToolMcpManagement: React.FC = () => {
+export const McpList: React.FC = () => {
   const navigate = useNavigate();
   const handleNavigation = useHandleNavigation();
 
@@ -278,7 +270,7 @@ export const ClientToolMcpManagement: React.FC = () => {
     {
       title: '操作',
       key: 'action',
-      width: 200,
+      width: 120,
       fixed: 'right' as const,
       render: (_: any, record: AiClientToolMcpResponseDTO) => (
         <Space>
@@ -289,7 +281,6 @@ export const ClientToolMcpManagement: React.FC = () => {
             size="small"
             onClick={() => showConfigDetail(record.transportConfig, record.mcpName)}
           >
-            查看配置
           </ActionButton>
           <ActionButton
             theme="borderless"
@@ -648,7 +639,6 @@ export const ClientToolMcpManagement: React.FC = () => {
                   onClick={handleCreate}
                   style={{ marginLeft: "auto" }}
                 >
-                  新增MCP配置
                 </Button>
               </SearchRow>
             </SearchSection>

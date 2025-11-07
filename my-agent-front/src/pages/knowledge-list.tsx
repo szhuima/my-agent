@@ -1,38 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Layout,
-  Table, 
-  Button, 
-  Input, 
-  Space, 
-  Typography, 
-  Toast,
-  Tag,
-  Popconfirm,
-  Card,
-  Select,
-  Modal,
-  Form,
-  Upload
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {
+    Button,
+    Card,
+    Form,
+    Input,
+    Layout,
+    Modal,
+    Popconfirm,
+    Select,
+    Space,
+    Table,
+    Tag,
+    Toast,
+    Typography,
+    Upload
 } from '@douyinfe/semi-ui';
-import { 
-  IconSearch, 
-  IconDelete,
-  IconRefresh,
-  IconUpload,
-  IconPlus
-} from '@douyinfe/semi-icons';
+import {IconDelete, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
-import { theme } from '../styles/theme';
-import { Sidebar, Header } from '../components/layout';
-import { 
-  aiClientRagOrderAdminService, 
-  AiClientRagOrderQueryRequestDTO, 
-  AiClientRagOrderResponseDTO
+import {theme} from '../styles/theme';
+import {Header, Sidebar} from '../components/layout';
+import {
+    aiClientRagOrderAdminService,
+    AiClientRagOrderQueryRequestDTO,
+    AiClientRagOrderResponseDTO
 } from '../services/knowledge-admin-service';
 import useHandleNavigation from "../utils/useHandleNavigation";
-
 
 
 const { Content } = Layout;

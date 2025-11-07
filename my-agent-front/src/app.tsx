@@ -4,8 +4,8 @@ import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom
 import {
     AgentList,
     AiClientApiManagement,
-    ClientToolMcpManagement,
     LoginPage,
+    McpList,
     RagOrderManagement,
     WorkflowCreatePage,
     WorkflowExecutionPage,
@@ -120,7 +120,7 @@ const ThemeApp: React.FC = () => {
           path="/client-tool-mcp-management"
           element={
             <ProtectedRoute>
-              <ClientToolMcpManagement />
+              <McpList />
             </ProtectedRoute>
           }
         />

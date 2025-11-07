@@ -1,6 +1,6 @@
-import { API_CONFIG, DEFAULT_HEADERS } from '../config/api';
-import { apiRequestRaw, apiRequestData } from '../utils/request';
-import { PageDTO } from '../typings/page';
+import {API_ENDPOINTS, DEFAULT_HEADERS} from '../config/api';
+import {apiRequestData, apiRequestRaw} from '../utils/request';
+import {PageDTO} from '../typings/page';
 
 // 请求和响应接口定义
 export interface AiClientApiQueryRequestDTO {
@@ -49,7 +49,7 @@ export class AiClientApiAdminService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = `${API_CONFIG.BASE_DOMAIN}/api/v1/admin/ai-client-model`;
+    this.baseUrl = `${API_ENDPOINTS.MODEL_API.BASE}`;
   }
 
   /**

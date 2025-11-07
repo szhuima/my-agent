@@ -1,6 +1,6 @@
-import { Toast } from '@douyinfe/semi-ui';
-import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
-import { apiRequestData } from '../utils/request';
+import {Toast} from '@douyinfe/semi-ui';
+import {API_ENDPOINTS, DEFAULT_HEADERS} from '../config';
+import {apiRequestData} from '../utils/request';
 
 export interface ChatRequest {
   clientId: number;
@@ -98,7 +98,7 @@ export async function sendChatMessage(req: ChatRequest): Promise<ChatResponse> {
     }
 
     // 非流式对话，走普通 JSON 接口
-    const url = API_ENDPOINTS.CLIENT_CHAT.BASE + API_ENDPOINTS.CLIENT_CHAT.CHAT_SIMPLE;
+    const url = API_ENDPOINTS.CLIENT_CHAT.BASE + API_ENDPOINTS.CLIENT_CHAT.CHAT_NONE_STREAM;
     const data = await apiRequestData<ChatResponse>(url, {
       method: 'POST',
       headers: DEFAULT_HEADERS,
@@ -224,11 +224,11 @@ export function clearChatHistory(key: string) {
  * 调用后端接口清空对话记忆
  * POST /clear-memory/{clientId}
  */
-export async function clearChatServerMemory(clientId: number, sessionId: string): Promise<void> {
+export async function clearChatServerMemory(agentId: number, sessionId: string): Promise<void> {
   try {
     const url = `${API_ENDPOINTS.CLIENT_CHAT.BASE}${API_ENDPOINTS.CLIENT_CHAT.CLEAR_MEMORY}`.replace(
-      ':clientId',
-      String(clientId)
+      ':agentId',
+      String(agentId)
     ).replace(':sessionId', sessionId);
     let authHeader: Record<string, string> = {};
     try {

@@ -3,7 +3,7 @@ package dev.szhuima.agent.trigger.http;
 import cn.hutool.core.bean.BeanUtil;
 import dev.szhuima.agent.api.IChatService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.dto.ChatMessageRequest;
+import dev.szhuima.agent.api.dto.AgentChatRequest;
 import dev.szhuima.agent.api.dto.ChatMessageResponse;
 import dev.szhuima.agent.domain.agent.model.ChatRequest;
 import dev.szhuima.agent.domain.agent.service.AgentChatService;
@@ -22,7 +22,7 @@ import reactor.core.publisher.Flux;
 @RestController
 @RequestMapping("/api/v1/client-chat")
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
-public class ClientChatController implements IChatService {
+public class AgentChatController implements IChatService {
 
     @Resource
     private AgentChatService agentChatService;
@@ -43,7 +43,7 @@ public class ClientChatController implements IChatService {
      */
     @Override
     @PostMapping("/chat-non-stream")
-    public Response<ChatMessageResponse> nonStreamChat(@RequestBody ChatMessageRequest request) {
+    public Response<ChatMessageResponse> nonStreamChat(@RequestBody AgentChatRequest request) {
         if (request.getClientId() == null) {
             throw new IllegalArgumentException("非法参数");
         }
@@ -64,7 +64,7 @@ public class ClientChatController implements IChatService {
      * @return
      */
     @PostMapping(value = "/chat-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> streamChat(@RequestBody ChatMessageRequest request) {
+    public Flux<String> streamChat(@RequestBody AgentChatRequest request) {
         if (request.getClientId() == null) {
             throw new IllegalArgumentException("非法参数");
         }

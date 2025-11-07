@@ -10,7 +10,7 @@ import java.util.Map;
  * * @Description
  **/
 @Data
-public class ChatMessageRequest {
+public class AgentChatRequest {
 
     private Long clientId;
 

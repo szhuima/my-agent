@@ -74,9 +74,8 @@ export const API_ENDPOINTS = {
     QUERY_LIST: '/query-list',
   },
   
-  // AI 客户端模型相关接口
-  AI_CLIENT_MODEL: {
-    BASE: `${API_CONFIG.BASE_DOMAIN}/api/${API_CONFIG.API_VERSION}/admin/ai-client-model`,
+  MODEL_API: {
+    BASE: `${API_CONFIG.BASE_DOMAIN}/api/${API_CONFIG.API_VERSION}/admin/model-api`,
     CREATE: '/create',
     UPDATE_BY_ID: '/update-by-id',
     UPDATE_BY_MODEL_ID: '/update-by-model-id',
@@ -134,9 +133,9 @@ export const API_ENDPOINTS = {
 
   CLIENT_CHAT: {
     BASE: `${API_CONFIG.BASE_DOMAIN}/api/${API_CONFIG.API_VERSION}/client-chat`,
-    CHAT_SIMPLE: '/chat-non-stream',
+    CHAT_NONE_STREAM: '/chat-non-stream',
     CHAT_STREAM: '/chat-stream',
-    CLEAR_MEMORY: '/clear-memory/:clientId/:sessionId',
+    CLEAR_MEMORY: '/clear-memory/:agentId/:sessionId',
   }
   
   // 可以在这里添加其他模块的 API 端点

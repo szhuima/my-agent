@@ -2,8 +2,8 @@
  * AI客户端模型API服务
  */
 
-import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
-import { apiRequestData } from '../utils/request';
+import {API_ENDPOINTS, DEFAULT_HEADERS} from '../config';
+import {apiRequestData} from '../utils/request';
 
 // 定义响应数据类型
 export interface AiClientModelResponseDTO {
@@ -30,7 +30,7 @@ export interface ApiResponse<T> {
  * AI客户端模型API服务类
  */
 export class AiClientModelService {
-  private static readonly BASE_URL = API_ENDPOINTS.AI_CLIENT_MODEL.BASE;
+  private static readonly BASE_URL = API_ENDPOINTS.MODEL_API.BASE;
 
   /**
    * 查询所有启用的AI客户端模型配置
@@ -38,7 +38,7 @@ export class AiClientModelService {
   static async queryEnabledAiClientModels(): Promise<AiClientModelResponseDTO[]> {
     try {
       const data = await apiRequestData<AiClientModelResponseDTO[]>(
-        `${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_ENABLED}`,
+        `${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_ENABLED}`,
         {
           method: 'GET',
           headers: DEFAULT_HEADERS,

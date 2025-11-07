@@ -240,7 +240,7 @@ export const AgentDebugChatModal: React.FC<ClientDebugChatModalProps> = ({
   const apiPreview = useMemo(() => {
     // 计算 URL 与请求头
     const url = `${API_ENDPOINTS.CLIENT_CHAT.BASE}${
-      streaming ? API_ENDPOINTS.CLIENT_CHAT.CHAT_STREAM : API_ENDPOINTS.CLIENT_CHAT.CHAT_SIMPLE
+      streaming ? API_ENDPOINTS.CLIENT_CHAT.CHAT_STREAM : API_ENDPOINTS.CLIENT_CHAT.CHAT_NONE_STREAM
     }`;
     let authHeader: Record<string, string> = {};
     try {

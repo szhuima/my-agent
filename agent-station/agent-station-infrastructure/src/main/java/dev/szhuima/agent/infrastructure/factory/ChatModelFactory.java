@@ -12,6 +12,9 @@ import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * * @Author: szhuima
  * * @Date    2025/11/4 15:37
@@ -19,6 +22,17 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class ChatModelFactory {
+
+    private Map<Long, ChatModel> cache = new ConcurrentHashMap<>();
+
+
+    public ChatModel getOrCreate(ModelApi modelApi) {
+        return cache.computeIfAbsent(modelApi.getId(), (apiId) -> createChatModel(modelApi));
+    }
+
+    public ChatModel clear(Long apiId) {
+        return cache.remove(apiId);
+    }
 
     public ChatModel createChatModel(ModelApi modelApi) {
         ModelSource modelSource = modelApi.getModelSource();

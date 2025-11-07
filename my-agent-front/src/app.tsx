@@ -2,8 +2,6 @@ import React, {useContext, useEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {
-    AgentConfigPage,
-    AgentListPage,
     AiClientApiManagement,
     ClientManagement,
     ClientToolMcpManagement,
@@ -61,22 +59,6 @@ const ThemeApp: React.FC = () => {
             </ProtectedRoute>
           }
         /> */}
-        <Route
-          path="/agent-config"
-          element={
-            <ProtectedRoute>
-              <AgentConfigPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/agent-list"
-          element={
-            <ProtectedRoute>
-              <AgentListPage />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/workflow-list"
           element={

@@ -2,8 +2,8 @@
  * AI客户端模型管理API服务
  */
 
-import { API_ENDPOINTS, DEFAULT_HEADERS } from '../config';
-import { apiRequestRaw } from '../utils/request';
+import {API_ENDPOINTS, DEFAULT_HEADERS} from '../config';
+import {apiRequestRaw} from '../utils/request';
 
 // 定义请求数据类型
 export interface AiClientModelRequestDTO {
@@ -52,14 +52,14 @@ export interface ApiResponse<T> {
  * AI客户端模型管理API服务类
  */
 export class AiClientModelAdminService {
-  private static readonly BASE_URL = API_ENDPOINTS.AI_CLIENT_MODEL.BASE;
+  private static readonly BASE_URL = API_ENDPOINTS.MODEL_API.BASE;
 
   /**
    * 创建AI客户端模型配置
    */
   static async createAiClientModel(request: AiClientModelRequestDTO): Promise<ApiResponse<boolean>> {
     try {
-      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.CREATE}`, {
+      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.CREATE}`, {
         method: 'POST',
         headers: DEFAULT_HEADERS,
         body: JSON.stringify(request),
@@ -75,7 +75,7 @@ export class AiClientModelAdminService {
    */
   static async updateAiClientModelById(request: AiClientModelRequestDTO): Promise<ApiResponse<boolean>> {
     try {
-      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.UPDATE_BY_ID}`, {
+      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.UPDATE_BY_ID}`, {
         method: 'PUT',
         headers: DEFAULT_HEADERS,
         body: JSON.stringify(request),
@@ -91,7 +91,7 @@ export class AiClientModelAdminService {
    */
   static async updateAiClientModelByModelId(request: AiClientModelRequestDTO): Promise<ApiResponse<boolean>> {
     try {
-      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.UPDATE_BY_MODEL_ID}`, {
+      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.UPDATE_BY_MODEL_ID}`, {
         method: 'PUT',
         headers: DEFAULT_HEADERS,
         body: JSON.stringify(request),
@@ -107,7 +107,7 @@ export class AiClientModelAdminService {
    */
   static async deleteAiClientModelById(id: number): Promise<ApiResponse<boolean>> {
     try {
-      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.DELETE_BY_ID}/${id}`, {
+      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.DELETE_BY_ID}/${id}`, {
         method: 'DELETE',
         headers: DEFAULT_HEADERS,
       });
@@ -122,7 +122,7 @@ export class AiClientModelAdminService {
    */
   static async deleteAiClientModelByModelId(modelId: string): Promise<ApiResponse<boolean>> {
     try {
-      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.DELETE_BY_MODEL_ID}/${modelId}`, {
+      return await apiRequestRaw<ApiResponse<boolean>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.DELETE_BY_MODEL_ID}/${modelId}`, {
         method: 'DELETE',
         headers: DEFAULT_HEADERS,
       });
@@ -137,7 +137,7 @@ export class AiClientModelAdminService {
    */
   static async queryAiClientModelById(id: number): Promise<ApiResponse<AiClientModelResponseDTO>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_BY_ID}/${id}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_BY_ID}/${id}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });
@@ -152,7 +152,7 @@ export class AiClientModelAdminService {
    */
   static async queryAiClientModelByModelId(modelId: string): Promise<ApiResponse<AiClientModelResponseDTO>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_BY_MODEL_ID}/${modelId}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_BY_MODEL_ID}/${modelId}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });
@@ -167,7 +167,7 @@ export class AiClientModelAdminService {
    */
   static async queryAiClientModelsByApiId(apiId: string): Promise<ApiResponse<AiClientModelResponseDTO[]>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_BY_API_ID}/${apiId}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_BY_API_ID}/${apiId}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });
@@ -182,7 +182,7 @@ export class AiClientModelAdminService {
    */
   static async queryAiClientModelsByModelType(modelType: string): Promise<ApiResponse<AiClientModelResponseDTO[]>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_BY_MODEL_TYPE}/${modelType}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_BY_MODEL_TYPE}/${modelType}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });
@@ -197,7 +197,7 @@ export class AiClientModelAdminService {
    */
   static async queryEnabledAiClientModels(): Promise<ApiResponse<AiClientModelResponseDTO[]>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_ENABLED}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_ENABLED}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });
@@ -212,7 +212,7 @@ export class AiClientModelAdminService {
    */
   static async queryAiClientModelList(request: AiClientModelQueryRequestDTO): Promise<ApiResponse<AiClientModelResponseDTO[]>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_LIST}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_LIST}`, {
         method: 'POST',
         headers: DEFAULT_HEADERS,
         body: JSON.stringify(request),
@@ -228,7 +228,7 @@ export class AiClientModelAdminService {
    */
   static async queryAllAiClientModels(): Promise<ApiResponse<AiClientModelResponseDTO[]>> {
     try {
-      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.AI_CLIENT_MODEL.QUERY_ALL}`, {
+      return await apiRequestRaw<ApiResponse<AiClientModelResponseDTO[]>>(`${this.BASE_URL}${API_ENDPOINTS.MODEL_API.QUERY_ALL}`, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
       });

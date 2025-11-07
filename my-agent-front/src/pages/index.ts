@@ -1,7 +1,5 @@
 export { default as LoginPage } from './login';
 export { DashboardPage } from './dashboard';
-export { AgentConfigPage } from './agent-config';
-export { AgentListPage } from './agent-list';
 export { WorkflowListPage } from './workflow-list';
 export { WorkflowInstancePage } from './workflow-instance';
 export { WorkflowExecutionPage } from './workflow-execution';

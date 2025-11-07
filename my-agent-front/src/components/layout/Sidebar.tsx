@@ -1,9 +1,9 @@
 import React from 'react';
-import { Nav, Avatar, Typography } from '@douyinfe/semi-ui';
-import { IconHome, IconSetting, IconApps, IconActivity, IconFolder } from '@douyinfe/semi-icons';
+import {Avatar, Nav, Typography} from '@douyinfe/semi-ui';
+import {IconApps} from '@douyinfe/semi-icons';
 import agentLogo from '../../assets/icon-agent.jpg';
 import styled from 'styled-components';
-import { theme } from '../../styles/theme';
+import {theme} from '../../styles/theme';
 
 const { Text } = Typography;
 
@@ -169,11 +169,11 @@ const menuItems = [
   {
     itemKey: "resources",
     text: "智能体管理",
-    icon: <IconSetting />,
+    icon: <IconApps />,
     items: [
       {
         itemKey: "client-management",
-        text: "智能客户端",
+        text: "智能体",
       },
       {
         itemKey: "rag-order-management",

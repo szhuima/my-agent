@@ -140,7 +140,7 @@ export const ClientManagement: React.FC = () => {
       width: 70,
     },
     {
-      title: "客户端名称",
+      title: "名称",
       dataIndex: "agentName",
       key: "agentName",
       width: 150,
@@ -413,7 +413,7 @@ export const ClientManagement: React.FC = () => {
           />
           <ClientManagementContainer>
             <PageHeader>
-              <Title heading={3} style={{ margin: 0 }}>客户端管理</Title>
+              <Title heading={3} style={{ margin: 0 }}>智能体管理</Title>
             </PageHeader>
 
             <SearchSection>
@@ -445,7 +445,7 @@ export const ClientManagement: React.FC = () => {
                   onClick={handleCreateClient}
                   style={{ marginLeft: 'auto' }}
                 >
-                  新增客户端
+                  新增智能体
                 </Button>
               </SearchRow>
             </SearchSection>

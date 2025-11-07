@@ -1,5 +1,6 @@
 package dev.szhuima.agent.trigger.http.admin;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -7,18 +8,22 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import dev.szhuima.agent.api.ErrorCode;
 import dev.szhuima.agent.api.IAiClientModelAdminService;
 import dev.szhuima.agent.api.Response;
-import dev.szhuima.agent.api.dto.AiClientModelQueryRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientModelRequestDTO;
-import dev.szhuima.agent.api.dto.AiClientModelResponseDTO;
-import dev.szhuima.agent.api.dto.PageDTO;
+import dev.szhuima.agent.api.dto.*;
+import dev.szhuima.agent.domain.agent.model.ModelApi;
+import dev.szhuima.agent.domain.agent.repository.IModelApiRepository;
+import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.infrastructure.entity.TbModelApi;
+import dev.szhuima.agent.infrastructure.factory.ChatModelFactory;
 import dev.szhuima.agent.infrastructure.mapper.AgentMapper;
 import dev.szhuima.agent.infrastructure.mapper.ModelApiMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,19 +33,74 @@ import java.util.stream.Collectors;
  * AI客户端模型管理控制器
  *
  * @author szhuima
- * @description AI客户端模型配置管理控制器
+ * @description
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/admin/ai-client-model")
+@RequestMapping("/api/v1/admin/model-api")
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class ModelApiController extends BaseController implements IAiClientModelAdminService {
 
     @Resource
-    private ModelApiMapper aiClientModelDao;
+    private ModelApiMapper modelApiMapper;
+
+    @Resource
+    private IModelApiRepository modelApiRepository;
 
     @Resource
     private AgentMapper clientMapper;
+
+    @Resource
+    private ChatModelFactory chatModelFactory;
+
+    /**
+     * 非流式输出的聊天，具备对话记忆功能
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/chat-non-stream")
+    public Response<ChatMessageResponse> nonStreamChat(@RequestBody ModelApiChatRequest request) {
+        if (request.getModelApiId() == null || StrUtil.isBlank(request.getUserMessage())) {
+            throw new BizException("modelApiId 非法参数");
+        }
+        ModelApi modelApi = modelApiRepository.getModelApi(request.getModelApiId());
+        if (modelApi == null) {
+            throw BizException.of("该模型API不存在");
+        }
+
+        ChatModel chatModel = chatModelFactory.getOrCreate(modelApi);
+
+        String result = chatModel.call(request.getUserMessage());
+
+        ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
+                .content(result)
+                .build();
+        return Response.success(chatMessageResponse);
+    }
+
+
+    /**
+     * 非流式输出的聊天，具备对话记忆功能
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "/chat-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamChat(@RequestBody ModelApiChatRequest request) {
+        if (request.getModelApiId() == null || StrUtil.isBlank(request.getUserMessage())) {
+            throw new BizException("modelApiId 非法参数");
+        }
+        ModelApi modelApi = modelApiRepository.getModelApi(request.getModelApiId());
+        if (modelApi == null) {
+            throw BizException.of("该模型API不存在");
+        }
+
+        ChatModel chatModel = chatModelFactory.getOrCreate(modelApi);
+        Flux<String> stream = chatModel.stream(request.getUserMessage());
+
+        return stream;
+    }
 
 
     @Override
@@ -53,7 +113,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         tbModelApi.setCreateTime(LocalDateTime.now());
         tbModelApi.setUpdateTime(LocalDateTime.now());
 
-        int result = aiClientModelDao.insert(tbModelApi);
+        int result = modelApiMapper.insert(tbModelApi);
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -79,7 +139,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         TbModelApi tbModelApi = convertToAiClientModel(request);
         tbModelApi.setUpdateTime(LocalDateTime.now());
 
-        int result = aiClientModelDao.updateById(tbModelApi);
+        int result = modelApiMapper.updateById(tbModelApi);
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -95,7 +155,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         try {
             log.info("根据ID删除AI客户端模型配置请求：{}", id);
 
-            int result = aiClientModelDao.deleteById(id);
+            int result = modelApiMapper.deleteById(id);
 
             return Response.<Boolean>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -118,7 +178,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         try {
             log.info("根据模型ID删除AI客户端模型配置请求：{}", modelId);
 
-            int result = aiClientModelDao.deleteById(modelId);
+            int result = modelApiMapper.deleteById(modelId);
 
             return Response.<Boolean>builder()
                     .code(ErrorCode.SUCCESS.getCode())
@@ -141,7 +201,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         try {
             log.info("根据ID查询AI客户端模型配置请求：{}", id);
 
-            TbModelApi tbModelApi = aiClientModelDao.selectById(id);
+            TbModelApi tbModelApi = modelApiMapper.selectById(id);
 
             if (tbModelApi == null) {
                 return Response.<AiClientModelResponseDTO>builder()
@@ -175,7 +235,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         try {
             log.info("根据模型ID查询AI客户端模型配置请求：{}", modelId);
 
-            TbModelApi tbModelApi = aiClientModelDao.selectById(modelId);
+            TbModelApi tbModelApi = modelApiMapper.selectById(modelId);
 
             if (tbModelApi == null) {
                 return Response.<AiClientModelResponseDTO>builder()
@@ -203,37 +263,6 @@ public class ModelApiController extends BaseController implements IAiClientModel
         }
     }
 
-//    @Override
-//    @GetMapping("/query-by-api-id/{apiId}")
-//    public Response<List<AiClientModelResponseDTO>> queryAiClientModelsByApiId(@PathVariable String apiId) {
-//        try {
-//            log.info("根据API配置ID查询AI客户端模型配置列表请求：{}", apiId);
-//
-//            Wrappers.lambdaQuery(AiClientModel.class)
-//                    .eq(AiClientModel::);
-//
-//            List<AiClientModel> aiClientModels = aiClientModelDao.selectList(apiId);
-//
-//            // PO转DTO
-//            List<AiClientModelResponseDTO> responseDTOs = aiClientModels.stream()
-//                    .map(this::convertToAiClientModelResponseDTO)
-//                    .collect(Collectors.toList());
-//
-//            return Response.<List<AiClientModelResponseDTO>>builder()
-//                    .code(ResponseCode.SUCCESS.getCode())
-//                    .info(ResponseCode.SUCCESS.getInfo())
-//                    .data(responseDTOs)
-//                    .build();
-//        } catch (Exception e) {
-//            log.error("根据API配置ID查询AI客户端模型配置列表失败", e);
-//            return Response.<List<AiClientModelResponseDTO>>builder()
-//                    .code(ResponseCode.UN_ERROR.getCode())
-//                    .info(ResponseCode.UN_ERROR.getInfo())
-//                    .data(null)
-//                    .build();
-//        }
-//    }
-
     @Override
     @GetMapping("/query-by-model-type/{modelType}")
     public Response<List<AiClientModelResponseDTO>> queryAiClientModelsByModelType(@PathVariable String modelType) {
@@ -243,7 +272,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
             LambdaQueryWrapper<TbModelApi> wrapper = Wrappers.lambdaQuery(TbModelApi.class)
                     .eq(TbModelApi::getModelType, modelType);
 
-            List<TbModelApi> tbModelApis = aiClientModelDao.selectList(wrapper);
+            List<TbModelApi> tbModelApis = modelApiMapper.selectList(wrapper);
 
             // PO转DTO
             List<AiClientModelResponseDTO> responseDTOs = tbModelApis.stream()
@@ -274,7 +303,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
             LambdaQueryWrapper<TbModelApi> wrapper = Wrappers.lambdaQuery(TbModelApi.class)
                     .eq(TbModelApi::getStatus, 1);
 
-            List<TbModelApi> tbModelApis = aiClientModelDao.selectList(wrapper);
+            List<TbModelApi> tbModelApis = modelApiMapper.selectList(wrapper);
 
             // PO转DTO
             List<AiClientModelResponseDTO> responseDTOs = tbModelApis.stream()
@@ -310,7 +339,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
                 .orderByDesc(TbModelApi::getUpdateTime);
 
         // 查询AI客户端模型配置列表
-        IPage<TbModelApi> aiClientModelIPage = aiClientModelDao.selectPage(page, wrapper);
+        IPage<TbModelApi> aiClientModelIPage = modelApiMapper.selectPage(page, wrapper);
         PageDTO<AiClientModelResponseDTO> pageDTO = copyPage(aiClientModelIPage, AiClientModelResponseDTO.class);
 
 
@@ -323,7 +352,7 @@ public class ModelApiController extends BaseController implements IAiClientModel
         try {
             log.info("查询所有AI客户端模型配置请求");
 
-            List<TbModelApi> tbModelApis = aiClientModelDao.selectList(Wrappers.emptyWrapper());
+            List<TbModelApi> tbModelApis = modelApiMapper.selectList(Wrappers.emptyWrapper());
 
             // PO转DTO
             List<AiClientModelResponseDTO> responseDTOs = tbModelApis.stream()

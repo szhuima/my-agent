@@ -8,9 +8,9 @@ import {Header, Sidebar} from '../components/layout';
 import {ModelApiCreateModal} from '../components/model-api-create-modal';
 import {ModelApiEditModal} from '../components/model-api-edit-modal';
 import {
-    aiClientApiAdminService,
-    AiClientApiQueryRequestDTO,
-    AiClientApiResponseDTO
+  aiClientApiAdminService,
+  AiClientApiQueryRequestDTO,
+  AiClientApiResponseDTO
 } from '../services/model-api-service';
 import {PageDTO} from '../typings/page';
 import {AiAgentService} from '../services/ai-agent-service';
@@ -143,6 +143,15 @@ export const AiClientApiManagement: React.FC = () => {
       dataIndex: "modelType",
       key: "modelType",
       width: 120,
+      render: (modelType: string) => {
+        if (modelType === 'CHAT') {
+          return '对话模型';
+        } else if (modelType === 'EMBEDDING') {
+          return '嵌入模型';
+        } else {
+          return modelType || '-';
+        }
+      },
     },
     {
       title: "基础URL",
@@ -421,7 +430,7 @@ export const AiClientApiManagement: React.FC = () => {
           />
           <AiClientApiManagementContainer>
             <PageHeader>
-              <Title heading={3}>模型管理</Title>
+              <Title heading={3}>模型API管理</Title>
             </PageHeader>
 
             <SearchSection>

@@ -169,7 +169,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
     {
       title: "操作",
       key: "action",
-      width: 160,
+      width: 120,
       fixed: "right" as const,
       render: (_: any, record: WorkflowResponseDTO) => (
         <Space>
@@ -195,7 +195,6 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
             onConfirm={() => handleDelete(record)}
           >
             <ActionButton type="danger" size="small" icon={<IconDelete />}>
-              删除
             </ActionButton>
           </Popconfirm>
         </Space>

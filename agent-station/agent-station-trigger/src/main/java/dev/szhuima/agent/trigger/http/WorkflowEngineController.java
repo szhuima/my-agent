@@ -1,11 +1,9 @@
 package dev.szhuima.agent.trigger.http;
 
-import dev.szhuima.agent.domain.support.exception.BizException;
-import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.service.WorkflowEngine;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
 import dev.szhuima.agent.domain.workflow.service.executor.NodeExecutionResult;
-import dev.szhuima.agent.infrastructure.repository.WorkflowInstanceRepository;
 import io.jsonwebtoken.lang.Collections;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,65 +19,11 @@ import java.util.Map;
 public class WorkflowEngineController {
 
     @Resource
-    private WorkflowInstanceRepository workflowInstanceRepository;
-
-    @Resource
     private WorkflowService workflowService;
 
     @Resource
     private WorkflowEngine workflowEngine;
 
-
-    private WorkflowInstanceDO validate(Long instanceId) {
-        WorkflowInstanceDO instance = workflowInstanceRepository.getInstance(instanceId);
-        if (instance == null) {
-            throw new BizException("工作流实例不存在: " + instanceId);
-        }
-        return instance;
-    }
-
-    /**
-     * 异步执行工作流
-     *
-     * @param instanceId 工作流实例ID
-     */
-    @PostMapping("/run-async/{instanceId}")
-    public void runWorkflowAsync(@PathVariable("instanceId") Long instanceId,
-                                 @RequestParam(required = false) Map<String, Object> params,
-                                 @RequestBody(required = false) Map<String, Object> body,
-                                 HttpServletRequest request) {
-        WorkflowInstanceDO workflowInstance = validate(instanceId);
-        Map<String, Object> inputParams = new HashMap<>();
-        if (!Collections.isEmpty(params)) {
-            inputParams.putAll(params);
-        }
-        if (!Collections.isEmpty(body)) {
-            inputParams.putAll(body);
-        }
-        workflowEngine.runWorkflowAsync(workflowInstance, inputParams);
-    }
-
-    /**
-     * 同步执行工作流
-     *
-     * @param instanceId 工作流实例ID
-     * @return 工作流实例 DO
-     */
-    @PostMapping("/run-sync/{instanceId}")
-    public NodeExecutionResult runWorkflowSync(@PathVariable("instanceId") Long instanceId,
-                                               @RequestParam(required = false) Map<String, Object> params,
-                                               @RequestBody(required = false) Map<String, Object> body,
-                                               HttpServletRequest request) {
-        WorkflowInstanceDO workflowInstance = validate(instanceId);
-        Map<String, Object> inputParams = new HashMap<>();
-        if (!Collections.isEmpty(params)) {
-            inputParams.putAll(params);
-        }
-        if (!Collections.isEmpty(body)) {
-            inputParams.putAll(body);
-        }
-        return workflowEngine.runWorkflow(workflowInstance, inputParams);
-    }
 
     /**
      * 同步执行最新的工作流实例
@@ -92,11 +36,8 @@ public class WorkflowEngineController {
                                                            @RequestParam(required = false) Map<String, Object> params,
                                                            @RequestBody(required = false) Map<String, Object> body,
                                                            HttpServletRequest request) {
-        WorkflowInstanceDO lastInstance = workflowInstanceRepository.getLastInstance(workflowName);
-        if (lastInstance == null) {
-            throw new IllegalArgumentException("找不到工作流实例");
-        }
-        WorkflowInstanceDO workflowInstance = validate(lastInstance.getInstanceId());
+        Workflow workflow = workflowService.queryActiveWorkflow(workflowName);
+
         Map<String, Object> inputParams = new HashMap<>();
         if (!Collections.isEmpty(params)) {
             inputParams.putAll(params);
@@ -104,7 +45,7 @@ public class WorkflowEngineController {
         if (!Collections.isEmpty(body)) {
             inputParams.putAll(body);
         }
-        return workflowEngine.runWorkflow(workflowInstance, inputParams);
+        return workflowEngine.runWorkflow(workflow, inputParams);
     }
 
 }

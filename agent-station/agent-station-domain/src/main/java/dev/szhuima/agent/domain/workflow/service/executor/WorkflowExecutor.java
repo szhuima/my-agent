@@ -2,7 +2,6 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 
 import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowExecutionRepository;
-import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,19 +18,19 @@ import java.util.Map;
 @Service
 public class WorkflowExecutor implements WorkflowExecutorRouter {
 
-    @Resource
-    private IWorkflowInstanceRepository workflowInstanceRepository;
 
     @Resource
     private IWorkflowExecutionRepository workflowExecutionRepository;
 
-    public NodeExecutionResult execute(WorkflowInstanceDO instance, Map<String, Object> inputParams) {
-        Workflow workflow = instance.getWorkflow();
+    public NodeExecutionResult execute(Workflow workflow, Map<String, Object> inputParams) {
+
+        Long workflowId = workflow.getWorkflowId();
+
         WorkflowContext workflowContext = new WorkflowContext(workflow.getMeta());
         workflowContext.putAll(inputParams);
-        log.info("开始执行工作流:{},instanceId:{},上下文:{},", workflow.getName(), instance.getInstanceId(), workflowContext);
+        log.info("开始执行工作流:{},workflowId:{},上下文:{},", workflow.getName(), workflowId, workflowContext);
         WorkflowExecutionDO workflowExecutionDO = WorkflowExecutionDO.builder()
-                .workflowInstanceId(instance.getInstanceId())
+                .workflowId(workflowId)
                 .workflowName(workflow.getName())
                 .status(WorkflowExecutionDO.Status.RUNNING)
                 .startTime(LocalDateTime.now())
@@ -41,7 +40,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
         // 保存工作流执行
         persistWorkflowExecution(workflowExecutionDO);
 
-        WorkflowNodeDO current = instance.findBeginNode();
+        WorkflowNodeDO current = workflow.findBeginNode();
         NodeExecutionResult nodeExecResult = null;
         while (current != null) {
             try {
@@ -60,7 +59,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
                 }
                 // 保存工作流执行
                 persistWorkflowExecution(workflowExecutionDO);
-                persistNodeExecution(instance.getInstanceId(), nodeExecutionDO);
+                persistNodeExecution(workflowId, nodeExecutionDO);
                 if (nodeExecResult.isCompleted()) {
                     current = workflow.nextNode(current.getName(), null);
                 } else {
@@ -75,16 +74,14 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
                 workflowExecutionDO.setEndTime(LocalDateTime.now());
                 workflowExecutionDO.setErrorMessage(e.getMessage());
                 persistWorkflowExecution(workflowExecutionDO);
-                persistNodeExecution(instance.getInstanceId(), nodeExecutionDO);
-                workflowInstanceRepository.updateByInstanceId(instance);
+                persistNodeExecution(workflowId, nodeExecutionDO);
                 return nodeExecResult;
             }
         }
         workflowExecutionDO.setStatus(WorkflowExecutionDO.Status.SUCCESS);
         workflowExecutionDO.setEndTime(LocalDateTime.now());
         persistWorkflowExecution(workflowExecutionDO);
-        workflowInstanceRepository.updateByInstanceId(instance);
-        log.info("工作流执行完成，实例ID: {}", instance.getInstanceId());
+        log.info("工作流执行完成，workflowId: {}", workflowId);
         return nodeExecResult;
     }
 
@@ -97,8 +94,8 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
         }
     }
 
-    private void persistNodeExecution(Long instanceId, NodeExecutionDO nodeExec) {
-        workflowExecutionRepository.saveNodeExecution(instanceId, nodeExec);
+    private void persistNodeExecution(Long workflowId, NodeExecutionDO nodeExec) {
+        workflowExecutionRepository.saveNodeExecution(workflowId, nodeExec);
     }
 
 }

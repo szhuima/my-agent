@@ -1,13 +1,15 @@
 package dev.szhuima.agent.domain.workflow.service;
 
 import com.alibaba.fastjson.JSON;
-import dev.szhuima.agent.domain.workflow.model.*;
+import dev.szhuima.agent.domain.workflow.model.NodeType;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
+import dev.szhuima.agent.domain.workflow.model.WorkflowEdgeDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.model.dsl.WorkflowDsl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * * @Author: szhuima
@@ -17,21 +19,6 @@ import java.util.Map;
 @Service
 public class WorkflowFactory {
 
-    /**
-     * 创建工作流实例
-     *
-     * @param workflow 工作流DO
-     * @return 工作流实例
-     */
-    public WorkflowInstanceDO createWorkflowInstance(Workflow workflow, Map<String, Object> params) {
-        WorkflowInstanceDO instance = new WorkflowInstanceDO();
-        instance.setWorkflowId(workflow.getWorkflowId());
-        instance.setWorkflowName(workflow.getName());
-        instance.setWorkflow(workflow);
-        instance.setStatus(WorkflowInstanceStatus.DEPLOYED);
-        instance.setNodeExecutionDOS(new ArrayList<>());
-        return instance;
-    }
 
     public String parseWorkflowName(String workflowDSL) {
         return WorkflowDslParser.parseNameFromYaml(workflowDSL);

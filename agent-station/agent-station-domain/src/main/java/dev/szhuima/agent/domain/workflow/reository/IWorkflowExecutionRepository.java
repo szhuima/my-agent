@@ -13,7 +13,7 @@ public interface IWorkflowExecutionRepository {
 
     void saveWorkflowExecution(WorkflowExecutionDO workflowExecution);
 
-    void saveNodeExecution(Long instanceId, NodeExecutionDO nodeExec);
+    void saveNodeExecution(Long workflowId, NodeExecutionDO nodeExec);
 
     void updateWorkflowExecution(WorkflowExecutionDO executionDO);
 }

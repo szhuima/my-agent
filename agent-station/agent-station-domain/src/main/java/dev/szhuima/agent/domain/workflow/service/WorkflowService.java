@@ -6,7 +6,6 @@ import com.alibaba.fastjson2.JSONReader;
 import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.support.service.DynamicTaskService;
 import dev.szhuima.agent.domain.workflow.model.*;
-import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import dev.szhuima.agent.domain.workflow.service.executor.WorkflowExecutor;
 import jakarta.annotation.Resource;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * * @Author: szhuima
@@ -29,40 +27,35 @@ public class WorkflowService {
     private IWorkflowRepository workflowRepository;
 
     @Resource
-    private IWorkflowInstanceRepository instanceRepository;
-
-    @Resource
     private WorkflowFactory workflowFactory;
 
     @Resource
     private WorkflowExecutor workflowExecutor;
 
     @Resource
-    private ThreadPoolExecutor threadPoolExecutor;
-
-    @Resource
     private DynamicTaskService dynamicTaskService;
 
 
     /**
-     * 部署工作流, 创建工作流实例
+     * 激活工作流=
      *
      * @param workflowId 工作流模板ID
      * @return 工作流实例ID
      */
-    public Long deployWorkflow(Long workflowId) {
+    public Long activeWorkflow(Long workflowId) {
         //  获取工作流模板
         Workflow workflow = workflowRepository.getById(workflowId);
         if (workflow == null) {
             log.error("工作流模板不存在, workflowId={}", workflowId);
-            throw new IllegalArgumentException("工作流模板不存在: " + workflowId);
+            throw new BizException("工作流模板不存在: " + workflowId);
         }
-        // 创建工作流实例（领域对象 + 初始化上下文）
-        WorkflowInstanceDO workflowInstance = workflowFactory.createWorkflowInstance(workflow, workflow.getMeta());
-        // 持久化工作流实例
-        instanceRepository.saveInstance(workflowInstance);
 
-        WorkflowNodeDO startNode = workflowInstance.findStartNode();
+        Integer status = workflow.getStatus();
+        if (WorkflowStatus.ACTIVE.getCode().equals(status)) {
+            throw new BizException("工作流已激活: " + workflowId);
+        }
+
+        WorkflowNodeDO startNode = workflow.findStartNode();
         String configJson = startNode.getConfigJson();
         if (StrUtil.isNotEmpty(configJson)) {
             WorkflowStartNodeConfig startNodeConfig = JSON.parseObject(configJson, WorkflowStartNodeConfig.class, JSONReader.Feature.SupportSmartMatch);
@@ -70,16 +63,31 @@ public class WorkflowService {
             String cronExpression = startNodeConfig.getCronExpression();
             if (WorkflowStartType.CRON.equals(startType)) {
                 if (StrUtil.isNotEmpty(cronExpression)) {
-                    String taskId = String.valueOf(workflowInstance.getInstanceId());
-                    dynamicTaskService.startTask(taskId, cronExpression, () -> workflowExecutor.execute(workflowInstance, new HashMap<>()));
+                    String taskId = String.valueOf(workflow.getWorkflowId());
+                    dynamicTaskService.startTask(taskId, cronExpression, () -> workflowExecutor.execute(workflow, new HashMap<>()));
                 }
             }
         }
-
-        log.info("【{}】 工作流已部署, instanceId={}", workflow.getName(), workflowInstance.getInstanceId());
-        return workflowInstance.getInstanceId();
+        workflowRepository.updateWorkflow(workflow);
+        log.info("【{}】 工作流已激活, workflowId={}", workflow.getName(), workflowId);
+        return workflowId;
     }
 
+    public Long archiveWorkflow(Long workflowId) {
+        Workflow workflow = workflowRepository.getById(workflowId);
+        if (workflow == null) {
+            log.error("工作流模板不存在, workflowId={}", workflowId);
+            throw new BizException("工作流模板不存在: " + workflowId);
+        }
+        Integer status = workflow.getStatus();
+        if (WorkflowStatus.ARCHIVED.getCode().equals(status)) {
+            throw new BizException("工作流已归档: " + workflowId);
+        }
+        workflow.setStatus(WorkflowStatus.ARCHIVED.getCode());
+        workflowRepository.updateWorkflow(workflow);
+        log.info("【{}】 工作流已归档, workflowId={}", workflow.getName(), workflowId);
+        return workflowId;
+    }
 
     public Long importWorkflow(String workflowDSL) {
         Workflow workflow = null;
@@ -104,8 +112,8 @@ public class WorkflowService {
         workflowRepository.deleteWorkflowByName(workflowName);
     }
 
-    public Workflow queryWorkflowByName(String workflowName) {
-        return workflowRepository.getWorkflowByName(workflowName);
+    public Workflow queryActiveWorkflow(String workflowName) {
+        return workflowRepository.getActiveWorkflow(workflowName);
     }
 
 }

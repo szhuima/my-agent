@@ -27,7 +27,7 @@ public class WorkflowExecutionDO {
     /**
      *
      */
-    private Long workflowInstanceId;
+    private Long workflowId;
 
     /**
      * 执行状态： RUNNING / SUCCESS / FAILED

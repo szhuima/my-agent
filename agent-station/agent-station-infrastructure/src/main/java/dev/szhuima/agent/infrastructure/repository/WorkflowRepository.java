@@ -52,7 +52,7 @@ public class WorkflowRepository implements IWorkflowRepository {
             oldWorkflowList.stream()
                     .filter(oldWorkflow -> oldWorkflow.getStatus().equals(WorkflowStatus.ACTIVE.getCode()))
                     .forEach(oldWorkflow -> {
-                        oldWorkflow.setStatus(WorkflowStatus.INACTIVE.getCode());
+                        oldWorkflow.setStatus(WorkflowStatus.ARCHIVED.getCode());
                         workflowMapper.updateById(oldWorkflow);
                     });
             version = oldWorkflowList.get(0).getVersion() + 1;
@@ -121,7 +121,7 @@ public class WorkflowRepository implements IWorkflowRepository {
 
 
     @Override
-    public Workflow getWorkflowByName(String workflowName) {
+    public Workflow getActiveWorkflow(String workflowName) {
         TbWorkflow workflow = workflowMapper.selectOne(new LambdaQueryWrapper<TbWorkflow>()
                 .eq(TbWorkflow::getName, workflowName)
                 .eq(TbWorkflow::getStatus, WorkflowStatus.ACTIVE.getCode())
@@ -150,5 +150,15 @@ public class WorkflowRepository implements IWorkflowRepository {
             workflowEdgeMapper.delete(new LambdaQueryWrapper<TbWorkflowEdge>().eq(TbWorkflowEdge::getWorkflowId, workflowId));
         }
         workflowMapper.deleteBatchIds(workflowIdList);
+    }
+
+    @Override
+    public void updateWorkflow(Workflow workflow) {
+        TbWorkflow tbWorkflow = BeanUtil.copyProperties(workflow, TbWorkflow.class, "nodes", "edges");
+        if (workflow.getMeta() != null) {
+            tbWorkflow.setMetaJson(JSON.toJSONString(workflow.getMeta()));
+        }
+        tbWorkflow.setUpdatedAt(workflow.getUpdatedAt());
+        workflowMapper.updateById(tbWorkflow);
     }
 }

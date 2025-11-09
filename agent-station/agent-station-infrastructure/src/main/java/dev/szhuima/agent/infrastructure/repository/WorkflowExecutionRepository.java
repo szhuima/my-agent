@@ -34,11 +34,11 @@ public class WorkflowExecutionRepository implements IWorkflowExecutionRepository
     }
 
     @Override
-    public void saveNodeExecution(Long instanceId, NodeExecutionDO nodeExec) {
+    public void saveNodeExecution(Long workflowId, NodeExecutionDO nodeExec) {
         TbWorkflowNodeExecution nodeExecution = new TbWorkflowNodeExecution();
         nodeExecution.setWorkflowExecutionId(nodeExec.getWorkflowExecutionId());
         nodeExecution.setNodeId(nodeExec.getNodeId());
-        nodeExecution.setInstanceId(instanceId);
+        nodeExecution.setWorkflowId(workflowId);
         nodeExecution.setStatus(nodeExec.getStatus().name());
         nodeExecution.setOutput(JSON.toJSONString(nodeExec.getResult()));
         nodeExecution.setErrorMsg(nodeExec.getErrorMsg());

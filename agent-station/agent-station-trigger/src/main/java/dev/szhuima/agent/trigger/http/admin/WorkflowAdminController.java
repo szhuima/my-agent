@@ -13,12 +13,9 @@ import dev.szhuima.agent.api.dto.PageDTO;
 import dev.szhuima.agent.api.dto.WorkflowQueryRequestDTO;
 import dev.szhuima.agent.api.dto.WorkflowResponseDTO;
 import dev.szhuima.agent.domain.support.exception.BizException;
-import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
-import dev.szhuima.agent.infrastructure.entity.TbWorkflowInstance;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
-import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeMapper;
 import jakarta.annotation.Resource;
@@ -37,11 +34,6 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
 
     @Resource
     private WorkflowMapper workflowMapper;
-
-    @Resource
-    private WorkflowInstanceMapper instanceMapper;
-
-
     @Resource
     private WorkflowNodeMapper workflowNodeMapper;
     @Autowired
@@ -72,11 +64,7 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
 
             workflowResponseDTOS.stream()
                     .forEach((workflowResponseDTO -> {
-                        LambdaQueryWrapper<TbWorkflowInstance> eq = Wrappers.lambdaQuery(TbWorkflowInstance.class)
-                                .eq(TbWorkflowInstance::getWorkflowId, workflowResponseDTO.getWorkflowId())
-                                .eq(TbWorkflowInstance::getStatus, WorkflowInstanceStatus.DEPLOYED.name());
-                        Long count = instanceMapper.selectCount(eq);
-                        workflowResponseDTO.setDeployCount(count);
+                        workflowResponseDTO.setDeployCount(0L);
                     }));
         }
 
@@ -133,15 +121,6 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
         if (workflowId == null) {
             throw new BizException("工作流ID不能为空");
         }
-
-        // 检查该工作流下是否有工作流实例
-        LambdaQueryWrapper<TbWorkflowInstance> intWrapper = Wrappers.lambdaQuery(TbWorkflowInstance.class)
-                .eq(TbWorkflowInstance::getWorkflowId, workflowId);
-        Long count = instanceMapper.selectCount(intWrapper);
-        if (count > 0) {
-            return Response.illegalParameter("该工作流下有正在运行的实例, 需要先删除该工作流下全部实例");
-        }
-
         LambdaQueryWrapper<TbWorkflowNode> wrapper = Wrappers.lambdaQuery(TbWorkflowNode.class)
                 .eq(TbWorkflowNode::getWorkflowId, workflowId);
         workflowNodeMapper.delete(wrapper);
@@ -151,14 +130,38 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
 
 
     /**
-     * 部署工作流, 创建工作流实例
+     * 激活工作流
+     *
+     * @param workflowId 工作流模板ID
+     * @return 工作流ID
+     */
+    @PostMapping("/active/{workflowId}")
+    public Response<Long> activeWorkflow(@PathVariable("workflowId") Long workflowId) {
+        workflowService.activeWorkflow(workflowId);
+        return Response.success(workflowId);
+    }
+
+    /**
+     * 归档工作流
+     *
+     * @param workflowId 工作流模板ID
+     * @return 工作流ID
+     */
+    @PostMapping("/archive/{workflowId}")
+    public Response<Long> archiveWorkflow(@PathVariable("workflowId") Long workflowId) {
+        workflowService.archiveWorkflow(workflowId);
+        return Response.success(workflowId);
+    }
+
+    /**
+     * 激活工作流
      *
      * @param workflowId 工作流模板ID
      * @return 工作流实例ID
      */
     @PostMapping("/deploy/{workflowId}")
     public Response<Long> deployWorkflow(@PathVariable("workflowId") Long workflowId) {
-        Long instanceId = workflowService.deployWorkflow(workflowId);
+        Long instanceId = workflowService.activeWorkflow(workflowId);
         return Response.success(instanceId);
     }
 }

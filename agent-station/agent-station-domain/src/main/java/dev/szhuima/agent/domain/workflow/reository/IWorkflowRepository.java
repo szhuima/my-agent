@@ -19,7 +19,9 @@ public interface IWorkflowRepository {
 
     Workflow getById(Long workflowId);
 
-    Workflow getWorkflowByName(String workflowName);
+    Workflow getActiveWorkflow(String workflowName);
 
     void deleteWorkflowByName(String workflowName);
+
+    void updateWorkflow(Workflow workflow);
 }

@@ -97,7 +97,8 @@ export const API_ENDPOINTS = {
     QUERY_LIST: '/query-list',
     GET_DSL: '/get-dsl',
     DELETE: '/delete',
-    DEPLOY: '/deploy',
+    ACTIVE: '/active',
+    ARCHIVE: '/archive',
     IMPORT: '/import',
   },
 

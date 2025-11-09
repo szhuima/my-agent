@@ -4,8 +4,6 @@ import com.googlecode.aviator.AviatorEvaluator;
 import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
-import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +14,6 @@ import org.apache.commons.lang3.StringUtils;
  **/
 @Slf4j
 public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
-
-    @Resource
-    private IWorkflowInstanceRepository instanceRepository;
 
 
     @Override

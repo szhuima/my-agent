@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button, Card, Input, Layout, Popconfirm, Space, Table, Tag, Toast, Typography,} from "@douyinfe/semi-ui";
+import {Button, Card, Input, Layout, Popconfirm, Space, Switch, Table, Toast, Typography,} from "@douyinfe/semi-ui";
 import {IconDelete, IconEdit, IconExport, IconImport, IconPlus, IconSearch,} from "@douyinfe/semi-icons";
 import styled from "styled-components";
 import {theme} from "../styles/theme";
@@ -150,74 +150,26 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
       dataIndex: "status",
       key: "status",
       width: 80,
-      render: (status: number) => (
-        <Tag color={status === 1 ? "green" : "red"}>
-          {status === 1 ? "启用" : "禁用"}
-        </Tag>
+      render: (status: number, record: WorkflowResponseDTO) => (
+        <Switch
+          checked={status === 1}
+          onChange={(checked) => {
+            if (checked) {
+              activeWorkflow(record);
+            } else {
+              archiveWorkflow(record);
+            }
+          }}
+          checkedText="激活"
+          uncheckedText="归档"
+          size="small"
+        />
       ),
-    }, // deployCount
-    {
-      title: "部署实例数",
-      dataIndex: "deployCount",
-      key: "deployCount",
-      align: "center",
-      width: 100,
-      render: (text: number, record: WorkflowResponseDTO) => {
-        const count = Number(text) || 0;
-        if (count > 0) {
-          const url = `/workflow-instance?workflowId=${encodeURIComponent(
-            String(record.workflowId)
-          )}`;
-          return (
-            <a
-              href={url}
-              style={{
-                color: "#3c86eeff",
-                textDecoration: "underline",
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: "monospace",
-                fontSize: "12px",
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(url);
-              }}
-              title="查看该工作流下的实例"
-            >
-              {count}
-            </a>
-          );
-        }
-        return (
-          <span
-            style={{
-              fontFamily: "monospace",
-              fontSize: "12px",
-              textAlign: "center",
-              color: "rgba(0,0,0,0.45)",
-            }}
-          >
-            {count}
-          </span>
-        );
-      },
     },
-
-    // {
-    //   title: '创建时间',
-    //   dataIndex: 'createTime',
-    //   key: 'createTime',
-    //   width: 160,
-    //   render: (time: string) => {
-    //     if (!time) return '-';
-    //     return new Date(time).toLocaleString('zh-CN');
-    //   }
-    // },
     {
       title: "操作",
       key: "action",
-      width: 250,
+      width: 160,
       fixed: "right" as const,
       render: (_: any, record: WorkflowResponseDTO) => (
         <Space>
@@ -227,14 +179,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
             icon={<IconEdit />}
             onClick={() => handleEdit(record)}
           >
-            编辑
-          </ActionButton>
-          <ActionButton
-            type="primary"
-            size="small"
-            onClick={() => handleDeploy(record)}
-          >
-            部署
+
           </ActionButton>
           <ActionButton
             type="tertiary"
@@ -424,29 +369,51 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
     }
   };
 
-  // 部署
-  const handleDeploy = async (record: WorkflowResponseDTO) => {
+  // 激活
+  const activeWorkflow = async (record: WorkflowResponseDTO) => {
     try {
       setLoading(true);
-      const id = Toast.info(`正在部署工作流: ${record.name}`);
-      const instanceId = await WorkflowService.deployWorkflow(
+
+      const isActive = record.status === 1;
+
+      if (isActive) {
+        Toast.warning(`工作流 ${record.name} 已激活`);
+        return;
+      }
+
+      const workflowId = await WorkflowService.activeWorkflow(
         record.workflowId
       );
-      Toast.close(id);
-
-      if (instanceId) {
-        Toast.success(`工作流 ${record.name} 部署成功！实例ID：${instanceId}`);
+      if (workflowId) {
+        Toast.success(`工作流 ${record.name} 激活成功！工作流ID：${workflowId}`);
         // 刷新数据
         await loadData();
-      } else {
-        Toast.error(`工作流 ${record.name} 部署失败`);
       }
-    } catch (error) {
-      console.error("部署工作流失败:", error);
-      Toast.error(
-        `部署失败: ${error instanceof Error ? error.message : "未知错误"}`
+    }  finally {
+      setLoading(false);
+    }
+  };
+  // 归档
+  const archiveWorkflow = async (record: WorkflowResponseDTO) => {
+    try {
+      setLoading(true);
+
+      const isActive = record.status === 1;
+
+      if (!isActive) {
+        Toast.warning(`工作流 ${record.name} 已归档`);
+        return;
+      }
+
+      const workflowId = await WorkflowService.archiveWorkflow(
+          record.workflowId
       );
-    } finally {
+      if (workflowId) {
+        Toast.success(`工作流 ${record.name} 归档成功！工作流ID：${workflowId}`);
+        // 刷新数据
+        await loadData();
+      }
+    }  finally {
       setLoading(false);
     }
   };

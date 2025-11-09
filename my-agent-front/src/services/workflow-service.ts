@@ -91,10 +91,10 @@ export class WorkflowService {
     }
   }
 
-  static async deployWorkflow(workflowId: number): Promise<number> {
+  static async activeWorkflow(workflowId: number): Promise<number> {
     try {
       const data = await apiRequestData<number>(
-        `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.DEPLOY}/${encodeURIComponent(workflowId.toString())}`,
+        `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.ACTIVE}/${encodeURIComponent(workflowId.toString())}`,
         {
           method: 'POST',
           headers: DEFAULT_HEADERS,
@@ -102,7 +102,23 @@ export class WorkflowService {
       );
       return data;
     } catch (error) {
-      console.error('部署工作流失败:', error);
+      console.error('激活工作流失败:', error);
+      throw error;
+    }
+  }
+
+  static async archiveWorkflow(workflowId: number): Promise<number> {
+    try {
+      const data = await apiRequestData<number>(
+          `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.ARCHIVE}/${encodeURIComponent(workflowId.toString())}`,
+          {
+            method: 'POST',
+            headers: DEFAULT_HEADERS,
+          }
+      );
+      return data;
+    } catch (error) {
+      console.error('归档工作流失败:', error);
       throw error;
     }
   }

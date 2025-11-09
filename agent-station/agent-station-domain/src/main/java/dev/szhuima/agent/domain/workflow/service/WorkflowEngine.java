@@ -1,7 +1,6 @@
 package dev.szhuima.agent.domain.workflow.service;
 
-import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
-import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import dev.szhuima.agent.domain.workflow.service.executor.NodeExecutionResult;
 import dev.szhuima.agent.domain.workflow.service.executor.WorkflowExecutor;
@@ -25,8 +24,6 @@ public class WorkflowEngine {
     @Resource
     private IWorkflowRepository workflowRepository;
 
-    @Resource
-    private IWorkflowInstanceRepository instanceRepository;
 
     @Resource
     private WorkflowFactory workflowFactory;
@@ -42,26 +39,26 @@ public class WorkflowEngine {
     /**
      * 异步执行工作流
      *
-     * @param workflowInstance 工作流实例
+     * @param workflow 工作流
      * @param inputParams      输入参数，作为工作流上下文
      */
-    public void runWorkflowAsync(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
-        CompletableFuture.runAsync(() -> runWorkflow(workflowInstance, inputParams), threadPoolExecutor);
+    public void runWorkflowAsync(Workflow workflow, Map<String, Object> inputParams) {
+        CompletableFuture.runAsync(() -> runWorkflow(workflow, inputParams), threadPoolExecutor);
     }
 
 
     /**
      * 同步执行工作流
      *
-     * @param workflowInstance 工作流实例
+     * @param workflow 工作流
      * @param inputParams      输入参数，作为工作流上下文
      * @return 持久化后的工作流实例 DO
      */
-    public NodeExecutionResult runWorkflow(WorkflowInstanceDO workflowInstance, Map<String, Object> inputParams) {
+    public NodeExecutionResult runWorkflow(Workflow workflow, Map<String, Object> inputParams) {
         try {
-            return workflowExecutor.execute(workflowInstance, inputParams);
+            return workflowExecutor.execute(workflow, inputParams);
         } catch (Exception ex) {
-            log.error("工作流执行异常, instanceId={}", workflowInstance.getInstanceId(), ex);
+            log.error("工作流执行异常, workflowName={}", workflow.getName(), ex);
             throw ex;
         }
     }

@@ -157,10 +157,6 @@ const menuItems = [
         text: "工作流列表",
       },
       {
-        itemKey: "workflow-instance",
-        text: "工作流实例",
-      },
-      {
         itemKey: "workflow-execution",
         text: "工作流执行",
       },

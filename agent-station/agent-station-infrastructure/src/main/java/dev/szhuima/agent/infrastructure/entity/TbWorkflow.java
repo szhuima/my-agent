@@ -41,7 +41,7 @@ public class TbWorkflow {
     /**
      *
      */
-    private String status;
+    private Integer status;
 
     /**
      *

@@ -27,6 +27,8 @@ public class Workflow {
 
     private String name;
 
+    private Integer status;
+
     private Map<String, Object> meta;
 
     /**
@@ -58,6 +60,16 @@ public class Workflow {
                 .filter((node) -> node.getType() == NodeType.START)
                 .findFirst()
                 .orElseThrow(() -> BizException.of("没有启动节点"));
+    }
+
+    /**
+     * 查找工作流的第一个可执行的节点，即启动节点的下一个节点
+     *
+     * @return 第一个可执行的节点
+     */
+    public WorkflowNodeDO findBeginNode() {
+        WorkflowNodeDO startNode = findStartNode();
+        return this.nextNode(startNode.getName(), "");
     }
 
     public WorkflowNodeDO findNodeByName(String name) {

@@ -9,12 +9,12 @@ import lombok.Getter;
  **/
 @Getter
 public enum WorkflowStatus {
-    ACTIVE("1"),
-    INACTIVE("0");
+    ACTIVE(1),
+    ARCHIVED(0);
 
-    private String code;
+    private Integer code;
 
-    WorkflowStatus(String code) {
+    WorkflowStatus(Integer code) {
         this.code = code;
     }
 }

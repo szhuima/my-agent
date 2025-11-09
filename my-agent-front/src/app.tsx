@@ -9,7 +9,6 @@ import {
     RagOrderManagement,
     WorkflowCreatePage,
     WorkflowExecutionPage,
-    WorkflowInstancePage,
     WorkflowListPage
 } from './pages';
 import {ThemeContext, ThemeProvider} from './context/theme-context';
@@ -72,14 +71,6 @@ const ThemeApp: React.FC = () => {
           element={
             <ProtectedRoute>
               <WorkflowCreatePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/workflow-instance"
-          element={
-            <ProtectedRoute>
-              <WorkflowInstancePage />
             </ProtectedRoute>
           }
         />

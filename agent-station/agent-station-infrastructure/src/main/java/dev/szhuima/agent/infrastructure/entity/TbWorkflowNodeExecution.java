@@ -29,8 +29,8 @@ public class TbWorkflowNodeExecution {
     /**
      *
      */
-    @TableField(value = "instance_id")
-    private Long instanceId;
+    @TableField(value = "workflow_id")
+    private Long workflowId;
 
     /**
      *

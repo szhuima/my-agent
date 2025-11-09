@@ -16,10 +16,8 @@ import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
-import dev.szhuima.agent.infrastructure.entity.TbWorkflowDsl;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowInstance;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
-import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowInstanceMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeMapper;
@@ -43,8 +41,6 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Resource
     private WorkflowInstanceMapper instanceMapper;
 
-    @Resource
-    private WorkflowDslMapper workflowDslMapper;
 
     @Resource
     private WorkflowNodeMapper workflowNodeMapper;
@@ -102,11 +98,11 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @Override
     @GetMapping("/get-dsl/{workflowId}")
     public Response<String> queryDSL(@PathVariable("workflowId") Long workflowId) {
-        LambdaQueryWrapper<TbWorkflowDsl> wrapper = Wrappers.lambdaQuery(TbWorkflowDsl.class)
-                .select(TbWorkflowDsl::getContent)
-                .eq(TbWorkflowDsl::getWorkflowId, workflowId);
-        TbWorkflowDsl workflowDsl = workflowDslMapper.selectOne(wrapper);
-        String content = workflowDsl != null ? workflowDsl.getContent() : null;
+        LambdaQueryWrapper<TbWorkflow> wrapper = Wrappers.lambdaQuery(TbWorkflow.class)
+                .select(TbWorkflow::getYmlConfig)
+                .eq(TbWorkflow::getWorkflowId, workflowId);
+        TbWorkflow workflow = workflowMapper.selectOne(wrapper);
+        String content = workflow != null ? workflow.getYmlConfig() : null;
         return Response.success(content);
     }
 
@@ -149,13 +145,7 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
         LambdaQueryWrapper<TbWorkflowNode> wrapper = Wrappers.lambdaQuery(TbWorkflowNode.class)
                 .eq(TbWorkflowNode::getWorkflowId, workflowId);
         workflowNodeMapper.delete(wrapper);
-
-        LambdaQueryWrapper<TbWorkflowDsl> wrapper1 = Wrappers.lambdaQuery(TbWorkflowDsl.class)
-                .eq(TbWorkflowDsl::getWorkflowId, workflowId);
-        workflowDslMapper.delete(wrapper1);
-
         workflowMapper.deleteById(workflowId);
-
         return Response.success(true);
     }
 

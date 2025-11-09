@@ -52,13 +52,13 @@ public class WorkflowService {
      */
     public Long deployWorkflow(Long workflowId) {
         //  获取工作流模板
-        WorkflowDO workflowDO = workflowRepository.getById(workflowId);
-        if (workflowDO == null) {
+        Workflow workflow = workflowRepository.getById(workflowId);
+        if (workflow == null) {
             log.error("工作流模板不存在, workflowId={}", workflowId);
             throw new IllegalArgumentException("工作流模板不存在: " + workflowId);
         }
         // 创建工作流实例（领域对象 + 初始化上下文）
-        WorkflowInstanceDO workflowInstance = workflowFactory.createWorkflowInstance(workflowDO, workflowDO.getMeta());
+        WorkflowInstanceDO workflowInstance = workflowFactory.createWorkflowInstance(workflow, workflow.getMeta());
         // 持久化工作流实例
         instanceRepository.saveInstance(workflowInstance);
 
@@ -76,24 +76,23 @@ public class WorkflowService {
             }
         }
 
-        log.info("【{}】 工作流已部署, instanceId={}", workflowDO.getName(), workflowInstance.getInstanceId());
+        log.info("【{}】 工作流已部署, instanceId={}", workflow.getName(), workflowInstance.getInstanceId());
         return workflowInstance.getInstanceId();
     }
 
 
     public Long importWorkflow(String workflowDSL) {
-        WorkflowDO workflowDO = null;
+        Workflow workflow = null;
         try {
-            workflowDO = workflowFactory.parseDSL(workflowDSL);
+            workflow = workflowFactory.parseDSL(workflowDSL);
         } catch (Exception e) {
             log.error("工作流配置解析错误, workflowDSL={}", workflowDSL, e);
             throw BizException.of("工作流配置解析错误");
         }
-        Long workflowId = workflowRepository.saveWorkflow(workflowDO);
-        workflowRepository.saveWorkflowDsl(workflowId, workflowDSL);
-        workflowDO.getNodes().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowNode);
-        workflowDO.getEdges().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowEdge);
-        log.info("Workflow saved, workflowName={}, workflowId={}", workflowDO.getName(), workflowId);
+        Long workflowId = workflowRepository.saveWorkflow(workflow);
+        workflow.getNodes().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowNode);
+        workflow.getEdges().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowEdge);
+        log.info("Workflow saved, workflowName={}, workflowId={}", workflow.getName(), workflowId);
         return workflowId;
     }
 
@@ -105,7 +104,7 @@ public class WorkflowService {
         workflowRepository.deleteWorkflowByName(workflowName);
     }
 
-    public WorkflowDO queryWorkflowByName(String workflowName) {
+    public Workflow queryWorkflowByName(String workflowName) {
         return workflowRepository.getWorkflowByName(workflowName);
     }
 

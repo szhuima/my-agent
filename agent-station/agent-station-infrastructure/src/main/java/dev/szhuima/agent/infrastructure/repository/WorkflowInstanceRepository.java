@@ -2,7 +2,7 @@ package dev.szhuima.agent.infrastructure.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowInstanceStatus;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
@@ -77,11 +77,11 @@ public class WorkflowInstanceRepository implements IWorkflowInstanceRepository {
         workflowInstanceDO.setInstanceId(instance.getInstanceId());
         workflowInstanceDO.setWorkflowId(instance.getWorkflowId());
         workflowInstanceDO.setStatus(WorkflowInstanceStatus.valueOf(instance.getStatus()));
-        WorkflowDO workflowDO = workflowRepository.getById(instance.getWorkflowId());
-        if (workflowDO == null) {
+        Workflow workflow = workflowRepository.getById(instance.getWorkflowId());
+        if (workflow == null) {
             throw new IllegalArgumentException("工作流不存在: " + instance.getWorkflowId());
         }
-        workflowInstanceDO.setWorkflowDO(workflowDO);
+        workflowInstanceDO.setWorkflow(workflow);
         return workflowInstanceDO;
     }
 

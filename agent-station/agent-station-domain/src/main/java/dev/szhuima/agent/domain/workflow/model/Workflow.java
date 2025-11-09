@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkflowDO {
+public class Workflow {
 
     private Long workflowId;
 
@@ -36,11 +36,13 @@ public class WorkflowDO {
 
     private List<WorkflowEdgeDO> edges;
 
+    private String ymlConfig;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    public WorkflowDO(Long id, String name, List<WorkflowNodeDO> nodeList, List<WorkflowEdgeDO> edges) {
+    public Workflow(Long id, String name, List<WorkflowNodeDO> nodeList, List<WorkflowEdgeDO> edges) {
         if (nodeList == null || edges == null) {
             throw BizException.of("节点和边不能为空");
         }

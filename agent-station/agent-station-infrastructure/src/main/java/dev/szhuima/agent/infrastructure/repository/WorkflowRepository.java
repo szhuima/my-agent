@@ -8,10 +8,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import dev.szhuima.agent.domain.workflow.model.*;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
-import dev.szhuima.agent.infrastructure.entity.TbWorkflowDsl;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowEdge;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
-import dev.szhuima.agent.infrastructure.mapper.WorkflowDslMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowEdgeMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowMapper;
 import dev.szhuima.agent.infrastructure.mapper.WorkflowNodeMapper;
@@ -34,9 +32,6 @@ public class WorkflowRepository implements IWorkflowRepository {
     private WorkflowMapper workflowMapper;
 
     @Resource
-    private WorkflowDslMapper workflowDslMapper;
-
-    @Resource
     private WorkflowNodeMapper workflowNodeMapper;
 
     @Resource
@@ -44,20 +39,10 @@ public class WorkflowRepository implements IWorkflowRepository {
 
 
     @Override
-    public Long saveWorkflowDsl(Long workflowId, String dsl) {
-        TbWorkflowDsl workflowDsl = new TbWorkflowDsl();
-        workflowDsl.setWorkflowId(workflowId);
-        workflowDsl.setContent(dsl);
-        workflowDsl.setVersion(1);
-        workflowDslMapper.insert(workflowDsl);
-        return workflowId;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long saveWorkflow(WorkflowDO workflowDO) {
+    public Long saveWorkflow(Workflow workflow) {
         LambdaQueryWrapper<TbWorkflow> queryWrapper = new LambdaQueryWrapper<TbWorkflow>()
-                .eq(TbWorkflow::getName, workflowDO.getName())
+                .eq(TbWorkflow::getName, workflow.getName())
                 .orderByDesc(TbWorkflow::getVersion);
 
         List<TbWorkflow> oldWorkflowList = workflowMapper.selectList(queryWrapper);
@@ -72,13 +57,13 @@ public class WorkflowRepository implements IWorkflowRepository {
                     });
             version = oldWorkflowList.get(0).getVersion() + 1;
         }
-        TbWorkflow workflow = BeanUtil.copyProperties(workflowDO, TbWorkflow.class, "nodes", "edges");
-        if (workflowDO.getMeta() != null) {
-            workflow.setMetaJson(JSON.toJSONString(workflowDO.getMeta()));
+        TbWorkflow tbWorkflow = BeanUtil.copyProperties(workflow, TbWorkflow.class, "nodes", "edges");
+        if (workflow.getMeta() != null) {
+            tbWorkflow.setMetaJson(JSON.toJSONString(workflow.getMeta()));
         }
-        workflow.setVersion(version);
-        workflowMapper.insert(workflow);
-        return workflow.getWorkflowId();
+        tbWorkflow.setVersion(version);
+        workflowMapper.insert(tbWorkflow);
+        return tbWorkflow.getWorkflowId();
     }
 
 
@@ -98,7 +83,7 @@ public class WorkflowRepository implements IWorkflowRepository {
     }
 
     @Override
-    public WorkflowDO getById(Long workflowId) {
+    public Workflow getById(Long workflowId) {
         TbWorkflow workflow = workflowMapper.selectById(workflowId);
         if (workflow == null) {
             return null;
@@ -121,7 +106,7 @@ public class WorkflowRepository implements IWorkflowRepository {
 
         List<WorkflowEdgeDO> workflowEdgeDOList = BeanUtil.copyToList(workflowEdgeList, WorkflowEdgeDO.class);
 
-        return WorkflowDO.builder()
+        return Workflow.builder()
                 .workflowId(workflow.getWorkflowId())
                 .name(workflow.getName())
                 .meta(JSON.parseObject(workflow.getMetaJson(), new TypeReference<Map<String, Object>>() {
@@ -136,7 +121,7 @@ public class WorkflowRepository implements IWorkflowRepository {
 
 
     @Override
-    public WorkflowDO getWorkflowByName(String workflowName) {
+    public Workflow getWorkflowByName(String workflowName) {
         TbWorkflow workflow = workflowMapper.selectOne(new LambdaQueryWrapper<TbWorkflow>()
                 .eq(TbWorkflow::getName, workflowName)
                 .eq(TbWorkflow::getStatus, WorkflowStatus.ACTIVE.getCode())
@@ -145,7 +130,7 @@ public class WorkflowRepository implements IWorkflowRepository {
             return null;
         }
 
-        WorkflowDO workflowDO = new WorkflowDO();
+        Workflow workflowDO = new Workflow();
         BeanUtil.copyProperties(workflow, workflowDO);
         return workflowDO;
     }

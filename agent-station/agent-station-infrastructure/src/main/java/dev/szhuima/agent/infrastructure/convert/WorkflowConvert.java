@@ -1,7 +1,7 @@
 package dev.szhuima.agent.infrastructure.convert;
 
 import cn.hutool.core.bean.BeanUtil;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
 
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
  **/
 public interface WorkflowConvert {
 
-    WorkflowDO toWorkflowDO(TbWorkflow workflow);
+    Workflow toWorkflowDO(TbWorkflow workflow);
 
-    List<WorkflowDO> toWorkflowDOList(List<TbWorkflow> workflows);
+    List<Workflow> toWorkflowDOList(List<TbWorkflow> workflows);
 
-    default TbWorkflow toWorkflow(WorkflowDO workflowDO) {
+    default TbWorkflow toWorkflow(Workflow workflowDO) {
         TbWorkflow workflow = new TbWorkflow();
         BeanUtil.copyProperties(workflowDO, workflow);
         return workflow;
     }
 
-    List<TbWorkflow> toWorkflowList(List<WorkflowDO> workflowDOs);
+    List<TbWorkflow> toWorkflowList(List<Workflow> workflows);
 
 
 }

@@ -4,8 +4,8 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONReader;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigBatchDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
@@ -36,7 +36,7 @@ public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowE
      * @return 执行结果
      */
     @Override
-    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO) {
+    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
         String configJson = node.getConfigJson();
         WorkflowNodeConfigBatchDO batchConfigNode = JSON.parseObject(configJson, WorkflowNodeConfigBatchDO.class, JSONReader.Feature.SupportSmartMatch);
         if (batchConfigNode == null) {
@@ -52,10 +52,10 @@ public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowE
             }
             List<String> bodyNodes = batchConfigNode.getBodyNodes();
             for (String nodeName : bodyNodes) {
-                WorkflowNodeDO bodyNodeDO = workflowDO.findNodeByName(nodeName);
+                WorkflowNodeDO bodyNodeDO = workflow.findNodeByName(nodeName);
                 WorkflowNodeExecutor executor = getExecutor(bodyNodeDO);
                 log.info("正在执行bodyNode:{}", nodeName);
-                NodeExecutionResult result = executor.execute(bodyNodeDO, context, workflowDO);
+                NodeExecutionResult result = executor.execute(bodyNodeDO, context, workflow);
                 if (!result.isCompleted()) {
                     if (batchConfigNode.getErrorStrategy() == WorkflowNodeConfigBatchDO.ErrorStrategy.BREAK) {
                         log.info("bodyNode:{} is break,result:{}", nodeName, result);

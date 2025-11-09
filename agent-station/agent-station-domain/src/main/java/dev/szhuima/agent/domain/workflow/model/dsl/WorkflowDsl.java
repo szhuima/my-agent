@@ -144,8 +144,8 @@ public class WorkflowDsl {
     public static class AgentNode extends BaseNode<AgentNode.AgentConfig> {
         @Data
         public static class AgentConfig {
-            @JSONField(name = "client_id")
-            private Long clientId;
+            @JSONField(name = "agent_id")
+            private Long agentId;
 
             @JSONField(name = "user_prompt")
             private String userPrompt;

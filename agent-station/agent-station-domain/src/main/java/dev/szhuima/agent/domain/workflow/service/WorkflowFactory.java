@@ -20,14 +20,14 @@ public class WorkflowFactory {
     /**
      * 创建工作流实例
      *
-     * @param workflowDO 工作流DO
+     * @param workflow 工作流DO
      * @return 工作流实例
      */
-    public WorkflowInstanceDO createWorkflowInstance(WorkflowDO workflowDO, Map<String, Object> params) {
+    public WorkflowInstanceDO createWorkflowInstance(Workflow workflow, Map<String, Object> params) {
         WorkflowInstanceDO instance = new WorkflowInstanceDO();
-        instance.setWorkflowId(workflowDO.getWorkflowId());
-        instance.setWorkflowName(workflowDO.getName());
-        instance.setWorkflowDO(workflowDO);
+        instance.setWorkflowId(workflow.getWorkflowId());
+        instance.setWorkflowName(workflow.getName());
+        instance.setWorkflow(workflow);
         instance.setStatus(WorkflowInstanceStatus.DEPLOYED);
         instance.setNodeExecutionDOS(new ArrayList<>());
         return instance;
@@ -38,11 +38,12 @@ public class WorkflowFactory {
     }
 
 
-    public WorkflowDO parseDSL(String workflowDSL) throws Exception {
+    public Workflow parseDSL(String workflowDSL) throws Exception {
         WorkflowDsl workflowDsl = WorkflowDslParser.parseFromYaml(workflowDSL);
-        WorkflowDO workflowDO = new WorkflowDO();
-        workflowDO.setName(workflowDsl.getName());
-        workflowDO.setMeta(workflowDsl.getMeta());
+        Workflow workflow = new Workflow();
+        workflow.setYmlConfig(workflowDSL);
+        workflow.setName(workflowDsl.getName());
+        workflow.setMeta(workflowDsl.getMeta());
         List<WorkflowDsl.BaseNode<?>> nodes = workflowDsl.getNodes();
         List<WorkflowNodeDO> workflowNodeDOList = new ArrayList<>();
         for (int i = 0; i < nodes.size(); i++) {
@@ -56,7 +57,7 @@ public class WorkflowFactory {
             workflowNodeDO.setPositionY(node.getPositionY());
             workflowNodeDOList.add(workflowNodeDO);
         }
-        workflowDO.setNodes(workflowNodeDOList);
+        workflow.setNodes(workflowNodeDOList);
 
         List<WorkflowDsl.Edge> edges = workflowDsl.getEdges();
         List<WorkflowEdgeDO> workflowEdgeDOList = new ArrayList<>();
@@ -66,7 +67,7 @@ public class WorkflowFactory {
             workflowEdgeDO.setToNodeName(edge.getTo());
             workflowEdgeDOList.add(workflowEdgeDO);
         }
-        workflowDO.setEdges(workflowEdgeDOList);
-        return workflowDO;
+        workflow.setEdges(workflowEdgeDOList);
+        return workflow;
     }
 }

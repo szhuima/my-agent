@@ -13,7 +13,7 @@ public class WorkflowInstanceDO {
     private Long instanceId;
     private Long workflowId;
     private String workflowName;
-    private WorkflowDO workflowDO;
+    private Workflow workflow;
     private WorkflowInstanceStatus status;
     private List<NodeExecutionDO> nodeExecutionDOS;
 
@@ -28,7 +28,7 @@ public class WorkflowInstanceDO {
      * @return 启动节点
      */
     public WorkflowNodeDO findStartNode() {
-        return this.workflowDO.findStartNode();
+        return this.workflow.findStartNode();
     }
 
     /**
@@ -38,7 +38,7 @@ public class WorkflowInstanceDO {
      */
     public WorkflowNodeDO findBeginNode() {
         WorkflowNodeDO startNode = findStartNode();
-        return this.workflowDO.nextNode(startNode.getName(), "");
+        return this.workflow.nextNode(startNode.getName(), "");
     }
 
 

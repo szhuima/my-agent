@@ -26,7 +26,7 @@ public class WorkflowExecutor implements WorkflowExecutorRouter {
     private IWorkflowExecutionRepository workflowExecutionRepository;
 
     public NodeExecutionResult execute(WorkflowInstanceDO instance, Map<String, Object> inputParams) {
-        WorkflowDO workflow = instance.getWorkflowDO();
+        Workflow workflow = instance.getWorkflow();
         WorkflowContext workflowContext = new WorkflowContext(workflow.getMeta());
         workflowContext.putAll(inputParams);
         log.info("开始执行工作流:{},instanceId:{},上下文:{},", workflow.getName(), instance.getInstanceId(), workflowContext);

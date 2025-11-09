@@ -1,8 +1,8 @@
 package dev.szhuima.agent.domain.workflow.service.executor;
 
 import com.googlecode.aviator.AviatorEvaluator;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowInstanceRepository;
 import jakarta.annotation.Resource;
@@ -33,14 +33,14 @@ public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
     }
 
     @Override
-    public NodeExecutionResult execute(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO) {
+    public NodeExecutionResult execute(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
         boolean condition = assertCondition(node, context);
         if (!condition) {
             return NodeExecutionResult.failure("condition unmatched, cannot execute node");
         }
         NodeExecutionResult nodeExecutionResult;
         try {
-            nodeExecutionResult = executeNode(node, context, workflowDO);
+            nodeExecutionResult = executeNode(node, context, workflow);
         } catch (Exception e) {
             log.error("{} 节点执行异常", node.getName(), e);
             return NodeExecutionResult.failure(e.getMessage());
@@ -48,6 +48,6 @@ public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
         return NodeExecutionResult.success(nodeExecutionResult.getOutput());
     }
 
-    public abstract NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO);
+    public abstract NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow);
 
 }

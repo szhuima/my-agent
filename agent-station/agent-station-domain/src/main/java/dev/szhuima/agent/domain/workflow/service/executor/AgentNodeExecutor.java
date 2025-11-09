@@ -6,8 +6,8 @@ import com.alibaba.fastjson2.JSONReader;
 import dev.szhuima.agent.domain.agent.Agent;
 import dev.szhuima.agent.domain.agent.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
+import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
-import dev.szhuima.agent.domain.workflow.model.WorkflowDO;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeAgentConfig;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import jakarta.annotation.Resource;
@@ -42,7 +42,7 @@ public class AgentNodeExecutor extends AbstractNodeExecutor {
      * @return 执行结果
      */
     @Override
-    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, WorkflowDO workflowDO) {
+    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
         String configJson = node.getConfigJson();
         WorkflowNodeAgentConfig config = JSON.parseObject(configJson, WorkflowNodeAgentConfig.class,
                 JSONReader.Feature.SupportSmartMatch);

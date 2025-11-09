@@ -5,6 +5,7 @@ import {IconDelete, IconEdit, IconExport, IconImport, IconPlus, IconSearch,} fro
 import styled from "styled-components";
 import {theme} from "../styles/theme";
 import {Header, Sidebar} from "../components/layout";
+import {PageLayout} from "../components/page-layout";
 import {PageDTO, WorkflowQueryRequestDTO, WorkflowResponseDTO, WorkflowService,} from "../services/workflow-service";
 import useHandleNavigation from "../utils/useHandleNavigation";
 import yaml from "js-yaml";
@@ -475,7 +476,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
   }, []);
 
   return (
-    <AgentListLayout>
+    <PageLayout>
       <Sidebar
         selectedKey={selectedKey}
         onSelect={handleNavigation}
@@ -582,7 +583,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
         onOk={handleDslImport}
         onChange={setDslContent}
       />
-    </AgentListLayout>
+    </PageLayout>
   );
 };
 

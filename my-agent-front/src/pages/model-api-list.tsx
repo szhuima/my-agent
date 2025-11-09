@@ -5,6 +5,7 @@ import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from 
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
+import {PageLayout} from '../components/page-layout';
 import {ModelApiCreateModal} from '../components/model-api-create-modal';
 import {ModelApiEditModal} from '../components/model-api-edit-modal';
 import {ModelApiTestModal} from '../components/model-api-test-modal';
@@ -436,7 +437,7 @@ export const AiClientApiManagement: React.FC = () => {
   }, []);
 
   return (
-    <AiClientApiManagementLayout>
+    <PageLayout>
       <Sidebar 
         collapsed={collapsed} 
         selectedKey="ai-client-api-management"
@@ -540,6 +541,6 @@ export const AiClientApiManagement: React.FC = () => {
         record={testingRecord}
         onCancel={handleTestCancel}
       />
-    </AiClientApiManagementLayout>
+    </PageLayout>
   );
 };

@@ -17,6 +17,7 @@ import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from 
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
+import {PageLayout} from '../components/page-layout';
 import {AgentCreateModal} from '../components/agent-create-modal';
 import {AgentEditModal} from '../components/agent-edit-modal';
 import {AgentDebugChatModal} from '../components/agent-debug-chat-modal';
@@ -398,7 +399,7 @@ export const AgentList: React.FC = () => {
   }, []);
 
   return (
-    <ClientManagementLayout>
+    <PageLayout>
       <Sidebar 
         collapsed={collapsed}
         selectedKey="client-management"
@@ -507,6 +508,6 @@ export const AgentList: React.FC = () => {
           )}
         </ContentArea>
       </MainContent>
-    </ClientManagementLayout>
+    </PageLayout>
   );
 };

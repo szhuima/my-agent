@@ -19,6 +19,7 @@ import {IconDelete, IconEdit, IconEyeOpened, IconPlus, IconRefresh, IconSearch} 
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
+import {PageLayout} from '../components/page-layout';
 import {
   aiClientToolMcpAdminService,
   AiClientToolMcpQueryRequestDTO,
@@ -576,7 +577,7 @@ export const McpList: React.FC = () => {
   }, []);
 
   return (
-    <ClientToolMcpManagementLayout>
+    <PageLayout>
       <Sidebar
         collapsed={collapsed}
         selectedKey="client-tool-mcp-management"
@@ -967,6 +968,6 @@ export const McpList: React.FC = () => {
           </Modal>
         </ContentArea>
       </MainContent>
-    </ClientToolMcpManagementLayout>
+    </PageLayout>
   );
 };

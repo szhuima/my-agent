@@ -20,6 +20,7 @@ import {IconDelete, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icon
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
+import {PageLayout} from '../components/page-layout';
 import {
     aiClientRagOrderAdminService,
     AiClientRagOrderQueryRequestDTO,
@@ -385,7 +386,7 @@ export const RagOrderManagement: React.FC = () => {
   }, []);
 
   return (
-    <RagOrderManagementLayout>
+    <PageLayout>
       <Sidebar 
         collapsed={collapsed}
         selectedKey="rag-order-management"
@@ -537,6 +538,6 @@ export const RagOrderManagement: React.FC = () => {
           </Modal>
         </ContentArea>
       </MainContent>
-    </RagOrderManagementLayout>
+    </PageLayout>
   );
 };

@@ -93,7 +93,6 @@ export const API_ENDPOINTS = {
     // 工作流相关接口
     WORKFLOW: {
         BASE: `${API_CONFIG.BASE_DOMAIN}/api/${API_CONFIG.API_VERSION}/admin/workflow`,
-        SAVE_CONFIG: '/save-config',
         QUERY_LIST: '/query-list',
         GET_DSL: '/get-dsl',
         DELETE: '/delete',

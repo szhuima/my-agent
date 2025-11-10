@@ -92,7 +92,7 @@ public class WorkflowService {
     public Long importWorkflow(String workflowDSL) {
         Workflow workflow = null;
         try {
-            workflow = workflowFactory.parseDSL(workflowDSL);
+            workflow = workflowFactory.parseJson(workflowDSL);
         } catch (Exception e) {
             log.error("工作流配置解析错误, workflowDSL={}", workflowDSL, e);
             throw BizException.of("工作流配置解析错误");
@@ -104,13 +104,13 @@ public class WorkflowService {
 
     public Long saveWorkflow(WorkflowSaveRequest saveRequest) {
         Long workflowId = saveRequest.getWorkflowId();
-        String ymlConfig = saveRequest.getYmlConfig();
+        String ymlConfig = saveRequest.getJsonConfig();
 
         Workflow workflow = null;
         try {
-            workflow = workflowFactory.parseDSL(ymlConfig);
+            workflow = workflowFactory.parseJson(ymlConfig);
         } catch (Exception e) {
-            log.error("工作流配置解析错误, ymlConfig={}", ymlConfig, e);
+            log.error("工作流配置解析错误, jsonConfig={}", ymlConfig, e);
             throw BizException.of("工作流配置解析错误");
         }
         if (workflowId == null) {

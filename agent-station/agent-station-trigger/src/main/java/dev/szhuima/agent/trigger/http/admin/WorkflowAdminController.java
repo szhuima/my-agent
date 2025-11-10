@@ -88,10 +88,10 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
     @GetMapping("/get-dsl/{workflowId}")
     public Response<String> queryDSL(@PathVariable("workflowId") Long workflowId) {
         LambdaQueryWrapper<TbWorkflow> wrapper = Wrappers.lambdaQuery(TbWorkflow.class)
-                .select(TbWorkflow::getYmlConfig)
+                .select(TbWorkflow::getJsonConfig)
                 .eq(TbWorkflow::getWorkflowId, workflowId);
         TbWorkflow workflow = workflowMapper.selectOne(wrapper);
-        String content = workflow != null ? workflow.getYmlConfig() : null;
+        String content = workflow != null ? workflow.getJsonConfig() : null;
         return Response.success(content);
     }
 

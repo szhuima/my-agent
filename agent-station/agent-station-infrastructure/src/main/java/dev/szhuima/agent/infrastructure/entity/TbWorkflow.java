@@ -31,7 +31,7 @@ public class TbWorkflow {
      */
     private String metaJson;
 
-    private String ymlConfig;
+    private String jsonConfig;
 
     /**
      *

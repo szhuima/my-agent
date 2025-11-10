@@ -290,24 +290,10 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
 
   // 编辑
   const handleEdit = async (record: WorkflowResponseDTO) => {
-    try {
-      const dsl: string | null = await WorkflowService.getDSL(
-        record.workflowId
-      );
-      if (dsl) {
-        // 弹框展示并允许编辑 DSL 内容
-        setEditingWorkflow(record);
-        setDslContent(dsl);
-        setDslModalVisible(true);
-      } else {
-        Toast.error("获取DSL失败");
-      }
-    } catch (error) {
-      console.error("获取DSL失败:", error);
-      Toast.error(
-        `获取DSL失败: ${error instanceof Error ? error.message : "未知错误"}`
-      );
-    }
+    const target = `/workflow-create?bare=1&configId=${encodeURIComponent(
+      record.configId
+    )}`;
+    window.open(target, "_blank");
   };
 
   const handleDslImport = async () => {

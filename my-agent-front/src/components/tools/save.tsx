@@ -1,9 +1,9 @@
 import {useCallback, useEffect, useState} from 'react';
-import yaml from 'js-yaml';
 
 import {FlowNodeEntity, getNodeForm, useClientContext} from '@flowgram.ai/free-layout-editor';
 import {Badge, Button, Toast} from '@douyinfe/semi-ui';
-import {WorkflowService} from '../../services/workflow-service';
+import {API_ENDPOINTS, DEFAULT_HEADERS} from '../../config/api';
+import {apiRequestData} from '../../utils/request';
 
 export function Save(props: { disabled: boolean }) {
   const [errorCount, setErrorCount] = useState(0);
@@ -20,19 +20,21 @@ export function Save(props: { disabled: boolean }) {
    */
   const saveToBackend = async (configData: any) => {
     try {
-      // 将自定义DSL转为 YAML 文本
-      let yamlContent = '';
-      try {
-        yamlContent = yaml.dump(configData);
-      } catch (e: any) {
-        Toast.error(`保存失败：DSL 转 YAML 出错 - ${e?.message || '未知错误'}`);
-        throw e;
+      // 以 JSON 直接保存到后端
+      const workflowId = await apiRequestData<number | null>(
+        `${API_ENDPOINTS.WORKFLOW.BASE}${API_ENDPOINTS.WORKFLOW.SAVE}`,
+        {
+          method: 'POST',
+          headers: DEFAULT_HEADERS,
+          body: JSON.stringify(configData ?? {}),
+        }
+      );
+      if (workflowId) {
+        Toast.success(`保存成功！工作流ID: ${workflowId}`);
+        return workflowId;
       }
-
-      // 调用后端导入接口（YAML 内容）
-      const workflowId = await WorkflowService.saveWorkflow(yamlContent);
-      Toast.success(`保存成功！工作流ID: ${workflowId}`);
-      return workflowId;
+      Toast.error('保存失败：未返回ID');
+      return null;
     } catch (error) {
       console.error('保存流程图配置失败:', error);
       Toast.error('保存失败，请检查网络连接');
@@ -285,23 +287,12 @@ export function Save(props: { disabled: boolean }) {
       await Promise.all(allForms.map(async (form) => form?.validate()));
 
       const originalConfigData = clientContext.document.toJSON();
-      // 提取客户端信息（仅用于调试日志），不影响自定义DSL结构
+      // 提取客户端信息（仅用于调试日志），不影响保存结构
       extractClientInfo(originalConfigData);
 
-      // 转换为自定义DSL格式
-      const customDSL = toCustomWorkflow(originalConfigData);
-
-      // 在浏览器控制台打印工作流的定义配置（JSON 与 YAML）
-      console.log('工作流配置（JSON，自定义DSL）：', customDSL);
-      try {
-        const yamlText = yaml.dump(customDSL);
-        console.log('工作流配置（YAML，自定义DSL）：\n', yamlText);
-      } catch (e) {
-        console.warn('工作流配置转为 YAML 时出错：', e);
-      }
-
-      // 调用后端API保存配置
-      await saveToBackend(customDSL);
+      // 直接保存画布文档 JSON
+      console.log('工作流配置（JSON，画布文档）：', originalConfigData);
+      await saveToBackend(originalConfigData);
     } catch (error) {
       console.error('保存过程中发生错误:', error);
     }

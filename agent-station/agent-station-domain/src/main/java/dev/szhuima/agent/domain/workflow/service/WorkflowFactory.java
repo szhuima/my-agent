@@ -20,15 +20,10 @@ import java.util.List;
 public class WorkflowFactory {
 
 
-    public String parseWorkflowName(String workflowDSL) {
-        return WorkflowDslParser.parseNameFromYaml(workflowDSL);
-    }
-
-
-    public Workflow parseDSL(String workflowDSL) throws Exception {
-        WorkflowDsl workflowDsl = WorkflowDslParser.parseFromYaml(workflowDSL);
+    public Workflow parseYml(String ymlContent) throws Exception {
+        WorkflowDsl workflowDsl = WorkflowYamlParser.parseFromYaml(ymlContent);
         Workflow workflow = new Workflow();
-        workflow.setYmlConfig(workflowDSL);
+        workflow.setYmlConfig(ymlContent);
         workflow.setName(workflowDsl.getName());
         workflow.setMeta(workflowDsl.getMeta());
         List<WorkflowDsl.BaseNode<?>> nodes = workflowDsl.getNodes();
@@ -45,7 +40,6 @@ public class WorkflowFactory {
             workflowNodeList.add(workflowNode);
         }
         workflow.setNodes(workflowNodeList);
-
         List<WorkflowDsl.Edge> edges = workflowDsl.getEdges();
         List<WorkflowEdge> workflowEdgeList = new ArrayList<>();
         for (WorkflowDsl.Edge edge : edges) {
@@ -57,4 +51,10 @@ public class WorkflowFactory {
         workflow.setEdges(workflowEdgeList);
         return workflow;
     }
+
+    public Workflow parseJson(String jsonContent) throws Exception {
+        return JSON.parseObject(jsonContent, Workflow.class);
+    }
+
+
 }

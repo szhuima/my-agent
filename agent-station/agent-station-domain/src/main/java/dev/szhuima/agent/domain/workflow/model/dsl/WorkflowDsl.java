@@ -16,7 +16,6 @@ public class WorkflowDsl {
     private Map<String, Object> meta;
     private List<BaseNode<?>> nodes;
     private List<Edge> edges;
-    private List<BaseTrigger<?>> triggers;
 
     @Data
     public static class Edge {

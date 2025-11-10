@@ -14,6 +14,6 @@ public class WorkflowSaveRequest {
 
     private Long workflowId;
 
-    private String ymlConfig;
+    private String jsonConfig;
 
 }

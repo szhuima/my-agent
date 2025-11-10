@@ -10,18 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class WorkflowDslParser {
-
-
-    public static String parseNameFromYaml(String yamlText) {
-        Yaml yaml = new Yaml();
-        Object loaded = yaml.load(yamlText);
-        if (!(loaded instanceof Map)) {
-            throw new IllegalArgumentException("Invalid workflow yaml");
-        }
-        Map<String, Object> root = (Map<String, Object>) loaded;
-        return root.get("name").toString();
-    }
+public class WorkflowYamlParser {
 
 
     public static WorkflowDsl parseFromYaml(String yamlText) throws Exception {

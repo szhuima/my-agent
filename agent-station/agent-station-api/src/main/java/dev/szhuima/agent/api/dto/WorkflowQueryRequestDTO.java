@@ -34,7 +34,7 @@ public class WorkflowQueryRequestDTO implements Serializable {
     private String workflowName;
 
     /**
-     * 状态(0:禁用,1:启用)
+     * 状态
      */
     private Integer status;
 

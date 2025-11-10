@@ -14,11 +14,7 @@ import WorkflowDslModal from "../components/workflow-dsl-modal";
 const { Content } = Layout;
 const { Title } = Typography;
 
-// 样式组件
-const AgentListLayout = styled(Layout)`
-  min-height: 100vh;
-  background: ${theme.colors.bg.secondary};
-`;
+
 
 const MainContent = styled.div<{ $collapsed: boolean }>`
   display: flex;
@@ -128,28 +124,10 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
       render: (text: string) => text || "-",
     },
     {
-      title: "版本",
-      dataIndex: "version",
-      key: "version",
-      // align: "center",
-      width: 80,
-      render: (text: string) => (
-        <span
-          style={{
-            fontFamily: "monospace",
-            fontSize: "12px",
-            textAlign: "center",
-          }}
-        >
-          {text}
-        </span>
-      ),
-    },
-    {
       title: "状态",
       dataIndex: "status",
       key: "status",
-      width: 80,
+      width: 90,
       render: (status: number, record: WorkflowResponseDTO) => (
         <Switch
           checked={status === 1}
@@ -162,7 +140,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
           }}
           checkedText="激活"
           uncheckedText="归档"
-          size="small"
+          size="large"
         />
       ),
     },
@@ -178,9 +156,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
             size="small"
             icon={<IconEdit />}
             onClick={() => handleEdit(record)}
-          >
-
-          </ActionButton>
+           />
           <ActionButton
             type="tertiary"
             size="small"
@@ -194,8 +170,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
             content="删除后无法恢复，请谨慎操作"
             onConfirm={() => handleDelete(record)}
           >
-            <ActionButton type="danger" size="small" icon={<IconDelete />}>
-            </ActionButton>
+            <ActionButton type="danger" size="small" icon={<IconDelete />} />
           </Popconfirm>
         </Space>
       ),

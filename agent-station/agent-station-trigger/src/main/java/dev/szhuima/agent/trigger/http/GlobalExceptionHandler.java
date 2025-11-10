@@ -15,9 +15,8 @@ public class GlobalExceptionHandler {
     // 捕获业务异常
     @ExceptionHandler(BizException.class)
     public Response handleBizException(BizException ex) {
-        log.warn("捕获全局业务异常:{}", ex.getMessage());
+        log.warn("捕获业务异常:{}", ex.getMessage());
         // 打印异常栈轨迹
-        ex.printStackTrace();
         return Response.fail(ErrorCode.BIZ_ERROR, ex.getMessage());
     }
 

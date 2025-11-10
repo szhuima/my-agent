@@ -34,9 +34,9 @@ public class Workflow {
     /**
      * 节点列表，key为节点ID
      */
-    private List<WorkflowNodeDO> nodes;
+    private List<WorkflowNode> nodes;
 
-    private List<WorkflowEdgeDO> edges;
+    private List<WorkflowEdge> edges;
 
     private String ymlConfig;
 
@@ -44,7 +44,7 @@ public class Workflow {
 
     private LocalDateTime updatedAt;
 
-    public Workflow(Long id, String name, List<WorkflowNodeDO> nodeList, List<WorkflowEdgeDO> edges) {
+    public Workflow(Long id, String name, List<WorkflowNode> nodeList, List<WorkflowEdge> edges) {
         if (nodeList == null || edges == null) {
             throw BizException.of("节点和边不能为空");
         }
@@ -55,7 +55,7 @@ public class Workflow {
     }
 
     // 获取起始节点
-    public WorkflowNodeDO findStartNode() {
+    public WorkflowNode findStartNode() {
         return nodes.stream()
                 .filter((node) -> node.getType() == NodeType.START)
                 .findFirst()
@@ -67,12 +67,12 @@ public class Workflow {
      *
      * @return 第一个可执行的节点
      */
-    public WorkflowNodeDO findBeginNode() {
-        WorkflowNodeDO startNode = findStartNode();
+    public WorkflowNode findBeginNode() {
+        WorkflowNode startNode = findStartNode();
         return this.nextNode(startNode.getName(), "");
     }
 
-    public WorkflowNodeDO findNodeByName(String name) {
+    public WorkflowNode findNodeByName(String name) {
         return nodes.stream()
                 .filter(n -> n.getName().equals(name))
                 .findFirst()
@@ -81,7 +81,7 @@ public class Workflow {
 
 
     // 根据当前节点找到下一个节点（简单版，不考虑条件）
-    public List<WorkflowNodeDO> nextNodes(Long nodeId) {
+    public List<WorkflowNode> nextNodes(Long nodeId) {
         return edges.stream()
                 .filter(e -> e.getFromNodeId().equals(nodeId))
                 .map(e -> nodes.stream()
@@ -92,7 +92,7 @@ public class Workflow {
     }
 
 
-    public WorkflowNodeDO nextNode(String nodeName, String edgeLabel) {
+    public WorkflowNode nextNode(String nodeName, String edgeLabel) {
         return edges.stream()
                 .filter(e -> {
                     if (StringUtils.isNotEmpty(edgeLabel)) {

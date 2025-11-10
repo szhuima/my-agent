@@ -123,9 +123,9 @@ export class WorkflowService {
     }
   }
 
-  static async importWorkflow(dslContent: string): Promise<number> {
+  static async saveWorkflow(dslContent: string): Promise<number> {
     const data = await apiRequestData<number>(
-        `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.IMPORT}`,
+        `${this.BASE_URL}${API_ENDPOINTS.WORKFLOW.SAVE}`,
         {
           method: 'POST',
           headers: TEXT_REQ_HEADERS,

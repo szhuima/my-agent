@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import yaml from 'js-yaml';
 
-import { useClientContext, getNodeForm, FlowNodeEntity } from '@flowgram.ai/free-layout-editor';
-import { Button, Badge, Toast } from '@douyinfe/semi-ui';
-import { WorkflowService } from '../../services/workflow-service';
+import {FlowNodeEntity, getNodeForm, useClientContext} from '@flowgram.ai/free-layout-editor';
+import {Badge, Button, Toast} from '@douyinfe/semi-ui';
+import {WorkflowService} from '../../services/workflow-service';
 
 export function Save(props: { disabled: boolean }) {
   const [errorCount, setErrorCount] = useState(0);
@@ -30,7 +30,7 @@ export function Save(props: { disabled: boolean }) {
       }
 
       // 调用后端导入接口（YAML 内容）
-      const workflowId = await WorkflowService.importWorkflow(yamlContent);
+      const workflowId = await WorkflowService.saveWorkflow(yamlContent);
       Toast.success(`保存成功！工作流ID: ${workflowId}`);
       return workflowId;
     } catch (error) {

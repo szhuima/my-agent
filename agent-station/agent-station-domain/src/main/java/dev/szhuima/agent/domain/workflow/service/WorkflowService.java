@@ -55,7 +55,7 @@ public class WorkflowService {
             throw new BizException("工作流已激活: " + workflowId);
         }
 
-        WorkflowNodeDO startNode = workflow.findStartNode();
+        WorkflowNode startNode = workflow.findStartNode();
         String configJson = startNode.getConfigJson();
         if (StrUtil.isNotEmpty(configJson)) {
             WorkflowStartNodeConfig startNodeConfig = JSON.parseObject(configJson, WorkflowStartNodeConfig.class, JSONReader.Feature.SupportSmartMatch);
@@ -98,18 +98,28 @@ public class WorkflowService {
             throw BizException.of("工作流配置解析错误");
         }
         Long workflowId = workflowRepository.saveWorkflow(workflow);
-        workflow.getNodes().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowNode);
-        workflow.getEdges().stream().peek((w) -> w.setWorkflowId(workflowId)).forEach(workflowRepository::saveWorkflowEdge);
         log.info("Workflow saved, workflowName={}, workflowId={}", workflow.getName(), workflowId);
         return workflowId;
     }
 
-    public String parseWorkflowName(String content) {
-        return WorkflowDslParser.parseNameFromYaml(content);
-    }
+    public Long saveWorkflow(WorkflowSaveRequest saveRequest) {
+        Long workflowId = saveRequest.getWorkflowId();
+        String ymlConfig = saveRequest.getYmlConfig();
 
-    public void deleteWorkflow(String workflowName) {
-        workflowRepository.deleteWorkflowByName(workflowName);
+        Workflow workflow = null;
+        try {
+            workflow = workflowFactory.parseDSL(ymlConfig);
+        } catch (Exception e) {
+            log.error("工作流配置解析错误, ymlConfig={}", ymlConfig, e);
+            throw BizException.of("工作流配置解析错误");
+        }
+        if (workflowId == null) {
+            return workflowRepository.saveWorkflow(workflow);
+        }
+        workflow.setWorkflowId(workflowId);
+        workflowRepository.updateWorkflow(workflow);
+        log.info("Workflow saved, workflowName={}, workflowId={}", workflow.getName(), workflowId);
+        return workflowId;
     }
 
     public Workflow queryActiveWorkflow(String workflowName) {

@@ -243,7 +243,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
         Toast.error(`YAML 格式错误：${err.message}`);
         return;
       }
-      await WorkflowService.importWorkflow(content);
+      await WorkflowService.saveWorkflow(content);
       // 刷新数据
       await loadData();
       Toast.success("导入工作流成功");
@@ -326,7 +326,7 @@ export const WorkflowListPage: React.FC<AgentListPageProps> = ({
     try {
       setDslSubmitting(true);
       const id = Toast.info("正在导入工作流 DSL...");
-      await WorkflowService.importWorkflow(content);
+      await WorkflowService.saveWorkflow(content);
       Toast.close(id);
       Toast.success("DSL 导入成功");
       setDslModalVisible(false);

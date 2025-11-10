@@ -3,8 +3,8 @@ package dev.szhuima.agent.domain.workflow.service;
 import com.alibaba.fastjson.JSON;
 import dev.szhuima.agent.domain.workflow.model.NodeType;
 import dev.szhuima.agent.domain.workflow.model.Workflow;
-import dev.szhuima.agent.domain.workflow.model.WorkflowEdgeDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowEdge;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNode;
 import dev.szhuima.agent.domain.workflow.model.dsl.WorkflowDsl;
 import org.springframework.stereotype.Service;
 
@@ -32,29 +32,29 @@ public class WorkflowFactory {
         workflow.setName(workflowDsl.getName());
         workflow.setMeta(workflowDsl.getMeta());
         List<WorkflowDsl.BaseNode<?>> nodes = workflowDsl.getNodes();
-        List<WorkflowNodeDO> workflowNodeDOList = new ArrayList<>();
+        List<WorkflowNode> workflowNodeList = new ArrayList<>();
         for (int i = 0; i < nodes.size(); i++) {
             WorkflowDsl.BaseNode<?> node = nodes.get(i);
-            WorkflowNodeDO workflowNodeDO = new WorkflowNodeDO();
-            workflowNodeDO.setName(node.getName());
-            workflowNodeDO.setType(NodeType.fromType(node.getType()));
-            workflowNodeDO.setConfigJson(JSON.toJSONString(node.getConfig()));
-            workflowNodeDO.setConditionExpr(node.getCondition());
-            workflowNodeDO.setPositionX(node.getPositionX());
-            workflowNodeDO.setPositionY(node.getPositionY());
-            workflowNodeDOList.add(workflowNodeDO);
+            WorkflowNode workflowNode = new WorkflowNode();
+            workflowNode.setName(node.getName());
+            workflowNode.setType(NodeType.fromType(node.getType()));
+            workflowNode.setConfigJson(JSON.toJSONString(node.getConfig()));
+            workflowNode.setConditionExpr(node.getCondition());
+            workflowNode.setPositionX(node.getPositionX());
+            workflowNode.setPositionY(node.getPositionY());
+            workflowNodeList.add(workflowNode);
         }
-        workflow.setNodes(workflowNodeDOList);
+        workflow.setNodes(workflowNodeList);
 
         List<WorkflowDsl.Edge> edges = workflowDsl.getEdges();
-        List<WorkflowEdgeDO> workflowEdgeDOList = new ArrayList<>();
+        List<WorkflowEdge> workflowEdgeList = new ArrayList<>();
         for (WorkflowDsl.Edge edge : edges) {
-            WorkflowEdgeDO workflowEdgeDO = new WorkflowEdgeDO();
-            workflowEdgeDO.setFromNodeName(edge.getFrom());
-            workflowEdgeDO.setToNodeName(edge.getTo());
-            workflowEdgeDOList.add(workflowEdgeDO);
+            WorkflowEdge workflowEdge = new WorkflowEdge();
+            workflowEdge.setFromNodeName(edge.getFrom());
+            workflowEdge.setToNodeName(edge.getTo());
+            workflowEdgeList.add(workflowEdge);
         }
-        workflow.setEdges(workflowEdgeDOList);
+        workflow.setEdges(workflowEdgeList);
         return workflow;
     }
 }

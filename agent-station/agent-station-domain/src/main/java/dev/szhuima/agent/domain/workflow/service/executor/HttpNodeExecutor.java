@@ -3,8 +3,8 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 import com.alibaba.fastjson2.JSON;
 import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNode;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigHttp;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class HttpNodeExecutor extends AbstractNodeExecutor {
     }
 
     @Override
-    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
+    public NodeExecutionResult executeNode(WorkflowNode node, WorkflowContext context, Workflow workflow) {
         String configJson = node.getConfigJson();
         WorkflowNodeConfigHttp config = JSON.parseObject(configJson, WorkflowNodeConfigHttp.class);
 

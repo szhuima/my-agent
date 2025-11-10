@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkflowEdgeDO {
+public class WorkflowEdge {
     private Long edgeId;
     private Long workflowId;
     private Long fromNodeId;

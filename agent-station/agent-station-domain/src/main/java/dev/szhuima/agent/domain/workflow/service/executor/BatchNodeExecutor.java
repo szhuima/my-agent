@@ -6,8 +6,8 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONReader;
 import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNode;
 import dev.szhuima.agent.domain.workflow.model.WorkflowNodeConfigBatchDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 import dev.szhuima.agent.domain.workflow.reository.IWorkflowRepository;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowE
      * @return 执行结果
      */
     @Override
-    public NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
+    public NodeExecutionResult executeNode(WorkflowNode node, WorkflowContext context, Workflow workflow) {
         String configJson = node.getConfigJson();
         WorkflowNodeConfigBatchDO batchConfigNode = JSON.parseObject(configJson, WorkflowNodeConfigBatchDO.class, JSONReader.Feature.SupportSmartMatch);
         if (batchConfigNode == null) {
@@ -52,7 +52,7 @@ public class BatchNodeExecutor extends AbstractNodeExecutor implements WorkflowE
             }
             List<String> bodyNodes = batchConfigNode.getBodyNodes();
             for (String nodeName : bodyNodes) {
-                WorkflowNodeDO bodyNodeDO = workflow.findNodeByName(nodeName);
+                WorkflowNode bodyNodeDO = workflow.findNodeByName(nodeName);
                 WorkflowNodeExecutor executor = getExecutor(bodyNodeDO);
                 log.info("正在执行bodyNode:{}", nodeName);
                 NodeExecutionResult result = executor.execute(bodyNodeDO, context, workflow);

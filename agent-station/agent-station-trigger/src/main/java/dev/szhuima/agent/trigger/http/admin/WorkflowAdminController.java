@@ -13,6 +13,7 @@ import dev.szhuima.agent.api.dto.PageDTO;
 import dev.szhuima.agent.api.dto.WorkflowQueryRequestDTO;
 import dev.szhuima.agent.api.dto.WorkflowResponseDTO;
 import dev.szhuima.agent.domain.support.exception.BizException;
+import dev.szhuima.agent.domain.workflow.model.WorkflowSaveRequest;
 import dev.szhuima.agent.domain.workflow.service.WorkflowService;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflow;
 import dev.szhuima.agent.infrastructure.entity.TbWorkflowNode;
@@ -100,12 +101,26 @@ public class WorkflowAdminController extends BaseController implements IWorkflow
      * @param dslTContent dsl 配置内容
      * @return
      */
-    @Override
     @PostMapping("/import")
-    public Response<String> importWorkflowFromDsl(@RequestBody String dslTContent) {
+    public Response<String> importYml(@RequestBody String dslTContent) {
         Long instanceId = workflowService.importWorkflow(dslTContent);
         return Response.success(instanceId);
     }
+
+
+    /**
+     * 保存工作流定义
+     *
+     * @param saveRequest 保存请求
+     * @return
+     */
+    @PostMapping("/save")
+    public Response<String> saveWorkflow(@RequestBody WorkflowSaveRequest saveRequest) {
+        Long workflowId = workflowService.saveWorkflow(saveRequest);
+        return Response.success(workflowId);
+    }
+
+
 
 
     /**

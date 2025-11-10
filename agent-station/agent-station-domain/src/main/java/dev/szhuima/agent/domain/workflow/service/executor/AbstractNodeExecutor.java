@@ -3,7 +3,7 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 import com.googlecode.aviator.AviatorEvaluator;
 import dev.szhuima.agent.domain.workflow.model.Workflow;
 import dev.szhuima.agent.domain.workflow.model.WorkflowContext;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,7 +17,7 @@ public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
 
 
     @Override
-    public boolean assertCondition(WorkflowNodeDO node, WorkflowContext context) {
+    public boolean assertCondition(WorkflowNode node, WorkflowContext context) {
         String expression = node.getConditionExpr();
         if (StringUtils.isBlank(expression)) {
             return true;
@@ -28,7 +28,7 @@ public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
     }
 
     @Override
-    public NodeExecutionResult execute(WorkflowNodeDO node, WorkflowContext context, Workflow workflow) {
+    public NodeExecutionResult execute(WorkflowNode node, WorkflowContext context, Workflow workflow) {
         boolean condition = assertCondition(node, context);
         if (!condition) {
             return NodeExecutionResult.failure("condition unmatched, cannot execute node");
@@ -43,6 +43,6 @@ public abstract class AbstractNodeExecutor implements WorkflowNodeExecutor {
         return NodeExecutionResult.success(nodeExecutionResult.getOutput());
     }
 
-    public abstract NodeExecutionResult executeNode(WorkflowNodeDO node, WorkflowContext context, Workflow workflow);
+    public abstract NodeExecutionResult executeNode(WorkflowNode node, WorkflowContext context, Workflow workflow);
 
 }

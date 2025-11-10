@@ -1,8 +1,6 @@
 package dev.szhuima.agent.domain.workflow.reository;
 
 import dev.szhuima.agent.domain.workflow.model.Workflow;
-import dev.szhuima.agent.domain.workflow.model.WorkflowEdgeDO;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
 
 /**
  * * @Author: szhuima
@@ -13,15 +11,9 @@ public interface IWorkflowRepository {
 
     Long saveWorkflow(Workflow workflow);
 
-    Long saveWorkflowNode(WorkflowNodeDO workflowNode);
-
-    Long saveWorkflowEdge(WorkflowEdgeDO workflowEdge);
-
     Workflow getById(Long workflowId);
 
     Workflow getActiveWorkflow(String workflowName);
-
-    void deleteWorkflowByName(String workflowName);
 
     void updateWorkflow(Workflow workflow);
 }

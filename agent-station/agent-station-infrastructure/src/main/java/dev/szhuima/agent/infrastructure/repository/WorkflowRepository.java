@@ -41,45 +41,20 @@ public class WorkflowRepository implements IWorkflowRepository {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long saveWorkflow(Workflow workflow) {
-        LambdaQueryWrapper<TbWorkflow> queryWrapper = new LambdaQueryWrapper<TbWorkflow>()
-                .eq(TbWorkflow::getName, workflow.getName())
-                .orderByDesc(TbWorkflow::getVersion);
-
-        List<TbWorkflow> oldWorkflowList = workflowMapper.selectList(queryWrapper);
-        Integer version = 1;
-        // 将之前的记录设置为非活动状态
-        if (!oldWorkflowList.isEmpty()) {
-            oldWorkflowList.stream()
-                    .filter(oldWorkflow -> oldWorkflow.getStatus().equals(WorkflowStatus.ACTIVE.getCode()))
-                    .forEach(oldWorkflow -> {
-                        oldWorkflow.setStatus(WorkflowStatus.ARCHIVED.getCode());
-                        workflowMapper.updateById(oldWorkflow);
-                    });
-            version = oldWorkflowList.get(0).getVersion() + 1;
-        }
         TbWorkflow tbWorkflow = BeanUtil.copyProperties(workflow, TbWorkflow.class, "nodes", "edges");
         if (workflow.getMeta() != null) {
             tbWorkflow.setMetaJson(JSON.toJSONString(workflow.getMeta()));
         }
-        tbWorkflow.setVersion(version);
         workflowMapper.insert(tbWorkflow);
+
+        // 保存节点
+        List<TbWorkflowNode> tbWorkflowNodes = BeanUtil.copyToList(workflow.getNodes(), TbWorkflowNode.class);
+        tbWorkflowNodes.forEach(workflowNodeMapper::insert);
+        // 保存边
+        List<TbWorkflowEdge> tbWorkflowEdges = BeanUtil.copyToList(workflow.getEdges(), TbWorkflowEdge.class);
+        tbWorkflowEdges.forEach(workflowEdgeMapper::insert);
+
         return tbWorkflow.getWorkflowId();
-    }
-
-
-    @Override
-    public Long saveWorkflowNode(WorkflowNodeDO workflowNode) {
-        TbWorkflowNode workflowNode1 = BeanUtil.copyProperties(workflowNode, TbWorkflowNode.class);
-        workflowNode1.setConditionExpr(workflowNode.getConditionExpr());
-        workflowNodeMapper.insert(workflowNode1);
-        return workflowNode1.getNodeId();
-    }
-
-    @Override
-    public Long saveWorkflowEdge(WorkflowEdgeDO workflowEdge) {
-        TbWorkflowEdge workflowEdge1 = BeanUtil.copyProperties(workflowEdge, TbWorkflowEdge.class);
-        workflowEdgeMapper.insert(workflowEdge1);
-        return workflowEdge1.getEdgeId();
     }
 
     @Override
@@ -90,7 +65,7 @@ public class WorkflowRepository implements IWorkflowRepository {
         }
         List<TbWorkflowNode> workflowNodes = workflowNodeMapper.selectList(new LambdaQueryWrapper<TbWorkflowNode>().eq(TbWorkflowNode::getWorkflowId, workflowId));
         List<TbWorkflowEdge> workflowEdgeList = workflowEdgeMapper.selectList(new LambdaQueryWrapper<TbWorkflowEdge>().eq(TbWorkflowEdge::getWorkflowId, workflowId));
-        List<WorkflowNodeDO> workflowNodeDOList = BeanUtil.copyToList(workflowNodes, WorkflowNodeDO.class, CopyOptions.create().setConverter((targetType, value) -> {
+        List<WorkflowNode> workflowNodeList = BeanUtil.copyToList(workflowNodes, WorkflowNode.class, CopyOptions.create().setConverter((targetType, value) -> {
             if (targetType == NodeType.class) {
                 return NodeType.valueOf((String) value);
             }
@@ -104,14 +79,14 @@ public class WorkflowRepository implements IWorkflowRepository {
             return value;
         }));
 
-        List<WorkflowEdgeDO> workflowEdgeDOList = BeanUtil.copyToList(workflowEdgeList, WorkflowEdgeDO.class);
+        List<WorkflowEdge> workflowEdgeDOList = BeanUtil.copyToList(workflowEdgeList, WorkflowEdge.class);
 
         return Workflow.builder()
                 .workflowId(workflow.getWorkflowId())
                 .name(workflow.getName())
                 .meta(JSON.parseObject(workflow.getMetaJson(), new TypeReference<Map<String, Object>>() {
                 }))
-                .nodes(workflowNodeDOList)
+                .nodes(workflowNodeList)
                 .edges(workflowEdgeDOList)
                 .createdAt(workflow.getCreatedAt())
                 .updatedAt(workflow.getUpdatedAt())
@@ -135,22 +110,6 @@ public class WorkflowRepository implements IWorkflowRepository {
         return workflowDO;
     }
 
-    @Override
-    public void deleteWorkflowByName(String workflowName) {
-        List<TbWorkflow> workflows = workflowMapper.selectList(new LambdaQueryWrapper<TbWorkflow>()
-                .select(TbWorkflow::getWorkflowId)
-                .eq(TbWorkflow::getName, workflowName)
-        );
-        if (workflows.isEmpty()) {
-            return;
-        }
-        List<Long> workflowIdList = workflows.stream().map(TbWorkflow::getWorkflowId).toList();
-        for (Long workflowId : workflowIdList) {
-            workflowNodeMapper.delete(new LambdaQueryWrapper<TbWorkflowNode>().eq(TbWorkflowNode::getWorkflowId, workflowId));
-            workflowEdgeMapper.delete(new LambdaQueryWrapper<TbWorkflowEdge>().eq(TbWorkflowEdge::getWorkflowId, workflowId));
-        }
-        workflowMapper.deleteBatchIds(workflowIdList);
-    }
 
     @Override
     public void updateWorkflow(Workflow workflow) {

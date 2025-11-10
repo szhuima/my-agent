@@ -32,15 +32,6 @@ public interface IWorkflowAdminService {
 
 
     /**
-     * 从DSL文件中导入工作流
-     *
-     * @param dslText dsl 配置内容
-     * @return
-     */
-    Response<String> importWorkflowFromDsl(String dslText);
-
-
-    /**
      * 删除指定ID的工作流
      *
      * @param workflowId 工作流ID

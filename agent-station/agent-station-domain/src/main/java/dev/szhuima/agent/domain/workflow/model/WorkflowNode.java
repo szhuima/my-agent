@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkflowNodeDO {
+public class WorkflowNode {
     private Long nodeId;
     private Long workflowId;
     private String name;

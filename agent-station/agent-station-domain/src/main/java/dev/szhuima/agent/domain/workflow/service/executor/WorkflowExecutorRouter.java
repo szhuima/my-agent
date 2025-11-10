@@ -2,7 +2,7 @@ package dev.szhuima.agent.domain.workflow.service.executor;
 
 import dev.szhuima.agent.domain.support.utils.SpringBeanUtils;
 import dev.szhuima.agent.domain.workflow.model.NodeType;
-import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
+import dev.szhuima.agent.domain.workflow.model.WorkflowNode;
 
 /**
  * * @Author: szhuima
@@ -11,7 +11,7 @@ import dev.szhuima.agent.domain.workflow.model.WorkflowNodeDO;
  **/
 public interface WorkflowExecutorRouter {
 
-    default WorkflowNodeExecutor getExecutor(WorkflowNodeDO node) {
+    default WorkflowNodeExecutor getExecutor(WorkflowNode node) {
         if (node.getType() == NodeType.HTTP) {
             return SpringBeanUtils.getBean(HttpNodeExecutor.class);
         } else if (node.getType() == NodeType.AGENT) {

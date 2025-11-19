@@ -1,6 +1,7 @@
 package dev.szhuima.agent.infrastructure.factory;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.cloud.ai.memory.redis.RedissonRedisChatMemoryRepository;
 import dev.szhuima.agent.domain.agent.Agent;
 import dev.szhuima.agent.domain.agent.model.Knowledge;
 import dev.szhuima.agent.domain.support.utils.StringTemplateRender;
@@ -28,6 +29,9 @@ public class ChatClientFactory implements StringTemplateRender {
     private PgVectorStore vectorStore;
 
     @Resource
+    private RedissonRedisChatMemoryRepository redisChatMemoryRepository;
+
+    @Resource
     private ChatModelFactory chatModelFactory;
 
     private final Map<Long, ChatClient> cache = new ConcurrentHashMap<>();
@@ -39,9 +43,11 @@ public class ChatClientFactory implements StringTemplateRender {
     private ChatClient createChatClient(Agent agent) {
         ChatModel chatModel = chatModelFactory.createChatModel(agent.getModelApi());
         List<Advisor> advisors = new ArrayList<>();
+
         //配置记忆顾问
         if (agent.getMemorySize() > 0) {
             MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
+                    .chatMemoryRepository(redisChatMemoryRepository)
                     .maxMessages(agent.getMemorySize()).build();
             PromptChatMemoryAdvisor memoryAdvisor = PromptChatMemoryAdvisor.builder(chatMemory).build();
             advisors.add(memoryAdvisor);

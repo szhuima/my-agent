@@ -167,6 +167,16 @@ export class AiClientApiAdminService {
       headers: DEFAULT_HEADERS,
     });
   }
+
+  /**
+   * 克隆模型API配置
+   */
+  async cloneModelApi(id: string): Promise<ApiResponse<boolean>> {
+    return await apiRequestRaw<ApiResponse<boolean>>(`${this.baseUrl}/clone/${id}`, {
+      method: 'POST',
+      headers: DEFAULT_HEADERS,
+    });
+  }
 }
 
 export const aiClientApiAdminService = new AiClientApiAdminService();

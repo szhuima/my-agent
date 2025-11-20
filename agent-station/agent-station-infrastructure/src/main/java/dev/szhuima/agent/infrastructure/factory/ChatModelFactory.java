@@ -6,7 +6,7 @@ import dev.szhuima.agent.domain.support.exception.BizException;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.ollama.api.OllamaApi;
-import org.springframework.ai.ollama.api.OllamaOptions;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.api.OpenAiApi;
@@ -66,7 +66,7 @@ public class ChatModelFactory {
 
         OllamaChatModel chatModel = OllamaChatModel.builder()
                 .ollamaApi(ollamaApi)
-                .defaultOptions(OllamaOptions.builder()
+                .defaultOptions(OllamaChatOptions.builder()
                         .model(modelVO.getModelName())
                         .build())
                 .build();

@@ -11,6 +11,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.vectorstore.SearchRequest;
@@ -34,10 +35,16 @@ public class ChatClientFactory implements StringTemplateRender {
     @Resource
     private ChatModelFactory chatModelFactory;
 
-    private final Map<Long, ChatClient> cache = new ConcurrentHashMap<>();
+    /**
+     * 缓存对话客户端
+     * 缓存对话客户端，key为agentId value为对话客户端
+     */
+    private final Map<Long, ChatClient> clientMap = new ConcurrentHashMap<>();
+
+    private final Map<Long, ChatMemory> chatMemoryMap = new ConcurrentHashMap<>();
 
     public ChatClient getOrCreate(Agent agent) {
-        return cache.computeIfAbsent(agent.getId(), (agentId) -> createChatClient(agent));
+        return clientMap.computeIfAbsent(agent.getId(), (agentId) -> createChatClient(agent));
     }
 
     private ChatClient createChatClient(Agent agent) {
@@ -46,9 +53,10 @@ public class ChatClientFactory implements StringTemplateRender {
 
         //配置记忆顾问
         if (agent.getMemorySize() > 0) {
-            MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
+            ChatMemory chatMemory = MessageWindowChatMemory.builder()
                     .chatMemoryRepository(redisChatMemoryRepository)
                     .maxMessages(agent.getMemorySize()).build();
+            chatMemoryMap.put(agent.getId(), chatMemory);
             PromptChatMemoryAdvisor memoryAdvisor = PromptChatMemoryAdvisor.builder(chatMemory).build();
             advisors.add(memoryAdvisor);
         }
@@ -78,5 +86,9 @@ public class ChatClientFactory implements StringTemplateRender {
 
     }
 
+
+    public ChatMemory getChatMemory(Long agentId) {
+        return chatMemoryMap.get(agentId);
+    }
 
 }

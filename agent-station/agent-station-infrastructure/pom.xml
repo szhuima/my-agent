@@ -51,11 +51,6 @@
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-memory-redis</artifactId>
         </dependency>
-<!--        &lt;!&ndash;jedis&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>redis.clients</groupId>-->
-<!--            <artifactId>jedis</artifactId>-->
-<!--        </dependency>-->
 
     </dependencies>
 

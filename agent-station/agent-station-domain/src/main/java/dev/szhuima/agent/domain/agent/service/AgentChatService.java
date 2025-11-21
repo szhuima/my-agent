@@ -1,7 +1,6 @@
 package dev.szhuima.agent.domain.agent.service;
 
 import dev.szhuima.agent.domain.agent.Agent;
-import dev.szhuima.agent.domain.agent.factory.AgentBeanFactory;
 import dev.szhuima.agent.domain.agent.model.AgentExecuteParams;
 import dev.szhuima.agent.domain.agent.model.ChatRequest;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
@@ -9,7 +8,6 @@ import dev.szhuima.agent.domain.support.exception.BizException;
 import dev.szhuima.agent.domain.support.utils.StringTemplateRender;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -23,9 +21,6 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @Service
 public class AgentChatService implements StringTemplateRender {
-
-    @Resource
-    private AgentBeanFactory agentBeanFactory;
 
     @Resource
     private IAgentRepository agentRepository;
@@ -72,10 +67,7 @@ public class AgentChatService implements StringTemplateRender {
     }
 
 
-    public void clearMemory(Long clientId, String sessionId) {
-        ChatMemory chatMemory = agentBeanFactory.getChatMemory(clientId);
-        if (chatMemory != null) {
-            chatMemory.clear(sessionId);
-        }
+    public void clearMemory(Long agentId, String sessionId) {
+        agentRepository.clearMemory(agentId, sessionId);
     }
 }

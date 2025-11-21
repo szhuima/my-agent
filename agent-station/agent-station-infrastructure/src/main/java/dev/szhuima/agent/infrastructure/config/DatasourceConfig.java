@@ -13,7 +13,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.ai.ollama.OllamaEmbeddingModel;
 import org.springframework.ai.ollama.api.OllamaApi;
-import org.springframework.ai.ollama.api.OllamaEmbeddingOptions;
+import org.springframework.ai.ollama.api.OllamaOptions;
 import org.springframework.ai.ollama.management.ModelManagementOptions;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
@@ -186,7 +186,7 @@ public class DatasourceConfig {
                 .baseUrl(baseUrl)
                 .build();
 
-        OllamaEmbeddingOptions options = OllamaEmbeddingOptions.builder()
+        OllamaOptions options = OllamaOptions.builder()
                 .model(model)
                 .build();
 

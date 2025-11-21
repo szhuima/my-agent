@@ -13,4 +13,5 @@ public interface IAgentRepository {
 
     Agent getAgent(Long agentId);
 
+    void clearMemory(Long agentId, String sessionId);
 }

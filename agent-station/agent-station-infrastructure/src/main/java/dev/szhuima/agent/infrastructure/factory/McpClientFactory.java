@@ -9,8 +9,6 @@ import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.client.transport.HttpClientSseClientTransport;
 import io.modelcontextprotocol.client.transport.ServerParameters;
 import io.modelcontextprotocol.client.transport.StdioClientTransport;
-import io.modelcontextprotocol.json.McpJsonMapper;
-import io.modelcontextprotocol.json.jackson.JacksonMcpJsonMapper;
 import io.modelcontextprotocol.spec.McpSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +28,6 @@ public class McpClientFactory {
 
     // 全局ObjectMapper：复用避免重复创建，适配MCP协议序列化
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final McpJsonMapper MCP_JSON_MAPPER = new JacksonMcpJsonMapper(OBJECT_MAPPER);
 
     protected McpSyncClient createClient(Mcp mcp) {
         McpTransportType transportType = mcp.getTransportType();
@@ -73,7 +70,7 @@ public class McpClientFactory {
                         .args(stdio.getArgs())
                         .build();
                 McpSchema.Implementation implementation = new McpSchema.Implementation(mcp.getMcpName(), "1.0");
-                var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams,MCP_JSON_MAPPER))
+                var mcpClient = McpClient.sync(new StdioClientTransport(stdioParams))
                         .clientInfo(implementation)
                         .requestTimeout(Duration.ofSeconds(mcp.getRequestTimeout())).build();
                 var init_stdio = mcpClient.initialize();

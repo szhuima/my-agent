@@ -6,9 +6,11 @@ import dev.szhuima.agent.domain.agent.model.ModelApi;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
 import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
 import dev.szhuima.agent.infrastructure.entity.TbAgent;
+import dev.szhuima.agent.infrastructure.factory.ChatClientFactory;
 import dev.szhuima.agent.infrastructure.mapper.AgentMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -30,6 +32,9 @@ public class AgentRepository implements IAgentRepository {
 
     @Resource
     private IKnowledgeRepository knowledgeRepository;
+
+    @Resource
+    private ChatClientFactory chatClientFactory;
 
 
     @Override
@@ -53,6 +58,15 @@ public class AgentRepository implements IAgentRepository {
         // 设置MCP
 
         return agent;
+    }
+
+    @Override
+    public void clearMemory(Long agentId, String sessionId) {
+        ChatMemory chatMemory = chatClientFactory.getChatMemory(agentId);
+        if (chatMemory == null) {
+            return;
+        }
+        chatMemory.clear(sessionId);
     }
 }
 

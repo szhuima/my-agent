@@ -375,6 +375,62 @@ public class ModelApiController extends BaseController implements IAiClientModel
     }
 
     /**
+     * 克隆模型API配置
+     *
+     * @param id 要克隆的模型API的ID
+     * @return 克隆结果，true表示成功，false表示失败
+     */
+    @PostMapping("/clone/{id}")
+    public Response<Boolean> cloneModelApi(@PathVariable Long id) {
+        try {
+            log.info("克隆模型API配置请求，ID: {}", id);
+
+            // 1. 查询要克隆的原始模型API配置
+            TbModelApi originalModelApi = modelApiMapper.selectById(id);
+            if (originalModelApi == null) {
+                return Response.<Boolean>builder()
+                        .code(ErrorCode.UN_ERROR.getCode())
+                        .info("未找到对应的AI客户端模型配置")
+                        .data(false)
+                        .build();
+            }
+
+            // 2. 复制原始模型API配置到新的对象
+            TbModelApi clonedModelApi = new TbModelApi();
+            BeanUtils.copyProperties(originalModelApi, clonedModelApi);
+
+            // 3. 清除主键ID，让数据库自动生成新的ID
+            clonedModelApi.setId(null);
+
+            // 4. 修改克隆模型的名称，添加"(副本)"后缀
+            String clonedName = originalModelApi.getModelApiName() + "(副本)";
+            clonedModelApi.setModelApiName(clonedName);
+
+            // 5. 设置创建时间和更新时间
+            LocalDateTime now = LocalDateTime.now();
+            clonedModelApi.setCreateTime(now);
+            clonedModelApi.setUpdateTime(now);
+
+            // 6. 插入克隆的模型API配置到数据库
+            int result = modelApiMapper.insert(clonedModelApi);
+
+            return Response.<Boolean>builder()
+                    .code(ErrorCode.SUCCESS.getCode())
+                    .info(ErrorCode.SUCCESS.getInfo())
+                    .data(result > 0)
+                    .build();
+        } catch (Exception e) {
+            log.error("克隆模型API配置失败", e);
+            return Response.<Boolean>builder()
+                    .code(ErrorCode.UN_ERROR.getCode())
+                    .info(ErrorCode.UN_ERROR.getInfo())
+                    .data(false)
+                    .build();
+        }
+    }
+
+
+    /**
      * DTO转PO对象
      */
     private TbModelApi convertToAiClientModel(AiClientModelRequestDTO requestDTO) {

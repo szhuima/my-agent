@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Card, Input, Layout, Popconfirm, Space, Table, Tag, Toast, Typography} from '@douyinfe/semi-ui';
-import {IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
+import {IconCopy, IconDelete, IconEdit, IconPlay, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
 import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
@@ -242,7 +242,7 @@ export const AiClientApiManagement: React.FC = () => {
     {
       title: "操作",
       key: "action",
-      width: 120,
+      width: 160,
       fixed: "right" as const,
       render: (_: any, record: any) => (
         <Space>
@@ -259,6 +259,13 @@ export const AiClientApiManagement: React.FC = () => {
             size="small"
             icon={<IconPlay />}
             onClick={() => handleTest(record)}
+          >
+          </ActionButton>
+          <ActionButton
+            type="tertiary"
+            size="small"
+            icon={<IconCopy />}
+            onClick={() => handleClone(record.id)}
           >
           </ActionButton>
           <Popconfirm
@@ -379,6 +386,22 @@ export const AiClientApiManagement: React.FC = () => {
     } catch (error) {
       console.error('删除AI客户端API配置失败:', error);
       Toast.error('删除失败，请稍后重试');
+    }
+  };
+
+  // 克隆
+  const handleClone = async (id: string) => {
+    try {
+      const response = await aiClientApiAdminService.cloneModelApi(id);
+      if (response.code === '0000') {
+        Toast.success('克隆成功');
+        loadData();
+      } else {
+        Toast.error(response.info || '克隆失败');
+      }
+    } catch (error) {
+      console.error('克隆AI客户端API配置失败:', error);
+      Toast.error('克隆失败，请稍后重试');
     }
   };
 

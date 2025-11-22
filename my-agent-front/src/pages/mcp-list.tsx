@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {
-    Button,
-    Card,
-    Input,
-    Layout,
-    Modal,
-    Popconfirm,
-    Select,
-    Space,
-    Table,
-    Tag,
-    TextArea,
-    Toast,
-    Typography
+  Button,
+  Card,
+  Input,
+  Layout,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Tag,
+  TextArea,
+  Toast,
+  Typography
 } from '@douyinfe/semi-ui';
 import {IconDelete, IconEdit, IconEyeOpened, IconPlus, IconRefresh, IconSearch} from '@douyinfe/semi-icons';
 import styled from 'styled-components';
@@ -21,10 +21,10 @@ import {theme} from '../styles/theme';
 import {Header, Sidebar} from '../components/layout';
 import {PageLayout} from '../components/page-layout';
 import {
-    aiClientToolMcpAdminService,
-    AiClientToolMcpQueryRequestDTO,
-    AiClientToolMcpRequestDTO,
-    AiClientToolMcpResponseDTO
+  aiClientToolMcpAdminService,
+  AiClientToolMcpQueryRequestDTO,
+  AiClientToolMcpRequestDTO,
+  AiClientToolMcpResponseDTO
 } from '../services/ai-client-tool-mcp-admin-service';
 import useHandleNavigation from "../utils/useHandleNavigation";
 
@@ -546,13 +546,6 @@ export const McpList: React.FC = () => {
 
             <SearchSection>
               <SearchRow>
-                <Input
-                  placeholder="请输入MCP名称"
-                  value={searchText}
-                  onChange={setSearchText}
-                  style={{ width: 200 }}
-                  onEnterPress={handleSearch}
-                />
                 <Select
                   placeholder="选择状态"
                   value={status === undefined ? "" : status}

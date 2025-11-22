@@ -10,13 +10,17 @@ import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.AiClientToolMcpRequestDTO;
 import dev.szhuima.agent.api.dto.McpQueryRequestDTO;
 import dev.szhuima.agent.api.dto.McpResponseDTO;
+import dev.szhuima.agent.domain.agent.model.Mcp;
 import dev.szhuima.agent.domain.agent.model.McpTransportType;
 import dev.szhuima.agent.infrastructure.entity.TbMcp;
+import dev.szhuima.agent.infrastructure.factory.McpClientFactory;
 import dev.szhuima.agent.infrastructure.mapper.McpMapper;
+import dev.szhuima.agent.infrastructure.repository.McpRepository;
 import dev.szhuima.agent.infrastructure.util.McpUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -38,10 +42,19 @@ public class McpAdminController implements McpAdminService {
     @Resource
     private McpMapper mcpMapper;
 
+    @Resource
+    private McpRepository repository;
+
+    @Resource
+    private McpClientFactory mcpClientFactory;
+
     @Override
     @PostMapping("/create")
+    @Transactional(rollbackFor = Exception.class)
     public Response<Boolean> createAiClientToolMcp(@RequestBody AiClientToolMcpRequestDTO request) {
         log.info("创建MCP客户端配置请求：{}", request);
+
+        JSONObject config = JSON.parseObject(request.getConfig());
 
         // DTO转PO
         TbMcp TbMcp = convertToAiClientToolMcp(request);
@@ -49,6 +62,11 @@ public class McpAdminController implements McpAdminService {
         TbMcp.setUpdateTime(LocalDateTime.now());
 
         int result = mcpMapper.insert(TbMcp);
+
+        Mcp mcp = repository.getMcp(TbMcp.getId());
+
+        // 初始化MCP客户端
+        mcpClientFactory.initMcpClient(mcp);
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -59,6 +77,7 @@ public class McpAdminController implements McpAdminService {
 
     @Override
     @PutMapping("/update-by-id")
+    @Transactional(rollbackFor = Exception.class)
     public Response<Boolean> updateAiClientToolMcpById(@RequestBody AiClientToolMcpRequestDTO request) {
         log.info("根据ID更新MCP客户端配置请求：{}", request);
 
@@ -75,6 +94,11 @@ public class McpAdminController implements McpAdminService {
         TbMcp.setUpdateTime(LocalDateTime.now());
 
         int result = mcpMapper.updateById(TbMcp);
+
+        Mcp mcp = repository.getMcp(TbMcp.getId());
+
+        // 更新MCP客户端
+        mcpClientFactory.refresh(mcp);
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())

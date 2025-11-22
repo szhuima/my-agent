@@ -4,8 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.cloud.ai.memory.redis.RedissonRedisChatMemoryRepository;
 import dev.szhuima.agent.domain.agent.Agent;
 import dev.szhuima.agent.domain.agent.model.Knowledge;
+import dev.szhuima.agent.domain.agent.model.Mcp;
 import dev.szhuima.agent.domain.support.utils.StringTemplateRender;
 import dev.szhuima.agent.infrastructure.repository.assembler.advisor.KnowledgeAnswerAdvisor;
+import io.modelcontextprotocol.client.McpSyncClient;
 import jakarta.annotation.Resource;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
@@ -14,6 +16,7 @@ import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.stereotype.Component;
@@ -34,6 +37,9 @@ public class ChatClientFactory implements StringTemplateRender {
 
     @Resource
     private ChatModelFactory chatModelFactory;
+
+    @Resource
+    private McpClientFactory mcpClientFactory;
 
     /**
      * 缓存对话客户端
@@ -75,10 +81,17 @@ public class ChatClientFactory implements StringTemplateRender {
         advisors.add(new SimpleLoggerAdvisor());
         Advisor[] advisorArray = advisors.toArray(new Advisor[]{});
 
+        // 配置MCP工具顾问
+        List<Mcp> mcpList = agent.getMcpList();
+        List<McpSyncClient> mcpSyncClients = mcpList.stream().map((mcp) -> {
+            McpSyncClient mcpSyncClient = mcpClientFactory.getOrCreate(mcp);
+            return mcpSyncClient;
+        }).toList();
+
         // 5. 构建对话客户端
         ChatClient.Builder builder = ChatClient.builder(chatModel);
         ChatClient chatClient = builder
-//                    .defaultToolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients.toArray(new McpSyncClient[]{})))
+                    .defaultToolCallbacks(new SyncMcpToolCallbackProvider(mcpSyncClients.toArray(new McpSyncClient[]{})))
                 .defaultAdvisors(advisorArray)
                 .build();
 

@@ -34,11 +34,6 @@ const { Title } = Typography;
 const { Option } = Select;
 
 // 样式组件
-const ClientToolMcpManagementLayout = styled(Layout)`
-  min-height: 100vh;
-  background: ${theme.colors.bg.secondary};
-`;
-
 const MainContent = styled.div<{ $collapsed: boolean }>`
   display: flex;
   flex: 1;
@@ -143,7 +138,6 @@ export const McpList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<AiClientToolMcpResponseDTO[]>([]);
   const [searchText, setSearchText] = useState('');
-  const [transportType, setTransportType] = useState<string>('');
   const [status, setStatus] = useState<number | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -159,11 +153,9 @@ export const McpList: React.FC = () => {
   const [createLoading, setCreateLoading] = useState(false);
   const [formData, setFormData] = useState<AiClientToolMcpRequestDTO>({
     id: undefined,
-    mcpName: '',
-    transportType: 'stdio',
-    transportConfig: '{}',
-    requestTimeout: 30000,
-    status: 1
+    config: '',
+    requestTimeout: 10,
+    status: 1 // 默认启用状态
   });
 
   // 编辑MCP配置弹窗相关状态
@@ -171,10 +163,8 @@ export const McpList: React.FC = () => {
   const [editLoading, setEditLoading] = useState(false);
   const [editFormData, setEditFormData] = useState<AiClientToolMcpRequestDTO>({
     id: 0,
-    mcpName: '',
-    transportType: 'stdio',
-    transportConfig: '{}',
-    requestTimeout: 30000,
+    config: '{}',
+    requestTimeout: 10,
     status: 1
   });
   const [currentEditRecord, setCurrentEditRecord] = useState<AiClientToolMcpResponseDTO | null>(null);
@@ -230,17 +220,6 @@ export const McpList: React.FC = () => {
         <ConfigPreview onClick={() => showConfigDetail(config, record.mcpName)}>
           {config ? `${config.substring(0, 50)}...` : '-'}
         </ConfigPreview>
-      ),
-    },
-    {
-      title: '传输类型',
-      dataIndex: 'transportType',
-      key: 'transportType',
-      width: 120,
-      render: (type: string) => (
-        <Tag color={type === 'stdio' ? 'blue' : type === 'sse' ? 'green' : 'orange'}>
-          {type || '-'}
-        </Tag>
       ),
     },
     {
@@ -319,7 +298,6 @@ export const McpList: React.FC = () => {
     try {
       const request: AiClientToolMcpQueryRequestDTO = {
         mcpName: searchText || undefined,
-        transportType: transportType || undefined,
         status: status,
         pageNum: currentPage,
         pageSize: pageSize,
@@ -367,9 +345,7 @@ export const McpList: React.FC = () => {
     setCurrentEditRecord(record);
     setEditFormData({
       id: record.id,
-      mcpName: record.mcpName,
-      transportType: record.transportType,
-      transportConfig: record.transportConfig,
+      config: record.transportConfig,
       requestTimeout: record.requestTimeout,
       status: record.status
     });
@@ -382,10 +358,8 @@ export const McpList: React.FC = () => {
     setCurrentEditRecord(null);
     setEditFormData({
       id: 0,
-      mcpName: '',
-      transportType: 'stdio',
-      transportConfig: '{}',
-      requestTimeout: 30,
+      config: '{}',
+      requestTimeout: 10,
       status: 1
     });
   };
@@ -401,22 +375,14 @@ export const McpList: React.FC = () => {
   // 提交编辑MCP配置
   const handleEditSubmit = async () => {
     // 表单验证
-    if (!editFormData.mcpName?.trim()) {
-      Toast.error('请输入MCP名称');
-      return;
-    }
-    if (!editFormData.transportType) {
-      Toast.error('请选择传输类型');
-      return;
-    }
-    if (!editFormData.transportConfig?.trim()) {
+    if (!editFormData.config?.trim()) {
       Toast.error('请输入传输配置');
       return;
     }
 
     // 验证JSON格式
     try {
-      JSON.parse(editFormData.transportConfig);
+      JSON.parse(editFormData.config);
     } catch (error) {
       Toast.error('传输配置必须是有效的JSON格式');
       return;
@@ -427,8 +393,7 @@ export const McpList: React.FC = () => {
       const request: AiClientToolMcpRequestDTO = {
         ...editFormData,
         id: currentEditRecord!.id, // 保持ID不变
-        mcpName: editFormData.mcpName.trim(),
-        transportConfig: editFormData.transportConfig.trim()
+        config: editFormData.config.trim()
       };
 
       const result = await aiClientToolMcpAdminService.updateAiClientToolMcpByMcpId(request);
@@ -456,10 +421,8 @@ export const McpList: React.FC = () => {
   const handleCreate = () => {
     setFormData({
       id: undefined,
-      mcpName: '',
-      transportType: 'stdio',
-      transportConfig: '{}',
-      requestTimeout: 30,
+      config: '',
+      requestTimeout: 10,
       status: 1
     });
     setCreateModalVisible(true);
@@ -469,10 +432,8 @@ export const McpList: React.FC = () => {
   const handleCreateCancel = () => {
     setCreateModalVisible(false);
     setFormData({
-      mcpName: '',
-      transportType: 'stdio',
-      transportConfig: '{}',
-      requestTimeout: 30,
+      config: '',
+      requestTimeout: 10,
       status: 1
     });
   };
@@ -488,22 +449,14 @@ export const McpList: React.FC = () => {
   // 提交新增MCP配置
   const handleCreateSubmit = async () => {
     // 表单验证
-    if (!formData.mcpName?.trim()) {
-      Toast.error('请输入MCP名称');
-      return;
-    }
-    if (!formData.transportType) {
-      Toast.error('请选择传输类型');
-      return;
-    }
-    if (!formData.transportConfig?.trim()) {
+    if (!formData.config?.trim()) {
       Toast.error('请输入传输配置');
       return;
     }
 
     // 验证JSON格式
     try {
-      JSON.parse(formData.transportConfig);
+      JSON.parse(formData.config);
     } catch (error) {
       Toast.error('传输配置必须是有效的JSON格式');
       return;
@@ -513,8 +466,8 @@ export const McpList: React.FC = () => {
     try {
       const request: AiClientToolMcpRequestDTO = {
         ...formData,
-        mcpName: formData.mcpName.trim(),
-        transportConfig: formData.transportConfig.trim()
+        status: 1, // 默认启用状态
+        config: formData.config.trim()
       };
 
       const result = await aiClientToolMcpAdminService.createAiClientToolMcp(request);
@@ -537,11 +490,6 @@ export const McpList: React.FC = () => {
     }
   };
 
-  // 处理传输类型变化
-  const handleTransportTypeChange = (value: any) => {
-    setTransportType(value || '');
-  };
-
   // 处理状态变化
   const handleStatusChange = (value: any) => {
     setStatus(value === '' ? undefined : Number(value));
@@ -556,7 +504,6 @@ export const McpList: React.FC = () => {
   // 重置搜索
   const handleReset = () => {
     setSearchText('');
-    setTransportType('');
     setStatus(undefined);
     setCurrentPage(1);
     fetchMcpList();
@@ -599,24 +546,6 @@ export const McpList: React.FC = () => {
 
             <SearchSection>
               <SearchRow>
-                <Input
-                  placeholder="请输入MCP名称"
-                  value={searchText}
-                  onChange={setSearchText}
-                  style={{ width: 200 }}
-                  onEnterPress={handleSearch}
-                />
-                <Select
-                  placeholder="选择传输类型"
-                  value={transportType}
-                  onChange={handleTransportTypeChange}
-                  style={{ width: 150 }}
-                >
-                  <Option value="">全部</Option>
-                  <Option value="stdio">stdio</Option>
-                  <Option value="sse">sse</Option>
-                  <Option value="websocket">websocket</Option>
-                </Select>
                 <Select
                   placeholder="选择状态"
                   value={status === undefined ? "" : status}
@@ -723,51 +652,20 @@ export const McpList: React.FC = () => {
                     strong
                     style={{ display: "block", marginBottom: 8 }}
                   >
-                    MCP名称 <Typography.Text type="danger">*</Typography.Text>
-                  </Typography.Text>
-                  <Input
-                    placeholder="请输入MCP名称"
-                    value={formData.mcpName}
-                    onChange={(value: string) =>
-                      handleFormChange("mcpName", value)
-                    }
-                    style={{ width: "100%" }}
-                  />
-                </div>
-
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", marginBottom: 8 }}
-                  >
-                    传输类型 <Typography.Text type="danger">*</Typography.Text>
-                  </Typography.Text>
-                  <Select
-                    placeholder="请选择传输类型"
-                    value={formData.transportType}
-                    onChange={(value: any) =>
-                      handleFormChange("transportType", value)
-                    }
-                    style={{ width: "100%" }}
-                  >
-                    <Option value="stdio">stdio</Option>
-                    <Option value="sse">sse</Option>
-                    <Option value="websocket">websocket</Option>
-                  </Select>
-                </div>
-
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", marginBottom: 8 }}
-                  >
                     传输配置 <Typography.Text type="danger">*</Typography.Text>
                   </Typography.Text>
                   <TextArea
-                    placeholder="请输入传输配置（JSON格式）"
-                    value={formData.transportConfig}
+                    placeholder={`{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"]
+    }
+  }
+}`}
+                    value={formData.config}
                     onChange={(value: string) =>
-                      handleFormChange("transportConfig", value)
+                      handleFormChange("config", value)
                     }
                     rows={6}
                     style={{
@@ -775,10 +673,6 @@ export const McpList: React.FC = () => {
                       fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
                     }}
                   />
-                  <Typography.Text type="tertiary" size="small">
-                    请输入有效的JSON格式配置，例如：{"{"}"command": "node",
-                    "args": ["server.js"]{"}"}
-                  </Typography.Text>
                 </div>
 
                 <div>
@@ -797,23 +691,6 @@ export const McpList: React.FC = () => {
                     }
                     style={{ width: "100%" }}
                   />
-                </div>
-
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", marginBottom: 8 }}
-                  >
-                    状态
-                  </Typography.Text>
-                  <Select
-                    value={formData.status}
-                    onChange={(value: any) => handleFormChange("status", value)}
-                    style={{ width: "100%" }}
-                  >
-                    <Option value={1}>启用</Option>
-                    <Option value={0}>禁用</Option>
-                  </Select>
                 </div>
               </div>
             </div>
@@ -869,51 +746,13 @@ export const McpList: React.FC = () => {
                     strong
                     style={{ display: "block", marginBottom: 8 }}
                   >
-                    MCP名称 <Typography.Text type="danger">*</Typography.Text>
-                  </Typography.Text>
-                  <Input
-                    placeholder="请输入MCP名称"
-                    value={editFormData.mcpName}
-                    onChange={(value: string) =>
-                      handleEditFormChange("mcpName", value)
-                    }
-                    style={{ width: "100%" }}
-                  />
-                </div>
-
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", marginBottom: 8 }}
-                  >
-                    传输类型 <Typography.Text type="danger">*</Typography.Text>
-                  </Typography.Text>
-                  <Select
-                    placeholder="请选择传输类型"
-                    value={editFormData.transportType}
-                    onChange={(value: any) =>
-                      handleEditFormChange("transportType", value)
-                    }
-                    style={{ width: "100%" }}
-                  >
-                    <Option value="stdio">stdio</Option>
-                    <Option value="sse">sse</Option>
-                    <Option value="websocket">websocket</Option>
-                  </Select>
-                </div>
-
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", marginBottom: 8 }}
-                  >
                     传输配置 <Typography.Text type="danger">*</Typography.Text>
                   </Typography.Text>
                   <TextArea
                     placeholder="请输入传输配置（JSON格式）"
-                    value={editFormData.transportConfig}
+                    value={editFormData.config}
                     onChange={(value: string) =>
-                      handleEditFormChange("transportConfig", value)
+                      handleEditFormChange("config", value)
                     }
                     rows={6}
                     style={{

@@ -11,17 +11,12 @@ import dev.szhuima.agent.api.Response;
 import dev.szhuima.agent.api.dto.AgentRequestDTO;
 import dev.szhuima.agent.api.dto.AgentResponseDTO;
 import dev.szhuima.agent.api.dto.AiClientQueryRequestDTO;
-import dev.szhuima.agent.infrastructure.entity.TbAgent;
-import dev.szhuima.agent.infrastructure.entity.TbAgentKnowledgeConfig;
-import dev.szhuima.agent.infrastructure.entity.TbKnowledge;
-import dev.szhuima.agent.infrastructure.entity.TbModelApi;
-import dev.szhuima.agent.infrastructure.mapper.AgentKnowledgeConfigMapper;
-import dev.szhuima.agent.infrastructure.mapper.AgentMapper;
-import dev.szhuima.agent.infrastructure.mapper.KnowledgeMapper;
-import dev.szhuima.agent.infrastructure.mapper.ModelApiMapper;
+import dev.szhuima.agent.infrastructure.entity.*;
+import dev.szhuima.agent.infrastructure.mapper.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +43,10 @@ public class AgentAdminController implements IAgentAdminService {
 
     @Resource
     private AgentKnowledgeConfigMapper clientKnowledgeConfigMapper;
+    @Autowired
+    private McpMapper mcpMapper;
+    @Resource
+    private AgentMcpConfigMapper agentMcpConfigMapper;
 
 
     @Override
@@ -86,6 +85,23 @@ public class AgentAdminController implements IAgentAdminService {
                 clientKnowledgeConfigMapper.insert(knowledgeConfig);
             }
         }
+
+        // 保存 MCP 关系
+        List<Long> mcpToolIds = request.getMcpToolIds();
+        if (CollectionUtil.isNotEmpty(mcpToolIds)) {
+            for (Long mcpToolId : mcpToolIds) {
+                TbMcp mcpTool = mcpMapper.selectById(mcpToolId);
+                if (mcpTool == null) {
+                    throw new IllegalArgumentException("MCP工具不存在");
+                }
+                TbAgentMcpConfig mcpToolConfig = new TbAgentMcpConfig();
+                mcpToolConfig.setAgentId(tbAgent.getId());
+                mcpToolConfig.setMcpId(mcpToolId);
+                agentMcpConfigMapper.insert(mcpToolConfig);
+            }
+        }
+
+
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -135,6 +151,25 @@ public class AgentAdminController implements IAgentAdminService {
             }
         }
 
+        // 先删除之前的MCP配置ID
+        LambdaQueryWrapper<TbAgentMcpConfig> mcpWrapper = Wrappers.lambdaQuery(TbAgentMcpConfig.class)
+                .eq(TbAgentMcpConfig::getAgentId, tbAgent.getId());
+        agentMcpConfigMapper.delete(mcpWrapper);
+
+        // 保存 新MCP配置
+        List<Long> mcpToolIds = request.getMcpToolIds();
+        if (CollectionUtil.isNotEmpty(mcpToolIds)) {
+            for (Long mcpToolId : mcpToolIds) {
+                TbMcp mcpTool = mcpMapper.selectById(mcpToolId);
+                if (mcpTool == null) {
+                    throw new IllegalArgumentException("MCP工具不存在");
+                }
+                TbAgentMcpConfig mcpToolConfig = new TbAgentMcpConfig();
+                mcpToolConfig.setAgentId(tbAgent.getId());
+                mcpToolConfig.setMcpId(mcpToolId);
+                agentMcpConfigMapper.insert(mcpToolConfig);
+            }
+        }
 
         return Response.<Boolean>builder()
                 .code(ErrorCode.SUCCESS.getCode())
@@ -301,6 +336,14 @@ public class AgentAdminController implements IAgentAdminService {
                     List<Long> knowledgeIds = clientKnowledgeConfigMapper.selectList(knowledgeWrapper).stream().map(TbAgentKnowledgeConfig::getKnowledgeId).toList();
                     if (CollectionUtil.isNotEmpty(knowledgeIds)) {
                         client.setKnowledgeIds(knowledgeIds);
+                    }
+
+                    // 获取MCP ID
+                    LambdaQueryWrapper<TbAgentMcpConfig> mcpWrapper = Wrappers.lambdaQuery(TbAgentMcpConfig.class)
+                            .eq(TbAgentMcpConfig::getAgentId, client.getId());
+                    List<Long> mcpIds = agentMcpConfigMapper.selectList(mcpWrapper).stream().map(TbAgentMcpConfig::getMcpId).toList();
+                    if (CollectionUtil.isNotEmpty(mcpIds)) {
+                        client.setMcpToolIds(mcpIds);
                     }
                 })
                 .collect(Collectors.toList());

@@ -18,6 +18,8 @@ public class ChatRequest {
 
     private String userMessage;
 
+
+
     private boolean streaming;
 
     /**

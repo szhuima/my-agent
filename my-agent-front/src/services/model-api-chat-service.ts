@@ -4,6 +4,7 @@ import {apiRequestData} from '../utils/request';
 export interface ModelApiChatRequest {
   modelApiId: number;
   userMessage: string;
+  imageUrl?: string; // 图片URL（上传后的文件名）
 }
 
 export interface ChatMessageResponse {

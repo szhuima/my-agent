@@ -28,7 +28,8 @@ public class Response<T> implements Serializable {
         return response;
     }
 
-    public static Response illegalParameter(String info) {
+
+    public static Response fail(String info) {
         return Response.builder()
                 .code(ErrorCode.BIZ_ERROR.getCode())
                 .info(info)

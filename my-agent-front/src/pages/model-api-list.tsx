@@ -15,7 +15,6 @@ import {
   AiClientApiResponseDTO
 } from '../services/model-api-service';
 import {PageDTO} from '../typings/page';
-import {AiAgentService} from '../services/ai-agent-service';
 import useHandleNavigation from '../utils/useHandleNavigation';
 
 
@@ -23,11 +22,10 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 // 样式组件
-const AiClientApiManagementLayout = styled(Layout)`
+styled(Layout)`
   min-height: 100vh;
   background: ${theme.colors.bg.secondary};
 `;
-
 const MainContent = styled.div<{ $collapsed: boolean }>`
   display: flex;
   flex: 1;
@@ -112,7 +110,7 @@ export const AiClientApiManagement: React.FC = () => {
   const [total, setTotal] = useState<number>(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingRecord, setEditingRecord] = useState<AiClientApiResponseDTO | null>(null);
-  const [loadingApiIds, setLoadingApiIds] = useState<Set<string>>(new Set());
+  const [] = useState<Set<string>>(new Set());
   const [testVisible, setTestVisible] = useState(false);
   const [testingRecord, setTestingRecord] = useState<AiClientApiResponseDTO | null>(null);
 
@@ -251,23 +249,19 @@ export const AiClientApiManagement: React.FC = () => {
             size="small"
             icon={<IconEdit />}
             onClick={() => handleEdit(record)}
-          >
-            
-          </ActionButton>
+           />
           <ActionButton
             type="secondary"
             size="small"
             icon={<IconPlay />}
             onClick={() => handleTest(record)}
-          >
-          </ActionButton>
+           />
           <ActionButton
             type="tertiary"
             size="small"
             icon={<IconCopy />}
             onClick={() => handleClone(record.id)}
-          >
-          </ActionButton>
+           />
           <Popconfirm
             title="确定要删除这个API配置吗？"
             content="删除后无法恢复"
@@ -275,9 +269,7 @@ export const AiClientApiManagement: React.FC = () => {
             okText="确定"
             cancelText="取消"
           >
-            <ActionButton type="danger" size="small" icon={<IconDelete />}>
-              
-            </ActionButton>
+            <ActionButton type="danger" size="small" icon={<IconDelete />} />
           </Popconfirm>
         </Space>
       ),
@@ -433,28 +425,7 @@ export const AiClientApiManagement: React.FC = () => {
   };
 
   // 加载API
-  const handleLoadApi = async (apiId: string) => {
-    try {
-      setLoadingApiIds(prev => new Set(prev).add(apiId));
-      const success = await AiAgentService.armoryApi(apiId);
-      if (success) {
-        Toast.success('API加载成功');
-      } else {
-        Toast.error('API加载失败');
-      }
-    } catch (error) {
-      console.error('加载API失败:', error);
-      Toast.error('加载API失败，请稍后重试');
-    } finally {
-      setLoadingApiIds(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(apiId);
-        return newSet;
-      });
-    }
-  };
-
-  // 页面初始化
+// 页面初始化
   useEffect(() => {
     loadData();
   }, []);

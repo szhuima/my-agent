@@ -3,6 +3,11 @@ spring:
     name: agent-station-app
   profiles:
     active: dev
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 50MB # 单个文件最大大小
+      max-request-size: 150MB # 单次请求最大文件大小
   config:
     import: classpath:jwt.properties
 

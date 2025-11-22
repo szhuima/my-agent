@@ -133,6 +133,22 @@
                 <version>3.7.3</version>
             </dependency>
 
+            <!-- MinIO Java客户端 -->
+            <!-- 注意：如果遇到连接问题，可能是客户端和服务端版本不匹配 -->
+            <!-- 建议检查 MinIO 服务端版本，确保客户端版本与服务端兼容 -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>8.5.9</version> <!-- 使用稳定版本 -->
+            </dependency>
+            
+            <!-- 确保使用兼容的 OkHttp 版本，MinIO 8.x 需要 OkHttp 4.8.1+ -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>4.12.0</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

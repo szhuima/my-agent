@@ -136,6 +136,10 @@ export const API_ENDPOINTS = {
         CHAT_NONE_STREAM: '/chat-non-stream',
         CHAT_STREAM: '/chat-stream',
         CLEAR_MEMORY: '/clear-memory/:agentId/:sessionId',
+    },
+    FILE_UPLOAD: {
+        BASE: `${API_CONFIG.BASE_DOMAIN}/api/${API_CONFIG.API_VERSION}/file/upload`,
+        IMAGE: '/image',
     }
 
     // 可以在这里添加其他模块的 API 端点

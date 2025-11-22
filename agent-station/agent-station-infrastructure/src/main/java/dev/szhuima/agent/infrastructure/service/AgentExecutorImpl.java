@@ -1,5 +1,6 @@
 package dev.szhuima.agent.infrastructure.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import dev.szhuima.agent.domain.agent.Agent;
@@ -8,6 +9,7 @@ import dev.szhuima.agent.domain.agent.service.AgentExecutor;
 import dev.szhuima.agent.infrastructure.factory.ChatClientFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.content.Media;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -28,7 +30,14 @@ public class AgentExecutorImpl implements AgentExecutor {
 
         // 用户提示词渲染
         if (StrUtil.isNotEmpty(params.getUserMessage())) {
-            spec.user(render(params.getUserMessage(), params.getContext()));
+            String userText = render(params.getUserMessage(), params.getContext());
+            spec.user(u -> {
+                u.text(userText);
+                // 支持多媒体
+                if (CollectionUtil.isNotEmpty(params.getMediaList())) {
+                    u.media(params.getMediaList().toArray(new Media[0]));
+                }
+            });
         }
         // 系统提示词渲染
         if (StrUtil.isNotEmpty(agent.getSystemPrompt())) {

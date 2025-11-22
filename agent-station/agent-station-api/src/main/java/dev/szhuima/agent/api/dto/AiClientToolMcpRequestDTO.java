@@ -28,21 +28,7 @@ public class AiClientToolMcpRequestDTO implements Serializable {
      */
     private Long id;
 
-
-    /**
-     * MCP名称
-     */
-    private String mcpName;
-
-    /**
-     * 传输类型(sse/stdio)
-     */
-    private String transportType;
-
-    /**
-     * 传输配置(sse/stdio)
-     */
-    private String transportConfig;
+    private String config;
 
     /**
      * 请求超时时间(分钟)

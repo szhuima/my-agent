@@ -1,6 +1,7 @@
 package dev.szhuima.agent.domain.agent;
 
 import dev.szhuima.agent.domain.agent.model.Knowledge;
+import dev.szhuima.agent.domain.agent.model.Mcp;
 import dev.szhuima.agent.domain.agent.model.ModelApi;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,8 @@ public class Agent {
     private ModelApi modelApi;
 
     private Integer memorySize = 0;
+
+    private List<Mcp> mcpList;
 
     private List<Knowledge> knowledgeList;
 

@@ -3,13 +3,18 @@ package dev.szhuima.agent.infrastructure.repository;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import dev.szhuima.agent.domain.agent.model.Mcp;
 import dev.szhuima.agent.domain.agent.model.McpTransportType;
 import dev.szhuima.agent.domain.agent.repository.IMcpRepository;
+import dev.szhuima.agent.infrastructure.entity.TbAgentMcpConfig;
 import dev.szhuima.agent.infrastructure.entity.TbMcp;
+import dev.szhuima.agent.infrastructure.mapper.AgentMcpConfigMapper;
 import dev.szhuima.agent.infrastructure.mapper.McpMapper;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,11 +26,15 @@ import java.util.Map;
  * * @Date    2025/11/7 00:08
  * * @Description
  **/
+@Slf4j
 @Repository
 public class McpRepository implements IMcpRepository {
 
     @Resource
     private McpMapper mcpMapper;
+
+    @Resource
+    private AgentMcpConfigMapper agentMcpConfigMapper;
 
     @Override
     public Mcp getMcp(Long id) {
@@ -67,9 +76,10 @@ public class McpRepository implements IMcpRepository {
                     break;
             }
         }
-    
-        return mcpBuilder.build();
+        Mcp mcp = mcpBuilder.build();
+        return mcp;
     }
+
     
     /**
      * 根据 mcpServers 配置推断传输类型
@@ -178,6 +188,15 @@ public class McpRepository implements IMcpRepository {
 
     @Override
     public List<Mcp> getMcpList(Long agentId) {
-        return List.of();
+        List<TbAgentMcpConfig> tbAgentMcpConfigList = agentMcpConfigMapper.selectList(
+                new LambdaQueryWrapper<TbAgentMcpConfig>()
+                        .eq(TbAgentMcpConfig::getAgentId, agentId)
+        );
+        if (CollectionUtils.isEmpty(tbAgentMcpConfigList)) {
+            return List.of();
+        }
+        List<Long> mcpIds = tbAgentMcpConfigList.stream().map(TbAgentMcpConfig::getMcpId).toList();
+        List<Mcp> mcpList = mcpIds.stream().map(this::getMcp).toList();
+        return mcpList;
     }
 }

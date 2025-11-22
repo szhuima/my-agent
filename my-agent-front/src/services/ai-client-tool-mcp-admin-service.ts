@@ -1,12 +1,10 @@
-import { API_CONFIG, DEFAULT_HEADERS } from '../config/api';
-import { apiRequestRaw } from '../utils/request';
+import {API_CONFIG, DEFAULT_HEADERS} from '../config/api';
+import {apiRequestRaw} from '../utils/request';
 
 // 请求和响应接口定义
 export interface AiClientToolMcpRequestDTO {
   id?: number;
-  mcpName?: string;
-  transportType?: string;
-  transportConfig?: string;
+  config?: string;
   requestTimeout?: number;
   status?: number;
 }

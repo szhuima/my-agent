@@ -25,11 +25,6 @@ public class McpQueryRequestDTO implements Serializable {
 
 
     /**
-     * MCP名称（模糊查询）
-     */
-    private String mcpName;
-
-    /**
      * 传输类型(sse/stdio)
      */
     private String transportType;

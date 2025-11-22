@@ -2,6 +2,7 @@ package dev.szhuima.agent.infrastructure.repository;
 
 import dev.szhuima.agent.domain.agent.Agent;
 import dev.szhuima.agent.domain.agent.model.Knowledge;
+import dev.szhuima.agent.domain.agent.model.Mcp;
 import dev.szhuima.agent.domain.agent.model.ModelApi;
 import dev.szhuima.agent.domain.agent.repository.IAgentRepository;
 import dev.szhuima.agent.domain.knowledge.repository.IKnowledgeRepository;
@@ -31,10 +32,14 @@ public class AgentRepository implements IAgentRepository {
     private ModelApiRepository modelApiRepository;
 
     @Resource
+    private McpRepository mcpRepository;
+
+    @Resource
     private IKnowledgeRepository knowledgeRepository;
 
     @Resource
     private ChatClientFactory chatClientFactory;
+
 
 
     @Override
@@ -56,6 +61,8 @@ public class AgentRepository implements IAgentRepository {
         agent.setKnowledgeList(knowledgeList);
 
         // 设置MCP
+        List<Mcp> mcpList = mcpRepository.getMcpList(agentId);
+        agent.setMcpList(mcpList);
 
         return agent;
     }
